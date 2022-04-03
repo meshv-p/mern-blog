@@ -5,15 +5,17 @@ import SendIcon from '@mui/icons-material/Send';
 import ChatBubbleIcon from '@mui/icons-material/ChatBubble';
 import { useNavigate } from 'react-router-dom';
 import blogContext from '../Context/BlogContext';
+import { AlertBar } from './Alert';
 
 
 
-export const Blog = ({ blog }) => {
+export const Blog = ({ blog, theme }) => {
 
     const [userLiked, setUserLiked] = useState(false)
     const [totalLike, setTotalLike] = useState(0)
+    const [open, setOpen] = useState(false)
     const context = useContext(blogContext)
-    let { url } = context;
+    let { url, loggedinUser } = context;
 
     let history = useNavigate();
     function stringToColor(string) {
@@ -50,7 +52,7 @@ export const Blog = ({ blog }) => {
         // console.log(blog.like?.includes(userId))
         setUserLiked(blog.like ? blog.like?.includes(userId) : false);
         setTotalLike(blog.totalLike ? blog.totalLike : 0)
-        console.log(totalLike);
+        // console.log(totalLike);
     }, [])
 
 
@@ -68,6 +70,12 @@ export const Blog = ({ blog }) => {
 
 
     const handleLike = () => {
+        if (!loggedinUser) {
+            setOpen(true)
+            return
+        }
+
+
         setTotalLike(userLiked ? totalLike - 1 : totalLike + 1)
         setUserLiked(!userLiked)
         fetch(`${url}/api/v1/blog/like/${blog._id}`, {
@@ -80,11 +88,19 @@ export const Blog = ({ blog }) => {
         }).then(res => res.json()).then(data => console.log(data))
     }
 
+    const removeAlert = () => {
+        setOpen(false)
+        // console.log('close')
+    }
+
+
     return (
         <>
-            <Card elevation={3} sx={{ my: 2, cursor: 'pointer' }} key={blog._id} >
+            <Card elevation={3} sx={{ my: 2, cursor: 'pointer', border: `1px solid ${theme ? '#d9d9d9' : '#424242'}` }} key={blog._id} raised={true}>
+                <AlertBar open={open} msg="Login to like.." type='error' remove={removeAlert} />
+
                 <CardHeader
-                    sx={{ ":hover": { background: '#424242' } }}
+                    sx={{ ":hover": { background: !theme ? '#424242' : "#d9d9d9" } }}
                     onClick={e => openProfile(e)} data-key={blog.user[0].user}
                     avatar={
                         <Avatar src={blog.user[0]?.Profile_pic} alt="Username" {...stringAvatar(blog.user[0]?.username ? blog.user[0].username : 'Admin')} />

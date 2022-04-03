@@ -77,14 +77,15 @@ export const BlogDetail = () => {
             }
         }).then(res => res.json()).then((data) => {
             setCommentByUser("");
-
-            setComment(comment.unshift(data.newComment))
+            console.log(comment.unshift(data.newComment))
+            // setComment(comment.concat(data.newComment).reverse())
             console.log(comment);
             // console.log(page)
             // console.log('before');
             // setTimeout(() => {
             // console.log('rerender');
-            getComment()
+            // getComment()
+            history(`/blog/${blogId}`)
 
             // }, 1000);
         })
@@ -245,7 +246,7 @@ export const BlogDetail = () => {
                                                     <Card>
                                                         <CardHeader
                                                             avatar={
-                                                                <Avatar src={c.user[0]?.Profile_pic || loggedinUser.profile.Profile_pic} alt="Username" {...stringAvatar(c.user[0]?.username ? c.user[0].username : loggedinUser.profile.username)} />
+                                                                <Avatar src={c.user[0]?.Profile_pic || loggedinUser?.profile.Profile_pic} alt="Username" {...stringAvatar(c.user[0]?.username ? c.user[0].username : loggedinUser.profile.username)} />
 
                                                             }
                                                             title={c.user[0].username ? c.user[0].username : loggedinUser.profile.username}

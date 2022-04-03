@@ -6,6 +6,7 @@ import blogContext from '../Context/BlogContext';
 import { Blog } from './Blog';
 import { Spinner } from './Spinner';
 import InfiniteScroll from 'react-infinite-scroll-component';
+import { Alert, AlertBar } from './Alert';
 
 export const Home = () => {
 
@@ -14,7 +15,7 @@ export const Home = () => {
     const [pageNo, setPageNo] = useState(1)
     const [totalPage, setTotalPage] = useState(null)
     const context = useContext(blogContext)
-    // const [progress, setProgress] = useState(0)
+    const [open, setOpen] = useState(false)
     let { theme, url, progress, setProgress } = context;
     const darkTheme = createTheme({
         palette: {
@@ -26,8 +27,11 @@ export const Home = () => {
     });
 
     useEffect(() => {
+        setOpen(true)
         setIsLoading(true)
         fetchData()
+        // setOpen(false)
+        console.log(navigator.onLine ? 'you are online' : 'you are offline')
 
     }, [])
 
@@ -38,6 +42,7 @@ export const Home = () => {
             setAllBlogs(allBlogs?.concat(data.allBlogs))
             setTotalPage(data.length)
             setIsLoading(false);
+            setOpen(false)
         })
         setProgress(100)
         setPageNo(pageNo + 1)
@@ -45,14 +50,15 @@ export const Home = () => {
 
 
 
+
     return (
         <div >
 
             <ThemeProvider theme={darkTheme}>
+                <AlertBar open={open} msg="Loading..." type='info' />
 
                 <Container sx={{ pt: 2 }}>
                     <CssBaseline />
-
                     {
                         isLoading && <Spinner />
                     }
@@ -73,7 +79,7 @@ export const Home = () => {
                         >
 
                             {allBlogs.map(blog => (
-                                <Blog blog={blog} key={blog._id} />
+                                <Blog blog={blog} key={blog._id} theme={theme} />
                             ))}
                         </InfiniteScroll>
                     }

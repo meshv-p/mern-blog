@@ -134,7 +134,7 @@ export const Navbar = () => {
 
                         <Box>
                             <IconButton
-
+                                sx={{ display: { xs: 'none', md: 'inline-flex' } }}
                                 onClick={toggleTheme}
                                 size="large"
                                 aria-label="Change theme"
@@ -145,6 +145,8 @@ export const Navbar = () => {
 
                             </IconButton>
                             <IconButton
+                                sx={{ display: { xs: 'none', md: 'inline-flex' } }}
+
                                 size="large"
                                 aria-label="show 17 new notifications"
                                 color="inherit"
@@ -158,7 +160,19 @@ export const Navbar = () => {
                             {
                                 currentUser ?
                                     <>
-                                        <IconButton
+                                        <Button variant='text'
+                                            color='inherit'
+                                            size='large'
+                                            onClick={(e) => setAnchorElUser(e.currentTarget)}
+
+                                            startIcon={
+                                                <Avatar src={currentUser?.Profile_pic} alt="Username" {...stringAvatar(currentUser?.username)} />
+
+                                            }>
+                                            <Typography sx={{ ml: 1, display: { xs: 'none', md: 'block' } }}>{currentUser?.username}</Typography>
+
+                                        </Button>
+                                        {/* <IconButton
                                             size="large"
                                             aria-label="Profile"
                                             aria-haspopup="true"
@@ -168,11 +182,11 @@ export const Navbar = () => {
                                             {/* <Avatar  {...stringAvatar(currentUser?.username)}>
 
                                                 {/* {currentUser?.Profile_pic ? currentUser.Profile_pic : currentUser?.username.charAt(0)} 
-                                            </Avatar> */}
+                                            </Avatar> 
                                             <Avatar src={currentUser?.Profile_pic} alt="Username" {...stringAvatar(currentUser?.username)} />
 
                                             <Typography sx={{ ml: 1, display: { xs: 'none', md: 'block' } }}>{currentUser?.username}</Typography>
-                                        </IconButton>
+                                        </IconButton> */}
                                         <Menu
                                             sx={{ mt: '45px' }}
                                             id="menu-appbar"
