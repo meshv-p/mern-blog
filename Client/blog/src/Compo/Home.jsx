@@ -6,6 +6,7 @@ import blogContext from '../Context/BlogContext';
 import { Blog } from './Blog';
 import { Spinner } from './Spinner';
 import InfiniteScroll from 'react-infinite-scroll-component';
+import { Alert, AlertBar } from './Alert';
 
 export const Home = () => {
 
@@ -14,7 +15,8 @@ export const Home = () => {
     const [pageNo, setPageNo] = useState(1)
     const [totalPage, setTotalPage] = useState(null)
     const context = useContext(blogContext)
-    let { theme, url } = context;
+    const [open, setOpen] = useState(false)
+    let { theme, url, progress, setProgress } = context;
     const darkTheme = createTheme({
         palette: {
             mode: theme ? 'light' : 'dark',
@@ -25,28 +27,37 @@ export const Home = () => {
     });
 
     useEffect(() => {
+        setOpen(true)
         setIsLoading(true)
         fetchData()
+        // setOpen(false)
+        console.log(navigator.onLine ? 'you are online' : 'you are offline')
 
     }, [])
 
     const fetchData = () => {
-        // fetch(`${url}/api/v1/blogs&page=${pageNo}`).then(res => res.json()).then(data => {
-        fetch(`${url}/api/v1/blogs`).then(res => res.json()).then(data => {
+        setProgress(10)
+        fetch(`${url}/api/v1/blogs/?page=${pageNo}`).then(res => res.json()).then(data => {
+            // fetch(`${url}/api/v1/blogs`).then(res => res.json()).then(data => {
             setAllBlogs(allBlogs?.concat(data.allBlogs))
-            // setTotalPage(data.length)
+            setTotalPage(data.length)
             setIsLoading(false);
+            setOpen(false)
         })
+        setProgress(100)
         setPageNo(pageNo + 1)
     }
 
 
 
-    return (
-        <div>
-            <ThemeProvider theme={darkTheme}>
 
-                <Container sx={{ mt: 2 }}>
+    return (
+        <div >
+
+            <ThemeProvider theme={darkTheme}>
+                <AlertBar open={open} msg="Loading..." type='info' />
+
+                <Container sx={{ pt: 2 }}>
                     <CssBaseline />
                     {
                         isLoading && <Spinner />
@@ -55,19 +66,10 @@ export const Home = () => {
                         allBlogs &&
 
                         <InfiniteScroll
-                            dataLength={totalPage} //This is important field to render the next data
+                            dataLength={allBlogs.length} //This is important field to render the next data
                             next={fetchData}
-                            hasMore={true}
+                            hasMore={allBlogs.length !== totalPage}
                             loader={<Spinner />}
-                            endMessage={
-                                <p style={{ textAlign: 'center' }}>
-                                    <b>Yay! You have seen it all</b>
-                                </p>
-                            }
-                            // below props only if you need pull down functionality
-                            // refreshFunction={this.refresh}
-                            // pullDownToRefresh
-                            // pullDownToRefreshThreshold={50}
                             pullDownToRefreshContent={
                                 <h3 style={{ textAlign: 'center' }}>&#8595; Pull down to refresh</h3>
                             }
@@ -77,7 +79,7 @@ export const Home = () => {
                         >
 
                             {allBlogs.map(blog => (
-                                <Blog blog={blog} key={blog._id} />
+                                <Blog blog={blog} key={blog._id} theme={theme} />
                             ))}
                         </InfiniteScroll>
                     }

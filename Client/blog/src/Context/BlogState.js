@@ -2,8 +2,10 @@ import React, { useState, useEffect } from "react";
 import blogContext from "./BlogContext";
 
 export const BlogState = (props) => {
-  const [theme, setTheme] = useState(true);
+  const [theme, setTheme] = useState(false);
   const [loggedinUser, setLoggedinUser] = useState();
+  const [progress, setProgress] = useState(0);
+
   let url = process.env.REACT_APP_URL;
 
   useEffect(() => {
@@ -27,7 +29,15 @@ export const BlogState = (props) => {
 
   return (
     <blogContext.Provider
-      value={{ url, theme, toggleTheme, loggedinUser, setLoggedinUser }}
+      value={{
+        url,
+        theme,
+        toggleTheme,
+        loggedinUser,
+        setLoggedinUser,
+        progress,
+        setProgress,
+      }}
     >
       {props.children}
     </blogContext.Provider>

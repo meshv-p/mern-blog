@@ -8,16 +8,20 @@ import { Link, useNavigate, useParams } from 'react-router-dom'
 import blogContext from '../Context/BlogContext';
 import { Spinner } from './Spinner';
 import FavoriteIcon from '@mui/icons-material/Favorite';
+import InfiniteScroll from 'react-infinite-scroll-component';
 
 
 export const BlogDetail = () => {
     const [blog, setBlog] = useState(null)
-    const [comment, setComment] = useState(null)
+    const [comment, setComment] = useState([])
     const [isLoading, setIsLoading] = useState(false)
     const [commentByUser, setCommentByUser] = useState("")
+    const [page, setPage] = useState(1)
+    const [totalPage, setTotalPage] = useState(null)
+
     let { blogId } = useParams()
     const context = useContext(blogContext)
-    let { theme, url, loggedinUser } = context;
+    let { theme, url, loggedinUser, progress, setProgress } = context;
 
     let history = useNavigate()
 
@@ -33,30 +37,35 @@ export const BlogDetail = () => {
 
     useEffect(() => {
         // console.log(loggedinUser?.authToken, url);
+        setProgress(10)
         setIsLoading(true)
         fetch(`${url}/api/v1/blog/${blogId}`).then(res => res.json()).then(data => {
             setIsLoading(false);
             setBlog(data.findBlog[0])
+            setProgress(100)
         })
-
         getComment()
 
     }, [])
 
 
-    const getComment = () => {
-
-        fetch(`${url}/api/v1/comment/${blogId}`).then(res => res.json()).then(data => {
-            // data.re
-            setComment(data);
+    const getComment = (pageNo) => {
+        // console.log(page);
+        fetch(`${url}/api/v1/comment/${blogId}/?page=${pageNo || page}`).then(res => res.json()).then(data => {
+            setComment(comment.concat(data.commentByBlog));
+            setTotalPage(data.length)
             // console.log(data);
+            setPage(page + 1)
         })
+        console.log(page);
     }
 
 
 
 
     const handleSubmit = (e) => {
+        // setPage(1)
+
         e.preventDefault()
         // console.log(commentByUser)
         fetch(`${url}/api/v1/comment/${blogId}`, {
@@ -66,9 +75,19 @@ export const BlogDetail = () => {
                 'Content-Type': 'application/json',
                 'Authorization': `${loggedinUser.authToken}`
             }
-        }).then(res => res.json()).then(data => {
+        }).then(res => res.json()).then((data) => {
             setCommentByUser("");
-            getComment()
+            console.log(comment.unshift(data.newComment))
+            // setComment(comment.concat(data.newComment).reverse())
+            console.log(comment);
+            // console.log(page)
+            // console.log('before');
+            // setTimeout(() => {
+            // console.log('rerender');
+            // getComment()
+            history(`/blog/${blogId}`)
+
+            // }, 1000);
         })
         // console.log(comment)
     }
@@ -110,17 +129,18 @@ export const BlogDetail = () => {
     }
 
     return (
-        <div>
+        <div  >
             <ThemeProvider theme={darkTheme}>
 
                 <CssBaseline />
-                <Container sx={{ my: 2 }}>
+                <Container sx={{ py: 2 }}>
                     {
                         isLoading && <Spinner />
                     }
                     {
                         !isLoading && blog &&
-                        <Card>
+                        // <Card sx={{ background: '#bbdefb' || '#e3f2fd' }}>
+                        <Card >
                             <Typography sx={{ m: 1 }}>
                                 <Button variant="outlined" onClick={() => history('/')} color="inherit" startIcon={<ArrowBackIosNewIcon />}>
                                     Go back
@@ -205,35 +225,52 @@ export const BlogDetail = () => {
 
                                 {/* comment part */}
                                 {
-                                    comment?.length != 0 ?
-                                        comment?.map(c => (
-                                            <Paper variant="outlined" sx={{ m: 2 }} key={c._id}>
-                                                <Card sx={{ m: 2 }}>
-                                                    <CardHeader
-                                                        avatar={
-                                                            <Avatar src={c.user[0]?.Profile_pic} alt="Username" {...stringAvatar(c.user[0]?.username ? c.user[0].username : 'User')} />
+                                    comment.length != 0 ?
 
-                                                        }
-                                                        title={c.user[0].username}
-                                                        subheader={new Date(c.createdAt).toLocaleString()}
-                                                        action={
-                                                            <IconButton aria-label="settings">
-                                                                <MoreVertIcon />
-                                                            </IconButton>
-                                                        }
-                                                    />
-                                                    <CardContent>
-                                                        <Typography>{c.title}</Typography>
-                                                    </CardContent>
-                                                    <CardActions>
-                                                        <Button variant="outlined" color='success' startIcon={<FavoriteIcon />}>
-                                                            9 Like
-                                                        </Button>
+                                        <InfiniteScroll
+                                            dataLength={comment?.length} //This is important field to render the next data
+                                            next={getComment}
+                                            hasMore={(comment?.length) !== totalPage}
+                                            // {console.log(comment,totalPage)}
+                                            loader={<Spinner />}
+                                            pullDownToRefreshContent={
+                                                <h3 style={{ textAlign: 'center' }}>&#8595; Pull down to refresh</h3>
+                                            }
+                                            releaseToRefreshContent={
+                                                <h3 style={{ textAlign: 'center' }}>&#8593; Release to refresh</h3>
+                                            }
+                                        >
 
-                                                    </CardActions>
-                                                </Card>
-                                            </Paper>
-                                        ))
+                                            {comment?.map(c => (
+                                                <Paper variant="outlined" sx={{ m: 2 }} key={c._id}>
+                                                    <Card>
+                                                        <CardHeader
+                                                            avatar={
+                                                                <Avatar src={c.user[0]?.Profile_pic || loggedinUser?.profile.Profile_pic} alt="Username" {...stringAvatar(c.user[0]?.username ? c.user[0].username : loggedinUser.profile.username)} />
+
+                                                            }
+                                                            title={c.user[0].username ? c.user[0].username : loggedinUser.profile.username}
+                                                            subheader={c.createdAt ? new Date(c?.createdAt)?.toLocaleString() : new Date().toLocaleString()}
+                                                            action={
+                                                                <IconButton aria-label="settings">
+                                                                    <MoreVertIcon />
+                                                                </IconButton>
+                                                            }
+                                                        />
+                                                        <CardContent>
+                                                            <Typography>{c.title}</Typography>
+                                                        </CardContent>
+                                                        <CardActions>
+                                                            <Button variant="outlined" color='success' startIcon={<FavoriteIcon />}>
+                                                                9 Like
+                                                            </Button>
+
+                                                        </CardActions>
+                                                    </Card>
+                                                </Paper>
+                                            ))}
+
+                                        </InfiniteScroll>
                                         :
                                         <Typography sx={{ m: 2 }} color="GrayText">No comments yet.Be first commenter on this post...</Typography>
 

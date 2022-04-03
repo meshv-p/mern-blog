@@ -14,7 +14,7 @@ function App() {
   return (
     <BlogState>
       <BrowserRouter>
-        <div className="App">
+        <div className="App" style={{ paddingBottom: 50 }}>
           <Navbar />
           <Routes>
             <Route path="/" element={<Home />} />
