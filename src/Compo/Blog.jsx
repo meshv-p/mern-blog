@@ -101,7 +101,7 @@ export const Blog = ({ blog, theme }) => {
 
                 <CardHeader
                     sx={{ ":hover": { background: !theme ? '#424242' : "#d9d9d9" } }}
-                    onClick={e => openProfile(e)} data-key={blog.user[0].user}
+                    onClick={e => openProfile(e)} data-key={blog?.user[0]?.user}
                     avatar={
                         <Avatar src={blog.user[0]?.Profile_pic} alt="Username" {...stringAvatar(blog.user[0]?.username ? blog.user[0].username : 'Admin')} />
                     }
