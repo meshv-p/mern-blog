@@ -114,7 +114,7 @@ export const Blog = ({ blog, theme }) => {
                         {blog.title}
                     </Typography>
                     <Typography variant='body2' color="text.secondary">
-                        {blog.desc.slice(0,20)}
+                        {blog.desc.slice(0,440)}
                     </Typography>
                 </CardContent>
                 <CardActions>
