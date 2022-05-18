@@ -7,7 +7,7 @@ import { Blog } from './Blog';
 import { Spinner } from './Spinner';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import { Alert, AlertBar } from './Alert';
-
+// import { io } from 'socket.io-client'
 export const Home = () => {
 
     const [allBlogs, setAllBlogs] = useState([])
@@ -16,7 +16,7 @@ export const Home = () => {
     const [totalPage, setTotalPage] = useState(null)
     const context = useContext(blogContext)
     const [open, setOpen] = useState(false)
-    let { theme, url, progress, setProgress } = context;
+    let { theme, url, socketState: socket, setProgress, loggedinUser } = context;
     const darkTheme = createTheme({
         palette: {
             mode: theme ? 'light' : 'dark',
@@ -27,6 +27,12 @@ export const Home = () => {
     });
 
     useEffect(() => {
+        // socket.on('welcome', sms => {
+        //     console.log(sms)
+        // })
+        // socket.emit('welcome', 'meshv')
+
+        // console.log(socket)
         setOpen(true)
         setIsLoading(true)
         fetchData()
@@ -34,6 +40,28 @@ export const Home = () => {
         console.log(navigator.onLine ? 'you are online' : 'you are offline')
 
     }, [])
+
+
+    useEffect(() => {
+
+        if (loggedinUser) {
+            // console.log('loggin')
+
+            socket.on('connect', () => {
+                console.log('connect', socket.id)
+                socket.emit('online', {
+                    user: loggedinUser?.profile,
+                    socket_user_id: socket.id
+                })
+            })
+        }
+        socket.on("disconnect", () => {
+            // console.log(socket.id, 'offline'); // undefined
+        });
+
+
+    }, [loggedinUser, socket])
+
 
     const fetchData = () => {
         setProgress(10)

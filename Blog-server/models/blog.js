@@ -16,6 +16,19 @@ const BlogSchema = new mongoose.Schema(
       ref: "User",
     },
     pic: String,
+    like: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+        default: [],
+        // unique: true,
+      },
+    ],
+    totalLike: { type: Number, default: 0 },
+    hasUserLiked: {
+      type: Boolean,
+      default: false,
+    },
   },
   { timestamps: true }
 );

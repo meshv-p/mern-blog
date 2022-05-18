@@ -9,6 +9,8 @@ import blogContext from '../Context/BlogContext';
 import { Spinner } from './Spinner';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import InfiniteScroll from 'react-infinite-scroll-component';
+import { useFetch } from '../hooks/useFetch';
+import { UserAvatar } from './UserAvatar';
 
 
 export const BlogDetail = () => {
@@ -22,6 +24,11 @@ export const BlogDetail = () => {
     let { blogId } = useParams()
     const context = useContext(blogContext)
     let { theme, url, loggedinUser, progress, setProgress } = context;
+    // let { data: { blog }, isLoading, error } = useFetch(`${url}/api/v1/blog/${blogId}`)
+    // if (data !== null) {
+
+    //     let { findBlog: blog } = data
+    // }
 
     let history = useNavigate()
 
@@ -46,6 +53,9 @@ export const BlogDetail = () => {
         })
         getComment()
 
+        // let { findBlog: [a] } = data ?? ''
+        // console.log(data ?? data, a, error, isLoading)
+        // console.log(blog);
     }, [])
 
 
@@ -119,14 +129,7 @@ export const BlogDetail = () => {
         return `hsl(${stringUniqueHash}, 34%, 25%)`;
     }
 
-    function stringAvatar(name) {
-        return {
-            sx: {
-                bgcolor: stringToColor(name),
-            },
-            children: name.charAt(0),
-        };
-    }
+
 
     return (
         <div  >
@@ -137,6 +140,9 @@ export const BlogDetail = () => {
                     {
                         isLoading && <Spinner />
                     }
+                    {/* {
+                        error && <div>{error}</div>
+                    } */}
                     {
                         !isLoading && blog &&
                         // <Card sx={{ background: '#bbdefb' || '#e3f2fd' }}>
@@ -148,7 +154,7 @@ export const BlogDetail = () => {
                             </Typography>
                             <CardHeader
                                 avatar={
-                                    <Avatar src={blog.user[0]?.Profile_pic} alt="Username" {...stringAvatar(blog.user[0]?.username ? blog.user[0].username : 'Admin')} />
+                                    <UserAvatar src={blog.user[0]?.Profile_pic} name={blog.user[0]?.username ?? 'User'} />
 
                                 }
                                 title={
@@ -246,8 +252,7 @@ export const BlogDetail = () => {
                                                     <Card>
                                                         <CardHeader
                                                             avatar={
-                                                                <Avatar src={c.user[0]?.Profile_pic || loggedinUser?.profile.Profile_pic} alt="Username" {...stringAvatar(c.user[0]?.username ? c.user[0].username : loggedinUser.profile.username)} />
-
+                                                                <UserAvatar src={c.user[0]?.Profile_pic} name={c.user[0]?.username ?? 'User'} />
                                                             }
                                                             title={c.user[0].username ? c.user[0].username : loggedinUser.profile.username}
                                                             subheader={c.createdAt ? new Date(c?.createdAt)?.toLocaleString() : new Date().toLocaleString()}

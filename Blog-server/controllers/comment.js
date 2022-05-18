@@ -4,7 +4,7 @@ const comment = require("../models/comment");
 
 const getComment = async (req, res) => {
   let { _id } = req.params;
-
+  // console.log(page, "1");
   if (!_id)
     return res.json({
       message: "Please provide blog id...",
@@ -36,7 +36,59 @@ const getComment = async (req, res) => {
 
     // console.log(commentByBlog);
 
-    res.json(commentByBlog);
+    res.json({ commentByBlog });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+const getCommentByPagi = async (req, res) => {
+  let { _id } = req.params;
+  let { page, limit } = req.query;
+  // console.log(page, limit);
+  let Page = Number(page) || 1;
+  let Limit = Number(limit) || 4;
+
+  if (!_id)
+    return res.json({
+      message: "Please provide blog id...",
+    });
+
+  try {
+    let findBlog = await blog.findById(_id);
+    // let commentByBlog = await comment.find({ blog: findBlog._id });
+    let commentByBlog = await comment.aggregate([
+      {
+        $match: {
+          blog: new mongoose.Types.ObjectId(findBlog._id),
+        },
+      },
+      {
+        $sort: {
+          createdAt: -1,
+        },
+      },
+      {
+        $lookup: {
+          from: "profiles",
+          localField: "user",
+          foreignField: "user",
+          as: "user",
+        },
+      },
+      {
+        $skip: (Page - 1) * Limit,
+      },
+      {
+        $limit: Limit,
+      },
+    ]);
+    let length = await comment.countDocuments({
+      blog: new mongoose.Types.ObjectId(findBlog._id),
+    });
+    // console.log(commentByBlog);
+
+    res.json({ commentByBlog, length });
   } catch (error) {
     console.log(error);
   }
@@ -92,5 +144,6 @@ const createComment = async (req, res) => {
 
 module.exports = {
   getComment,
+  getCommentByPagi,
   createComment,
 };

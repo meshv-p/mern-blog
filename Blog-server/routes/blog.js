@@ -8,17 +8,19 @@ const {
   deleteBlog,
   findBlog,
   updateBlog,
+  getAllBlogsByPagi,
+  makeLikeToBlog,
 } = require("../controllers/blog");
 const { fetchUser, checkBlogOwner } = require("../middleware/fetchUser");
 
 router.route("/search/").get(findBlog);
 // router.use([fetchUser]);
+router.get("/blogs/", getAllBlogsByPagi);
 router.get("/blogs", getAllBlogs);
 router.post("/blogs", fetchUser, createblog);
-// router.route("/blogs").get(getAllBlogs).post(createblog);
-// router.route('/:id').get(getTask).patch(updateTask).delete(deleteTask)
 router.route("/blog/:_id").get(getOneBlog);
+router.patch("/blog/like/:_id", fetchUser, makeLikeToBlog);
 router.use([fetchUser, checkBlogOwner]);
 router.route("/blog/:_id").delete(deleteBlog).patch(updateBlog);
-// router.route
+
 module.exports = router;

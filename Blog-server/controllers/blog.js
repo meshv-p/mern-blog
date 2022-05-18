@@ -4,8 +4,8 @@ const { User } = require("../models/user");
 // var jwt = require("jsonwebtoken");
 
 const getAllBlogs = async (req, res) => {
-  // let { pgNo, pgSize } = req.params;
-  // console.log(pgNo);
+  let q = req.params;
+  console.log(q, "in 1");
   let page = 1;
   let limit = 4;
   try {
@@ -29,6 +29,58 @@ const getAllBlogs = async (req, res) => {
 
     res.json({ allBlogs, length });
   } catch (error) {
+    res.json({ error });
+  }
+};
+
+const getAllBlogsByPagi = async (req, res) => {
+  let { page, limit } = req.query;
+  let Page = Number(page) || 1;
+  let Limit = Number(limit) || 4;
+  try {
+    //For like
+    // let findBlog = await blog.find({
+    //   _id: "6245c8f199b2268d8bccc487",
+    //   like: {
+    //     $elemMatch: {
+    //       $eq: "6245c68299b2268d8bccc47d",
+    //     },
+    //   },
+    // });
+    // let hasUserLiked = false;
+    // if (findBlog.length !== 0) {
+    //   hasUserLiked = true;
+    // }
+    // console.log(findBlog.length);
+
+    let allBlogs = await blog.aggregate([
+      {
+        $lookup: {
+          from: "profiles",
+          localField: "user",
+          foreignField: "user",
+          as: "user",
+        },
+      },
+      {
+        $skip: (Page - 1) * Limit,
+      },
+      {
+        $limit: Limit,
+      },
+      // {
+      //   $set: {
+      //     hasUserLiked: hasUserLiked,
+      //   },
+      // },
+    ]);
+    allBlogs.hasUserLiked = false;
+
+    let length = await blog.countDocuments({});
+
+    res.json({ allBlogs, length });
+  } catch (error) {
+    console.log(error);
     res.json({ error });
   }
 };
@@ -122,29 +174,47 @@ const findBlog = async (req, res) => {
   /**
    * Find the blog by title OR tag
    */
-  let { search } = req.query;
-  console.log(search);
+  let { title } = req.query;
+  console.log(typeof title);
   try {
-    let result = await blog.aggregate([
-      {
-        $search: {
-          index: "title",
-          text: {
-            query: search,
-            path: {
-              wildcard: "*",
-            },
+    // let result = await blog.aggregate([
+    //   {
+    //     $search: {
+    //       index: "title",
+    //       text: {
+    //         query: title,
+    //         path: {
+    //           wildcard: "*",
+    //         },
+    //       },
+    //     },
+    //   },
+    // ]);
+
+    let result = await blog.find({
+      $or: [
+        {
+          title: {
+            $regex: new RegExp(title, "i"),
           },
         },
-      },
-    ]);
+        {
+          desc: {
+            $regex: new RegExp(title, "i"),
+          },
+        },
+      ],
+    });
+
+    console.log(result);
     if (result.length == 0)
       return res.json({
         message: "No result found",
       });
-    console.log(result);
+    // console.log(result);
     res.json({ result });
   } catch (error) {
+    console.log(error);
     return res.json({
       message: "No result found",
     });
@@ -168,11 +238,62 @@ const updateBlog = async (req, res) => {
   }
 };
 
+const makeLikeToBlog = async (req, res) => {
+  let { _id } = req.params;
+  let user = req.user;
+  // console.log(user);
+  try {
+    let findBlog = await blog.find({
+      _id,
+      like: {
+        $elemMatch: {
+          $eq: user.id,
+        },
+      },
+    });
+    let hasUserLiked = false;
+    // console.log(findBlog.length);
+    let newBlog = await blog.findById(_id);
+    if (findBlog.length !== 0) {
+      newBlog.like.pull(user.id);
+      newBlog.totalLike -= 1;
+      newBlog.save();
+      // User liked
+      hasUserLiked = true;
+    } else {
+      newBlog.like.push(user.id);
+      newBlog.totalLike += 1;
+
+      newBlog.save();
+    }
+
+    // let hasUserLiked = await blog.aggregate([
+    //   {
+    //     $match: { _id: _id },
+    //   },
+    //   {
+    //     $addFields: {
+    //       has: {
+    //         $in: [mongoose.Types.ObjectId(user.id), findBlog.like],
+    //       },
+    //     },
+    //   },
+    // ]);
+
+    res.json({ newBlog, hasUserLiked });
+  } catch (error) {
+    console.log(error);
+    res.json(error);
+  }
+};
+
 module.exports = {
   getAllBlogs,
+  getAllBlogsByPagi,
   createblog,
   getOneBlog,
   deleteBlog,
   findBlog,
   updateBlog,
+  makeLikeToBlog,
 };
