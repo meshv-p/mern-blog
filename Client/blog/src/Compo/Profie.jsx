@@ -6,6 +6,7 @@ import { ThemeProvider, createTheme } from '@mui/material/styles';
 import blogContext from '../Context/BlogContext';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import { useFetch } from '../hooks/useFetch';
+import { useSelector } from 'react-redux';
 
 export const Profie = () => {
     const context = useContext(blogContext);
@@ -15,15 +16,16 @@ export const Profie = () => {
     let history = useNavigate()
     let { userId } = useParams()
     let { data: profile, isLoading, error } = useFetch(`${url}/api/v1/users/${userId}`, 'oneUser')
+    let user = useSelector(state => state.user.user)
 
     useEffect(() => {
-        console.log(profile );
+        console.log(profile);
         profileSet()
         setFollow((profile?.followers)?.includes(loggedinUser?.profile.user))
         // eslint-disable-next-line
     }, [])
 
-// atlic,
+    // atlic,
 
 
 
@@ -82,7 +84,7 @@ export const Profie = () => {
 
 
                         {
-                            (profile) !== null &&
+                            user &&
 
 
                             <Card>

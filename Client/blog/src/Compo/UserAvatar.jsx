@@ -1,7 +1,7 @@
 import { Avatar } from '@mui/material';
 import React from 'react'
 
-export const UserAvatar = ({ src: url, name = '' }) => {
+export const UserAvatar = ({ src: url = "", name = '' }) => {
 
     function stringToColor(string) {
         let hash = 0;

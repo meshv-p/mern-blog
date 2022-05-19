@@ -96,9 +96,9 @@ export const Blog = ({ blog, theme }) => {
                     sx={{ ":hover": { background: !theme ? '#424242' : "#d9d9d9" } }}
                     onClick={e => openProfile(e)} data-key={blog?.user[0]?.user}
                     avatar={
-                        <UserAvatar src={blog.user[0]?.Profile_pic} name={blog.user[0]?.username ?? 'User'} />
+                        <UserAvatar src={blog?.user[0]?.Profile_pic} name={blog?.user[0]?.username ?? 'User'} />
                     }
-                    title={blog.user[0]?.username}
+                    title={blog?.user[0]?.username}
                     // subheader="Today,a min ago"
                     subheader={new Date(blog.createdAt).toLocaleString()}
                 />

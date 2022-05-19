@@ -11,6 +11,10 @@ import FavoriteIcon from '@mui/icons-material/Favorite';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import { useFetch } from '../hooks/useFetch';
 import { UserAvatar } from './UserAvatar';
+import { useGetBlogQuery, useGetBlogsQuery } from '../features/apiSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { getBlogById } from '../features/blogStateSlice';
+import { useSelect } from '@mui/base';
 
 
 export const BlogDetail = () => {
@@ -24,6 +28,16 @@ export const BlogDetail = () => {
     let { blogId } = useParams()
     const context = useContext(blogContext)
     let { theme, url, loggedinUser, progress, setProgress } = context;
+
+
+    let {
+        data,
+        isLoading: load,
+        isSuccess,
+        isError,
+        error } = useGetBlogQuery(blogId);
+
+
     // let { data: { blog }, isLoading, error } = useFetch(`${url}/api/v1/blog/${blogId}`)
     // if (data !== null) {
 
@@ -31,7 +45,9 @@ export const BlogDetail = () => {
     // }
 
     let history = useNavigate()
-
+    let dispatch = useDispatch()
+    // let data = useSelector(state => state.blog.blogById)
+    // let load = useSelector(state => state.blog.load)
 
     const darkTheme = createTheme({
         palette: {
@@ -43,20 +59,30 @@ export const BlogDetail = () => {
     });
 
     useEffect(() => {
-        // console.log(loggedinUser?.authToken, url);
+        console.log('in blogdetails', blogId);
         setProgress(10)
         setIsLoading(true)
-        fetch(`${url}/api/v1/blog/${blogId}`).then(res => res.json()).then(data => {
-            setIsLoading(false);
-            setBlog(data.findBlog[0])
-            setProgress(100)
-        })
-        getComment()
+        // fetch(`${url}/api/v1/blog/${blogId}`).then(res => res.json()).then(data => {
+        //     setIsLoading(false);
+        //     setBlog(data)
+        //     setProgress(100)
+        // })
+        // dispatch(getBlogById(blogId))
+        // getComment()
 
         // let { findBlog: [a] } = data ?? ''
         // console.log(data ?? data, a, error, isLoading)
-        // console.log(blog);
+        console.log(data);
     }, [])
+
+
+    useEffect(() => {
+
+        if (isSuccess) {
+            setProgress(100)
+        }
+    }, [isSuccess, setProgress])
+
 
 
     const getComment = (pageNo) => {
@@ -67,9 +93,16 @@ export const BlogDetail = () => {
             // console.log(data);
             setPage(page + 1)
         })
-        console.log(page);
+        // console.log(page);
     }
 
+    useEffect(() => {
+        console.log('run 1 ')
+        if (!load) {
+            setIsLoading(false)
+            console.log(data);
+        }
+    }, [dispatch, load])
 
 
 
@@ -138,13 +171,13 @@ export const BlogDetail = () => {
                 <CssBaseline />
                 <Container sx={{ py: 2 }}>
                     {
-                        isLoading && <Spinner />
+                        load && <Spinner />
                     }
                     {/* {
                         error && <div>{error}</div>
                     } */}
                     {
-                        !isLoading && blog &&
+                        data &&
                         // <Card sx={{ background: '#bbdefb' || '#e3f2fd' }}>
                         <Card >
                             <Typography sx={{ m: 1 }}>
@@ -154,15 +187,15 @@ export const BlogDetail = () => {
                             </Typography>
                             <CardHeader
                                 avatar={
-                                    <UserAvatar src={blog.user[0]?.Profile_pic} name={blog.user[0]?.username ?? 'User'} />
+                                    <UserAvatar src={data.findBlog[0]?.user[0]?.Profile_pic} name={data.findBlog[0]?.user[0]?.username ?? 'User'} />
 
                                 }
                                 title={
-                                    <Link to={`/user/${blog.user[0]?.user}`}>
-                                        {blog.user[0]?.username}
+                                    <Link to={`/user/${data.findBlog[0].user[0]?.user}`}>
+                                        {data.findBlog[0]?.user[0]?.username}
                                     </Link>
                                 }
-                                subheader={new Date(blog.createdAt).toLocaleString()}
+                                subheader={new Date(data.findBlog[0]?.createdAt).toLocaleString()}
                                 action={
                                     <IconButton aria-label="settings">
                                         <MoreVertIcon />
@@ -179,11 +212,11 @@ export const BlogDetail = () => {
                             />
                             <CardContent >
                                 <Typography variant='h4'>
-                                    {blog.title}
+                                    {data.findBlog[0].title}
                                     {/* <Typography>#tag</Typography> */}
                                     <Stack direction="row" gap={2} sx={{ my: 1 }}>
                                         {
-                                            blog.tag.map(tag => (
+                                            data.findBlog[0].tag.map(tag => (
                                                 <React.Fragment key={tag}>
                                                     <Typography component="span" sx={{ cursor: 'pointer', padding: .8, border: 1, borderColor: stringToColor(tag), borderRadius: 1, ":hover": { background: stringToRgba(tag) } }}>
                                                         <span  ># </span>
@@ -196,7 +229,7 @@ export const BlogDetail = () => {
                                     {/* {blog.title} */}
                                 </Typography>
                                 <Typography variant='body2' sx={{ my: 2 }} color="text.secondary">
-                                    {blog.desc}
+                                    {data.findBlog[0].desc}
                                     {/* {blog.desc} */}
                                 </Typography>
 
@@ -231,7 +264,7 @@ export const BlogDetail = () => {
 
                                 {/* comment part */}
                                 {
-                                    comment.length != 0 ?
+                                    comment.length !== 0 ?
 
                                         <InfiniteScroll
                                             dataLength={comment?.length} //This is important field to render the next data

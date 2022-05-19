@@ -13,22 +13,23 @@ import blogContext from '../Context/BlogContext';
 import LoadingBar from 'react-top-loading-bar'
 import { UserAvatar } from './UserAvatar';
 import ChatBubble from '@mui/icons-material/ChatBubble';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { logout } from '../features/userSlice';
 
 
 export const Navbar = () => {
     const context = useContext(blogContext);
     let { theme, toggleTheme, loggedinUser, progress, userNotification } = context;
     const [anchorElUser, setAnchorElUser] = React.useState(null);
-    const [currentUser, setCurrentUser] = useState(JSON.parse(localStorage.getItem('user'))?.profile)
+    // const [user, setuser] = useState(JSON.parse(localStorage.getItem('user'))?.profile)
 
     let user = useSelector(state => state.user.user)
-
+    let dispatch = useDispatch()
     let history = useNavigate()
 
     useEffect(() => {
         console.log(user)
-        setCurrentUser(loggedinUser?.profile);
+        // setuser(loggedinUser?.profile);
         // console.log(loggedinUser.profile.user)
     }, [loggedinUser])
 
@@ -149,7 +150,7 @@ export const Navbar = () => {
 
                             {/* user information after login */}
                             {
-                                currentUser ?
+                                user ?
                                     <>
                                         <Button variant='text'
                                             color='inherit'
@@ -157,9 +158,9 @@ export const Navbar = () => {
                                             onClick={(e) => setAnchorElUser(e.currentTarget)}
 
                                             startIcon={
-                                                <UserAvatar src={currentUser?.Profile_pic} name={currentUser?.username ?? 'User'} />
+                                                <UserAvatar src={user?.Profile_pic} name={user?.username ?? 'User'} />
                                             }>
-                                            <Typography sx={{ ml: 1, display: { xs: 'none', md: 'block' } }}>{currentUser?.username}</Typography>
+                                            <Typography sx={{ ml: 1, display: { xs: 'none', md: 'block' } }}>{user?.username}</Typography>
 
                                         </Button>
 
@@ -193,7 +194,12 @@ export const Navbar = () => {
                                                     <Typography>Create blog</Typography>
                                                 </Link>
                                             </MenuItem>
-                                            <MenuItem onClick={() => { localStorage.removeItem('user'); setCurrentUser(null); setAnchorElUser(null) }}>
+                                            <MenuItem onClick={() => {
+                                                localStorage.removeItem('user');
+                                                // setuser(null);
+                                                dispatch(logout())
+                                                setAnchorElUser(null)
+                                            }}>
                                                 <Typography>Logout</Typography>
                                             </MenuItem>
                                             {/* <MenuItem>

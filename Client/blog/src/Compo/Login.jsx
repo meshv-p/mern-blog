@@ -9,12 +9,15 @@ import blogContext from '../Context/BlogContext';
 import { Link, useNavigate } from 'react-router-dom';
 import CloseIcon from '@mui/icons-material/Close';
 import MuiAlert from '@mui/material/Alert';
+import { useDispatch } from 'react-redux';
+import { login } from '../features/userSlice';
 
 
 export const Login = () => {
     let history = useNavigate()
     const context = useContext(blogContext)
     let { theme, url, setLoggedinUser } = context;
+    let dispatch = useDispatch()
 
     const [loginDetails, setLoginDetails] = useState({ username: "", password: "" })
     const [loginError, setLoginError] = useState(null)
@@ -41,6 +44,8 @@ export const Login = () => {
         let status = await res.json()
         if (res.status === 200) {
             setLoggedinUser(status)
+            dispatch(login(status?.profile))
+
             setLoginError({ type: "success", msg: "Logged in success." })
             localStorage.setItem('user', JSON.stringify(status))
             history('/')
