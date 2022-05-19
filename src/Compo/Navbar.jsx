@@ -11,18 +11,25 @@ import Brightness4Icon from '@mui/icons-material/Brightness4';
 import { Link, useNavigate } from 'react-router-dom';
 import blogContext from '../Context/BlogContext';
 import LoadingBar from 'react-top-loading-bar'
+import { UserAvatar } from './UserAvatar';
+import ChatBubble from '@mui/icons-material/ChatBubble';
+import { useDispatch, useSelector } from 'react-redux';
+import { logout } from '../features/userSlice';
 
 
 export const Navbar = () => {
     const context = useContext(blogContext);
-    let { theme, toggleTheme, loggedinUser, progress } = context;
+    let { theme, toggleTheme, loggedinUser, progress, userNotification } = context;
     const [anchorElUser, setAnchorElUser] = React.useState(null);
-    const [currentUser, setCurrentUser] = useState(JSON.parse(localStorage.getItem('user'))?.profile)
+    // const [user, setuser] = useState(JSON.parse(localStorage.getItem('user'))?.profile)
 
+    let user = useSelector(state => state.user.user)
+    let dispatch = useDispatch()
     let history = useNavigate()
 
     useEffect(() => {
-        setCurrentUser(loggedinUser?.profile);
+        console.log(user)
+        // setuser(loggedinUser?.profile);
         // console.log(loggedinUser.profile.user)
     }, [loggedinUser])
 
@@ -78,33 +85,7 @@ export const Navbar = () => {
     });
 
 
-    function stringToColor(string) {
-        let hash = 0;
-        let i;
 
-        /* eslint-disable no-bitwise */
-        for (i = 0; i < string.length; i += 1) {
-            hash = string.charCodeAt(i) + ((hash << 5) - hash);
-        }
-
-        let color = '#';
-
-        for (i = 0; i < 3; i += 1) {
-            const value = (hash >> (i * 8)) & 0xff;
-            color += `00${value.toString(16)}`.slice(-2);
-        }
-        // console.log(color);
-        /* eslint-enable no-bitwise */
-        return color;
-    }
-    function stringAvatar(name) {
-        return {
-            sx: {
-                bgcolor: stringToColor(name),
-            },
-            children: name.charAt(0),
-        };
-    }
 
     return (
         <div>
@@ -135,6 +116,17 @@ export const Navbar = () => {
                         <Box>
                             <IconButton
                                 sx={{ display: { xs: 'none', md: 'inline-flex' } }}
+                                onClick={() => history('/chat')}
+                                size="large"
+                                aria-label="Change theme"
+                                color="inherit"
+                            >
+
+                                <ChatBubble />
+
+                            </IconButton>
+                            <IconButton
+                                sx={{ display: { xs: 'none', md: 'inline-flex' } }}
                                 onClick={toggleTheme}
                                 size="large"
                                 aria-label="Change theme"
@@ -151,14 +143,14 @@ export const Navbar = () => {
                                 aria-label="show 17 new notifications"
                                 color="inherit"
                             >
-                                <Badge badgeContent={17} color="error">
+                                <Badge badgeContent={userNotification} color="error">
                                     <NotificationsIcon />
                                 </Badge>
                             </IconButton>
 
                             {/* user information after login */}
                             {
-                                currentUser ?
+                                user ?
                                     <>
                                         <Button variant='text'
                                             color='inherit'
@@ -166,27 +158,12 @@ export const Navbar = () => {
                                             onClick={(e) => setAnchorElUser(e.currentTarget)}
 
                                             startIcon={
-                                                <Avatar src={currentUser?.Profile_pic} alt="Username" {...stringAvatar(currentUser?.username)} />
-
+                                                <UserAvatar src={user?.Profile_pic} name={user?.username ?? 'User'} />
                                             }>
-                                            <Typography sx={{ ml: 1, display: { xs: 'none', md: 'block' } }}>{currentUser?.username}</Typography>
+                                            <Typography sx={{ ml: 1, display: { xs: 'none', md: 'block' } }}>{user?.username}</Typography>
 
                                         </Button>
-                                        {/* <IconButton
-                                            size="large"
-                                            aria-label="Profile"
-                                            aria-haspopup="true"
-                                            color="inherit"
-                                            onClick={(e) => setAnchorElUser(e.currentTarget)}
-                                        >
-                                            {/* <Avatar  {...stringAvatar(currentUser?.username)}>
 
-                                                {/* {currentUser?.Profile_pic ? currentUser.Profile_pic : currentUser?.username.charAt(0)} 
-                                            </Avatar> 
-                                            <Avatar src={currentUser?.Profile_pic} alt="Username" {...stringAvatar(currentUser?.username)} />
-
-                                            <Typography sx={{ ml: 1, display: { xs: 'none', md: 'block' } }}>{currentUser?.username}</Typography>
-                                        </IconButton> */}
                                         <Menu
                                             sx={{ mt: '45px' }}
                                             id="menu-appbar"
@@ -204,7 +181,11 @@ export const Navbar = () => {
                                             onClose={() => setAnchorElUser(null)}
                                         >
                                             <MenuItem onClick={() => setAnchorElUser(null)}>
-                                                <Link to={`/user/${loggedinUser?.profile?.user}`} >
+                                                <Link to={{
+                                                    pathname: `/user/${loggedinUser?.profile?.user}`,
+                                                    state: { name: 'meshv' }
+
+                                                }} >
                                                     <Typography>Profile</Typography>
                                                 </Link>
                                             </MenuItem>
@@ -213,7 +194,12 @@ export const Navbar = () => {
                                                     <Typography>Create blog</Typography>
                                                 </Link>
                                             </MenuItem>
-                                            <MenuItem onClick={() => { localStorage.removeItem('user'); setCurrentUser(null); setAnchorElUser(null) }}>
+                                            <MenuItem onClick={() => {
+                                                localStorage.removeItem('user');
+                                                // setuser(null);
+                                                dispatch(logout())
+                                                setAnchorElUser(null)
+                                            }}>
                                                 <Typography>Logout</Typography>
                                             </MenuItem>
                                             {/* <MenuItem>

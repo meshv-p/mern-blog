@@ -9,6 +9,7 @@ import { BlogState } from "./Context/BlogState";
 import { BlogDetail } from "./Compo/BlogDetail";
 import { BottomNavbar } from "./Compo/BottomNavbar";
 import { CreateBlog } from "./Compo/CreateBlog";
+import { Chat } from "./Compo/Chat";
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
           <Navbar />
           <Routes>
             <Route path="/" element={<Home />} />
+            <Route path="/chat" element={<Chat />} />
             <Route path="/login" element={<Login />} />
             <Route path="/user/:userId" element={<Profie />} />
             <Route path="/signup" element={<Signup />} />

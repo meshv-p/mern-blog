@@ -11,6 +11,7 @@ import AddCircleIcon from '@mui/icons-material/AddCircle';
 import blogContext from '../Context/BlogContext';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
+import { UserAvatar } from './UserAvatar';
 
 export const BottomNavbar = () => {
 
@@ -48,33 +49,7 @@ export const BottomNavbar = () => {
     };
     // console.log(path.pathname);
 
-    function stringToColor(string) {
 
-        let hash = 0;
-        let i;
-
-        /* eslint-disable no-bitwise */
-        for (i = 0; i < string.length; i += 1) {
-            hash = string.charCodeAt(i) + ((hash << 5) - hash);
-        }
-
-        let color = '#';
-
-        for (i = 0; i < 3; i += 1) {
-            const value = (hash >> (i * 8)) & 0xff;
-            color += `00${value.toString(16)}`.slice(-2);
-        }
-        /* eslint-enable no-bitwise */
-        return color;
-    }
-    function stringAvatar(name) {
-        return {
-            sx: {
-                bgcolor: stringToColor(name),
-            },
-            children: name.charAt(0),
-        };
-    }
     return (
         <>
             <ThemeProvider theme={darkTheme}>
@@ -99,7 +74,7 @@ export const BottomNavbar = () => {
                             label={loggedinUser?.profile?.username}
                             value="account"
                             icon={
-                                <Avatar sx={{ width: 24, height: 24 }} src={loggedinUser?.profile?.Profile_pic} alt="Username" {...stringAvatar(loggedinUser?.profile?.username ? loggedinUser.profile.username : 'meshv')} />
+                                <UserAvatar src={loggedinUser?.profile?.Profile_pic} name={loggedinUser?.profile?.username ?? 'User'} />
                             }
                         />
                         <BottomNavigationAction label="Folder" value="folder" icon={<FolderIcon />} />

@@ -6,6 +6,8 @@ import ChatBubbleIcon from '@mui/icons-material/ChatBubble';
 import { useNavigate } from 'react-router-dom';
 import blogContext from '../Context/BlogContext';
 import { AlertBar } from './Alert';
+import { UserAvatar } from './UserAvatar';
+import { io } from 'socket.io-client';
 
 
 
@@ -15,45 +17,35 @@ export const Blog = ({ blog, theme }) => {
     const [totalLike, setTotalLike] = useState(0)
     const [open, setOpen] = useState(false)
     const context = useContext(blogContext)
-    let { url, loggedinUser } = context;
+    let { url, loggedinUser, socketState: socket, setUserNotification, userNotification } = context;
 
     let history = useNavigate();
-    function stringToColor(string) {
-        let hash = 0;
-        let i;
 
-        /* eslint-disable no-bitwise */
-        for (i = 0; i < string.length; i += 1) {
-            hash = string.charCodeAt(i) + ((hash << 5) - hash);
-        }
-
-        let color = '#';
-
-        for (i = 0; i < 3; i += 1) {
-            const value = (hash >> (i * 8)) & 0xff;
-            color += `00${value.toString(16)}`.slice(-2);
-        }
-        // console.log(color);
-        /* eslint-enable no-bitwise */
-        return color;
-    }
-    function stringAvatar(name) {
-        return {
-            sx: {
-                bgcolor: stringToColor(name),
-            },
-            children: name.charAt(0),
-        };
-    }
 
     useEffect(() => {
+
         // console.log(typeof localStorage.getItem('user'), typeof blog?.like[0]);
         let userId = JSON.parse(localStorage.getItem('user'))?.profile?.user;
         // console.log(blog.like?.includes(userId))
         setUserLiked(blog.like ? blog.like?.includes(userId) : false);
         setTotalLike(blog.totalLike ? blog.totalLike : 0)
+
+        socket.on('like', ({ sms, user, blogOwner }) => {
+            console.log(blogOwner._id, loggedinUser.profile._id)
+            if (blogOwner._id === loggedinUser.profile._id) {
+                setUserNotification(userNotification + 1)
+            }
+            // console.log(sms, user)
+        })
+        return () => {
+            // console.log('lear');
+            socket.off('like')
+            // console.clear()
+        }
         // console.log(totalLike);
     }, [])
+
+
 
 
 
@@ -74,7 +66,8 @@ export const Blog = ({ blog, theme }) => {
             setOpen(true)
             return
         }
-
+        // console.log(blog, blog._id)
+        socket.emit('like', { blog: blog._id, likedUser: loggedinUser.profile, blogOwner: blog.user[0] })
 
         setTotalLike(userLiked ? totalLike - 1 : totalLike + 1)
         setUserLiked(!userLiked)
@@ -101,11 +94,11 @@ export const Blog = ({ blog, theme }) => {
 
                 <CardHeader
                     sx={{ ":hover": { background: !theme ? '#424242' : "#d9d9d9" } }}
-                    onClick={e => openProfile(e)} data-key={blog.user[0].user}
+                    onClick={e => openProfile(e)} data-key={blog?.user[0]?.user}
                     avatar={
-                        <Avatar src={blog.user[0]?.Profile_pic} alt="Username" {...stringAvatar(blog.user[0]?.username ? blog.user[0].username : 'Admin')} />
+                        <UserAvatar src={blog?.user[0]?.Profile_pic} name={blog?.user[0]?.username ?? 'User'} />
                     }
-                    title={blog.user[0]?.username}
+                    title={blog?.user[0]?.username}
                     // subheader="Today,a min ago"
                     subheader={new Date(blog.createdAt).toLocaleString()}
                 />
