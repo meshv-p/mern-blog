@@ -1,10 +1,12 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
+let url = process.env.REACT_APP_URL || "http://localhost:5000";
+
 export const getBlogs = createAsyncThunk(
   "blogState/getBlogs",
   async (pageNo = 1) => {
-    return fetch(`http://localhost:5000/api/v1/blogs?page=${pageNo}`).then(
-      (res) => res.json()
+    return fetch(`${url}/api/v1/blogs?page=${pageNo}`).then((res) =>
+      res.json()
     );
   }
 );
@@ -12,9 +14,7 @@ export const getBlogs = createAsyncThunk(
 export const getBlogById = createAsyncThunk(
   "blogState/getBlogById",
   async (BlogId = 1) => {
-    return fetch(`http://localhost:5000/api/v1/blog/${BlogId}`).then((res) =>
-      res.json()
-    );
+    return fetch(`${url}/api/v1/blog/${BlogId}`).then((res) => res.json());
   }
 );
 
