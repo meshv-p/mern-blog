@@ -1,4 +1,5 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+let url = process.env.REACT_APP_URL || "http://localhost:5000";
 
 // Define our single API slice object
 export const apiSlice = createApi({
@@ -6,7 +7,7 @@ export const apiSlice = createApi({
   reducerPath: "api",
   // All of our requests will have URLs starting with '/fakeApi'
   baseQuery: fetchBaseQuery({
-    baseUrl: "http://localhost:5000/api/v1/",
+    baseUrl: url,
   }),
   // The "endpoints" represent operations and requests for this server
   endpoints: (builder) => ({
