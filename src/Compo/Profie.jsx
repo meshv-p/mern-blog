@@ -6,7 +6,7 @@ import { ThemeProvider, createTheme } from '@mui/material/styles';
 import blogContext from '../Context/BlogContext';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import { useFetch } from '../hooks/useFetch';
-import { useSelector } from 'react-redux';
+import { UserAvatar } from './UserAvatar';
 
 export const Profie = () => {
     const context = useContext(blogContext);
@@ -15,15 +15,14 @@ export const Profie = () => {
     const [follow, setFollow] = useState(false)
     let history = useNavigate()
     let { userId } = useParams()
-    let { data: profile, isLoading, error } = useFetch(`${url}/api/v1/users/${userId}`, 'oneUser')
-    let user = useSelector(state => state.user.user)
+    let { data: profile, isLoading, error } = useFetch(`${url}/api/v1/users/${userId}`)
 
     useEffect(() => {
         console.log(profile);
         profileSet()
         setFollow((profile?.followers)?.includes(loggedinUser?.profile.user))
         // eslint-disable-next-line
-    }, [])
+    }, [profile])
 
     // atlic,
 
@@ -65,6 +64,41 @@ export const Profie = () => {
             profileSet()
         })
     }
+    function stringToColor(string) {
+        let hash = 0;
+        let i;
+
+        /* eslint-disable no-bitwise */
+        for (i = 0; i < string.length; i += 1) {
+            hash = string.charCodeAt(i) + ((hash << 5) - hash);
+        }
+
+        let color = '#';
+
+        for (i = 0; i < 3; i += 1) {
+            const value = (hash >> (i * 8)) & 0xff;
+            color += `00${value.toString(16)}`.slice(-2);
+        }
+        // console.log(color);
+        /* eslint-enable no-bitwise */
+        return color;
+    }
+
+
+
+    function stringAvatar(name) {
+
+
+        return {
+            sx: {
+                bgcolor: stringToColor(name),
+
+
+                display: 'flex', justifyContent: 'center', width: 100, height: 100, mt: -8,
+            },
+            children: name.charAt(0) || 'U',
+        };
+    }
 
 
     return (
@@ -76,7 +110,7 @@ export const Profie = () => {
                     <CssBaseline />
                     <Paper sx={{ p: 2 }}>
                         <Typography sx={{ m: 1 }}>
-                            <Button variant="outlined" onClick={() => history('/')} color="inherit" startIcon={<ArrowBackIosNewIcon />}>
+                            <Button variant="outlined" onClick={() => history(-1)} color="inherit" startIcon={<ArrowBackIosNewIcon />}>
                                 Go back
                             </Button>
                         </Typography>
@@ -84,7 +118,7 @@ export const Profie = () => {
 
 
                         {
-                            user &&
+                            (profile) !== null &&
 
 
                             <Card>
@@ -96,12 +130,12 @@ export const Profie = () => {
                                 />
                                 <CardContent >
                                     <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-                                        <Avatar sx={{ display: 'flex', justifyContent: 'center', width: 100, height: 100, mt: -8 }}>
-                                            A
-                                        </Avatar>
-                                        {/* <UserAvatar src={Profie?.Profile_pic} name={profile.user[0]?.username ?? 'User'} big={true} /> */}
+                                        {/* <Avatar sx={{ display: 'flex', justifyContent: 'center', width: 100, height: 100, mt: -8 }}>
+                                            
+                                        </Avatar> */}
+                                        {/* <UserAvatar src={profile?.oneUser?.Profile_pic} name={profile?.oneUser?.user[0]?.username ?? 'User'} big={true} /> */}
 
-                                        {/* <Avatar src={profile?.Profile_pic} alt="Username"  {...stringAvatar(profile?.username ? profile?.username : 'Abc')} /> */}
+                                        <Avatar sx={{ display: 'flex', justifyContent: 'center', width: 100, height: 100, mt: -8 }} src={profile?.oneUser?.Profile_pic} alt="Username"  {...stringAvatar(profile?.oneUser?.username ? profile?.oneUser?.username : 'Abc')} />
 
                                     </Box>
 
@@ -118,7 +152,7 @@ export const Profie = () => {
                                         >
                                             <div>
 
-                                                @{profile?.username}
+                                                @{profile?.oneUser?.username}
                                             </div>
                                             <Stack direction='row' gap={2}>
 
@@ -127,7 +161,7 @@ export const Profie = () => {
                                                     justifyContent="center"
                                                     alignItems="center"
                                                 >
-                                                    <Typography>{(profile?.followers)?.length}</Typography>
+                                                    <Typography>{(profile?.oneUser?.followers)?.length}</Typography>
                                                     <Divider variant='middle' sx={{ width: '100%' }} />
 
                                                     <Typography>Followers</Typography>
@@ -139,7 +173,7 @@ export const Profie = () => {
                                                 >
                                                     {/* <div> */}
 
-                                                    <Typography>{(profile?.following)?.length}</Typography>
+                                                    <Typography>{(profile?.oneUser?.following)?.length}</Typography>
                                                     <Divider variant='middle' sx={{ width: '100%' }} />
 
                                                     <Typography>Following</Typography>
@@ -180,18 +214,7 @@ export const Profie = () => {
                                         </Stack>
                                     }
                                     <Stack gap={3}>
-                                        {/* <Stack direction="row" alignItems="center" gap={3}>
-                                        <Typography>Username:  </Typography>
-                                        <TextField id="standard-basic" value={profile?.username} variant="standard" />
-                                    </Stack>
-                                    <Stack direction="row" alignItems="center" gap={3}>
-                                        <Typography>Number</Typography>
-                                        <TextField id="standard-basic" value={profile?.number === 0 ? 'Not set' : ''} variant="standard" />
-                                    </Stack>
-                                    <Stack direction="row" alignItems="center" gap={3}>
-                                        <Typography>Email:</Typography>
-                                        <TextField id="standard-basic" value={profile?.email} variant="standard" />
-                                    </Stack> */}
+
                                         <Stack direction="row" alignItems="center" gap={3}>
                                             {/* <Typography>Email:</Typography> */}
                                             {profile?.email}
@@ -200,10 +223,6 @@ export const Profie = () => {
 
                                     </Stack>
                                 </CardContent>
-                                {/* <CardActions>
-                                <Button variant='text' >Cancel</Button>
-                                <Button variant='contained'>Save</Button>
-                            </CardActions> */}
                             </Card>
 
                         }

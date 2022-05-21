@@ -9,7 +9,7 @@ import { BlogState } from "./Context/BlogState";
 import { BlogDetail } from "./Compo/BlogDetail";
 import { BottomNavbar } from "./Compo/BottomNavbar";
 import { CreateBlog } from "./Compo/CreateBlog";
-import { Chat } from "./Compo/Chat";
+import { SearchPage } from "./Compo/SearchPage";
 
 function App() {
   return (
@@ -19,8 +19,8 @@ function App() {
           <Navbar />
           <Routes>
             <Route path="/" element={<Home />} />
-            <Route path="/chat" element={<Chat />} />
             <Route path="/login" element={<Login />} />
+            <Route path="/search" element={<SearchPage />} />
             <Route path="/user/:userId" element={<Profie />} />
             <Route path="/signup" element={<Signup />} />
             <Route path="/blog/:blogId" element={<BlogDetail />} />

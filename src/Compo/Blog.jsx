@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext } from 'react'
-import { Avatar, Box, Card, CardActions, CardContent, CardHeader, IconButton, Typography } from '@mui/material'
+import { Avatar, AvatarGroup, Box, Button, Card, CardActions, CardContent, CardHeader, IconButton, Stack, Typography } from '@mui/material'
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import SendIcon from '@mui/icons-material/Send';
 import ChatBubbleIcon from '@mui/icons-material/ChatBubble';
@@ -11,13 +11,13 @@ import { io } from 'socket.io-client';
 
 
 
-export const Blog = ({ blog, theme }) => {
+export const Blog = ({ blog, theme, BlogType = 'title' }) => {
 
     const [userLiked, setUserLiked] = useState(false)
     const [totalLike, setTotalLike] = useState(0)
     const [open, setOpen] = useState(false)
     const context = useContext(blogContext)
-    let { url, loggedinUser, socketState: socket, setUserNotification, userNotification } = context;
+    let { url, loggedinUser, setUserNotification, userNotification } = context;
 
     let history = useNavigate();
 
@@ -30,18 +30,18 @@ export const Blog = ({ blog, theme }) => {
         setUserLiked(blog.like ? blog.like?.includes(userId) : false);
         setTotalLike(blog.totalLike ? blog.totalLike : 0)
 
-        socket.on('like', ({ sms, user, blogOwner }) => {
-            console.log(blogOwner._id, loggedinUser.profile._id)
-            if (blogOwner._id === loggedinUser.profile._id) {
-                setUserNotification(userNotification + 1)
-            }
-            // console.log(sms, user)
-        })
-        return () => {
-            // console.log('lear');
-            socket.off('like')
-            // console.clear()
-        }
+        // socket.on('like', ({ sms, user, blogOwner }) => {
+        //     console.log(blogOwner._id, loggedinUser.profile._id)
+        //     if (blogOwner._id === loggedinUser.profile._id) {
+        //         setUserNotification(userNotification + 1)
+        //     }
+        //     // console.log(sms, user)
+        // })
+        // return () => {
+        //     // console.log('lear');
+        //     socket.off('like')
+        //     // console.clear()
+        // }
         // console.log(totalLike);
     }, [])
 
@@ -52,6 +52,10 @@ export const Blog = ({ blog, theme }) => {
     const openBlog = (e) => {
         // console.log(e.currentTarget.dataset.key)
         let id = e.currentTarget.dataset.key;
+        if (BlogType === 'user') {
+            return history(`/user/${id}`);
+
+        }
         history(`/blog/${id}`);
     }
     const openProfile = (e) => {
@@ -66,8 +70,6 @@ export const Blog = ({ blog, theme }) => {
             setOpen(true)
             return
         }
-        // console.log(blog, blog._id)
-        socket.emit('like', { blog: blog._id, likedUser: loggedinUser.profile, blogOwner: blog.user[0] })
 
         setTotalLike(userLiked ? totalLike - 1 : totalLike + 1)
         setUserLiked(!userLiked)
@@ -85,7 +87,31 @@ export const Blog = ({ blog, theme }) => {
         setOpen(false)
         // console.log('close')
     }
+    function stringToColor(string) {
+        let hash = 0;
+        let i;
 
+        /* eslint-disable no-bitwise */
+        for (i = 0; i < string.length; i += 1) {
+            hash = string.charCodeAt(i) + ((hash << 5) - hash);
+        }
+
+        let color = '#';
+
+        for (i = 0; i < 3; i += 1) {
+            const value = (hash >> (i * 8)) & 0xff;
+            color += `00${value.toString(16)}`.slice(-2);
+        }
+        // console.log(color);
+        /* eslint-enable no-bitwise */
+        return color;
+    }
+    function stringToRgba(string) {
+        let stringUniqueHash = [...string].reduce((acc, char) => {
+            return char.charCodeAt(0) + ((acc << 5) - acc);
+        }, 0);
+        return `hsl(${stringUniqueHash}, 34%, 25%)`;
+    }
 
     return (
         <>
@@ -94,11 +120,11 @@ export const Blog = ({ blog, theme }) => {
 
                 <CardHeader
                     sx={{ ":hover": { background: !theme ? '#424242' : "#d9d9d9" } }}
-                    onClick={e => openProfile(e)} data-key={blog?.user[0]?.user}
+                    onClick={e => openProfile(e)} data-key={blog?.user[0]?._id || blog?._id}
                     avatar={
-                        <UserAvatar src={blog?.user[0]?.Profile_pic} name={blog?.user[0]?.username ?? 'User'} />
+                        <UserAvatar src={blog.user[0]?.Profile_pic || blog?.Profile_pic} name={(blog.user[0]?.username || blog?.username) ?? 'User'} />
                     }
-                    title={blog?.user[0]?.username}
+                    title={blog.user[0]?.username || blog?.username}
                     // subheader="Today,a min ago"
                     subheader={new Date(blog.createdAt).toLocaleString()}
                 />
@@ -107,30 +133,71 @@ export const Blog = ({ blog, theme }) => {
                         {blog.title}
                     </Typography>
                     <Typography variant='body2' color="text.secondary">
-                        {blog.desc.slice(0,440)}...
-                    </Typography>
-                </CardContent>
-                <CardActions>
-                    <IconButton onClick={handleLike}>
+                        {blog.desc}
                         {
-                            userLiked ?
-                                <FavoriteIcon sx={{ color: '#42a5f5' }} />
-                                :
-                                <FavoriteIcon />
+                            BlogType === 'user' && (
+                                <Stack direction='column'>
+                                    <Typography> Folllowers:{(blog.followers)?.length} || Following:{(blog.following)?.length}</Typography>
 
+                                    <AvatarGroup total={(blog.followers)?.length} sx={{ justifyContent: 'flex-end' }}>
+                                        {
+                                            blog.followers?.map((user, i) => (
+
+                                                <UserAvatar src={user.Profile_pic} key={i} name={user.username} />
+
+                                            ))
+                                        }
+                                    </AvatarGroup>
+
+                                </Stack>
+                            )
                         }
-                    </IconButton>
-                    {/* <Typography>{blog.totalLike ? blog.totalLike : 0}  likes</Typography> */}
-                    <Typography>{totalLike ? totalLike : 0} likes</Typography>
-                    <IconButton>
-                        <ChatBubbleIcon />
-                    </IconButton>
-                    <Box sx={{ flexGrow: 1 }} />
-                    <IconButton>
-                        <SendIcon />
-                    </IconButton>
+                    </Typography>
+                    <Stack direction="row" gap={2} sx={{ my: 1 }}>
+                        {
+                            blog?.tag?.map(tag => (
+                                <React.Fragment key={tag}>
+                                    <Typography component="span" sx={{ cursor: 'pointer', padding: .8, border: 1, borderColor: stringToColor(tag), borderRadius: 1, ":hover": { background: stringToRgba(tag) } }}>
+                                        <span  ># </span>
+                                        <span style={{ color: stringToColor(tag) }}>{tag} </span>
+                                    </Typography>
+                                </React.Fragment>
+                            ))
+                        }
+                    </Stack>
+                </CardContent>
+                {
 
-                </CardActions>
+                    (BlogType !== 'user') ?
+
+                        <CardActions>
+                            <IconButton onClick={handleLike}>
+                                {
+                                    userLiked ?
+                                        <FavoriteIcon sx={{ color: '#42a5f5' }} />
+                                        :
+                                        <FavoriteIcon />
+
+                                }
+                            </IconButton>
+                            {/* <Typography>{blog.totalLike ? blog.totalLike : 0}  likes</Typography> */}
+                            <Typography>{totalLike ? totalLike : 0} likes</Typography>
+                            <IconButton>
+                                <ChatBubbleIcon />
+                            </IconButton>
+                            <Box sx={{ flexGrow: 1 }} />
+                            <IconButton>
+                                <SendIcon />
+                            </IconButton>
+
+                        </CardActions> : <Stack spacing={2} direction='row' sx={{ p: 1 }}>
+                            <Button variant='text'>
+                                Follow
+                            </Button>
+                            <Button variant='outlined'>Message</Button>
+                        </Stack>
+                }
+
             </Card>
         </>
     )

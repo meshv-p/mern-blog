@@ -1,7 +1,7 @@
 import { Avatar } from '@mui/material';
 import React from 'react'
 
-export const UserAvatar = ({ src: url = "", name = '' }) => {
+export const UserAvatar = ({ src: url, name = 'User' }) => {
 
     function stringToColor(string) {
         let hash = 0;
@@ -39,7 +39,7 @@ export const UserAvatar = ({ src: url = "", name = '' }) => {
     }
 
     return (
-        <Avatar src={url} alt="Username" {...stringAvatar(name)} />
+        <Avatar src={url} alt="Username" {...stringAvatar(name)} title={name} />
 
     )
 }

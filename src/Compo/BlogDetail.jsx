@@ -11,10 +11,6 @@ import FavoriteIcon from '@mui/icons-material/Favorite';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import { useFetch } from '../hooks/useFetch';
 import { UserAvatar } from './UserAvatar';
-import { useGetBlogQuery, useGetBlogsQuery } from '../features/apiSlice';
-import { useDispatch, useSelector } from 'react-redux';
-import { getBlogById } from '../features/blogStateSlice';
-import { useSelect } from '@mui/base';
 
 
 export const BlogDetail = () => {
@@ -28,16 +24,6 @@ export const BlogDetail = () => {
     let { blogId } = useParams()
     const context = useContext(blogContext)
     let { theme, url, loggedinUser, progress, setProgress } = context;
-
-
-    let {
-        data,
-        isLoading: load,
-        isSuccess,
-        isError,
-        error } = useGetBlogQuery(blogId);
-
-
     // let { data: { blog }, isLoading, error } = useFetch(`${url}/api/v1/blog/${blogId}`)
     // if (data !== null) {
 
@@ -45,9 +31,7 @@ export const BlogDetail = () => {
     // }
 
     let history = useNavigate()
-    let dispatch = useDispatch()
-    // let data = useSelector(state => state.blog.blogById)
-    // let load = useSelector(state => state.blog.load)
+
 
     const darkTheme = createTheme({
         palette: {
@@ -59,30 +43,20 @@ export const BlogDetail = () => {
     });
 
     useEffect(() => {
-        console.log('in blogdetails', blogId);
+        // console.log(loggedinUser?.authToken, url);
         setProgress(10)
         setIsLoading(true)
-        // fetch(`${url}/api/v1/blog/${blogId}`).then(res => res.json()).then(data => {
-        //     setIsLoading(false);
-        //     setBlog(data)
-        //     setProgress(100)
-        // })
-        // dispatch(getBlogById(blogId))
-        // getComment()
+        fetch(`${url}/api/v1/blog/${blogId}`).then(res => res.json()).then(data => {
+            setIsLoading(false);
+            setBlog(data.findBlog[0])
+            setProgress(100)
+        })
+        getComment()
 
         // let { findBlog: [a] } = data ?? ''
         // console.log(data ?? data, a, error, isLoading)
-        console.log(data);
+        // console.log(blog);
     }, [])
-
-
-    useEffect(() => {
-
-        if (isSuccess) {
-            setProgress(100)
-        }
-    }, [isSuccess, setProgress])
-
 
 
     const getComment = (pageNo) => {
@@ -93,16 +67,9 @@ export const BlogDetail = () => {
             // console.log(data);
             setPage(page + 1)
         })
-        // console.log(page);
+        console.log(page);
     }
 
-    useEffect(() => {
-        console.log('run 1 ')
-        if (!load) {
-            setIsLoading(false)
-            console.log(data);
-        }
-    }, [dispatch, load])
 
 
 
@@ -171,31 +138,31 @@ export const BlogDetail = () => {
                 <CssBaseline />
                 <Container sx={{ py: 2 }}>
                     {
-                        load && <Spinner />
+                        isLoading && <Spinner />
                     }
                     {/* {
                         error && <div>{error}</div>
                     } */}
                     {
-                        data &&
+                        !isLoading && blog &&
                         // <Card sx={{ background: '#bbdefb' || '#e3f2fd' }}>
                         <Card >
                             <Typography sx={{ m: 1 }}>
-                                <Button variant="outlined" onClick={() => history('/')} color="inherit" startIcon={<ArrowBackIosNewIcon />}>
+                                <Button variant="outlined" onClick={() => history(-1)} color="inherit" startIcon={<ArrowBackIosNewIcon />}>
                                     Go back
                                 </Button>
                             </Typography>
                             <CardHeader
                                 avatar={
-                                    <UserAvatar src={data.findBlog[0]?.user[0]?.Profile_pic} name={data.findBlog[0]?.user[0]?.username ?? 'User'} />
+                                    <UserAvatar src={blog.user[0]?.Profile_pic} name={blog.user[0]?.username ?? 'User'} />
 
                                 }
                                 title={
-                                    <Link to={`/user/${data.findBlog[0].user[0]?.user}`}>
-                                        {data.findBlog[0]?.user[0]?.username}
+                                    <Link to={`/user/${blog.user[0]?.user}`}>
+                                        {blog.user[0]?.username}
                                     </Link>
                                 }
-                                subheader={new Date(data.findBlog[0]?.createdAt).toLocaleString()}
+                                subheader={new Date(blog.createdAt).toLocaleString()}
                                 action={
                                     <IconButton aria-label="settings">
                                         <MoreVertIcon />
@@ -212,11 +179,11 @@ export const BlogDetail = () => {
                             />
                             <CardContent >
                                 <Typography variant='h4'>
-                                    {data.findBlog[0].title}
+                                    {blog.title}
                                     {/* <Typography>#tag</Typography> */}
                                     <Stack direction="row" gap={2} sx={{ my: 1 }}>
                                         {
-                                            data.findBlog[0].tag.map(tag => (
+                                            blog.tag.map(tag => (
                                                 <React.Fragment key={tag}>
                                                     <Typography component="span" sx={{ cursor: 'pointer', padding: .8, border: 1, borderColor: stringToColor(tag), borderRadius: 1, ":hover": { background: stringToRgba(tag) } }}>
                                                         <span  ># </span>
@@ -229,7 +196,7 @@ export const BlogDetail = () => {
                                     {/* {blog.title} */}
                                 </Typography>
                                 <Typography variant='body2' sx={{ my: 2 }} color="text.secondary">
-                                    {data.findBlog[0].desc}
+                                    {blog.desc}
                                     {/* {blog.desc} */}
                                 </Typography>
 
