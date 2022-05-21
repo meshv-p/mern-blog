@@ -7,7 +7,6 @@ import { Blog } from './Blog';
 import { Spinner } from './Spinner';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import { Alert, AlertBar } from './Alert';
-// import { io } from 'socket.io-client'
 export const Home = () => {
 
     const [allBlogs, setAllBlogs] = useState([])

@@ -7,7 +7,6 @@ import { useNavigate } from 'react-router-dom';
 import blogContext from '../Context/BlogContext';
 import { AlertBar } from './Alert';
 import { UserAvatar } from './UserAvatar';
-import { io } from 'socket.io-client';
 
 
 
