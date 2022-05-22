@@ -7,6 +7,7 @@ export const BlogState = (props) => {
   const [progress, setProgress] = useState(0);
   const [searchData, setSearchData] = useState([]);
   const [search, setSearch] = React.useState("");
+  const [blog, setBlog] = useState(null);
 
   const [alignment, setAlignment] = React.useState("title");
 
@@ -47,6 +48,8 @@ export const BlogState = (props) => {
         setAlignment,
         search,
         setSearch,
+        blog,
+        setBlog,
       }}
     >
       {props.children}

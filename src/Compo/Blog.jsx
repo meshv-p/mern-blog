@@ -3,7 +3,7 @@ import { Avatar, AvatarGroup, Box, Button, Card, CardActions, CardContent, CardH
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import SendIcon from '@mui/icons-material/Send';
 import ChatBubbleIcon from '@mui/icons-material/ChatBubble';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import blogContext from '../Context/BlogContext';
 import { AlertBar } from './Alert';
 import { UserAvatar } from './UserAvatar';
@@ -109,7 +109,24 @@ export const Blog = ({ blog, theme, BlogType = 'title' }) => {
         let stringUniqueHash = [...string].reduce((acc, char) => {
             return char.charCodeAt(0) + ((acc << 5) - acc);
         }, 0);
-        return `hsl(${stringUniqueHash}, 34%, 25%)`;
+        return `hsl(${stringUniqueHash}, 44%, 18%)`;
+    }
+
+    function shareBlog(blog) {
+        if (navigator.share) {
+            navigator
+                .share({
+                    title: `${blog.title} | ${document.location.href}`,
+                    text: `Check out ${blog.title} on ${document.location.href}`,
+                    url: document.location.href + `blog/${blog._id}`,
+                })
+                .then(() => {
+                    console.log('Successfully shared');
+                })
+                .catch(error => {
+                    console.error('Something went wrong sharing the blog', error);
+                });
+        }
     }
 
     return (
@@ -127,43 +144,52 @@ export const Blog = ({ blog, theme, BlogType = 'title' }) => {
                     // subheader="Today,a min ago"
                     subheader={new Date(blog.createdAt).toLocaleString()}
                 />
-                <CardContent sx={{ cursor: 'pointer' }} onClick={(e) => openBlog(e)} data-key={blog._id}>
-                    <Typography variant='body1'>
-                        {blog.title}
-                    </Typography>
-                    <Typography variant='body2' color="text.secondary">
-                        {blog.desc}
-                        {
-                            BlogType === 'user' && (
-                                <Stack direction='column'>
-                                    <Typography> Folllowers:{(blog.followers)?.length} || Following:{(blog.following)?.length}</Typography>
+                <CardContent sx={{ cursor: 'pointer' }} data-key={blog._id}>
+                    <Link to={`/blog/${blog._id}`}>
+                        <Typography variant='body1' sx={{
+                            ":hover": {
+                                color: 'blue'
+                            }
+                        }}>
+                            {blog.title}
+                        </Typography>
+                        <Typography variant='body2' color="text.secondary">
+                            {blog.desc}
+                            {
+                                BlogType === 'user' && (
+                                    <Stack direction='column'>
+                                        <Typography> Folllowers:{(blog.followers)?.length} || Following:{(blog.following)?.length}</Typography>
 
-                                    <AvatarGroup total={(blog.followers)?.length} sx={{ justifyContent: 'flex-end' }}>
-                                        {
-                                            blog.followers?.map((user, i) => (
+                                        <AvatarGroup total={(blog.followers)?.length} sx={{ justifyContent: 'flex-end' }}>
+                                            {
+                                                blog.followers?.map((user, i) => (
 
-                                                <UserAvatar src={user.Profile_pic} key={i} name={user.username} />
+                                                    <UserAvatar src={user.Profile_pic} key={i} name={user.username} />
 
-                                            ))
-                                        }
-                                    </AvatarGroup>
+                                                ))
+                                            }
+                                        </AvatarGroup>
 
-                                </Stack>
-                            )
-                        }
-                    </Typography>
-                    <Stack direction="row" gap={2} sx={{ my: 1 }}>
-                        {
-                            blog?.tag?.map(tag => (
-                                <React.Fragment key={tag}>
-                                    <Typography component="span" sx={{ cursor: 'pointer', padding: .8, border: 1, borderColor: stringToColor(tag), borderRadius: 1, ":hover": { background: stringToRgba(tag) } }}>
-                                        <span  ># </span>
-                                        <span style={{ color: stringToColor(tag) }}>{tag} </span>
-                                    </Typography>
-                                </React.Fragment>
-                            ))
-                        }
-                    </Stack>
+                                    </Stack>
+                                )
+                            }
+                        </Typography>
+                        <Stack direction="row" gap={2} sx={{ my: 1 }}>
+                            {
+                                blog?.tag?.map(tag => (
+                                    <React.Fragment key={tag}>
+                                        <Link to={`/t/${tag}`}>
+                                            <Typography component="span" sx={{ cursor: 'pointer', padding: .8, border: 1, borderColor: stringToColor(tag), borderRadius: 1, ":hover": { background: stringToRgba(tag) } }}>
+                                                <span  ># </span>
+                                                <span style={{ color: stringToColor(tag) }}>{tag} </span>
+                                            </Typography>
+                                        </Link>
+                                    </React.Fragment>
+                                ))
+                            }
+                        </Stack>
+                    </Link>
+
                 </CardContent>
                 {
 
@@ -185,7 +211,9 @@ export const Blog = ({ blog, theme, BlogType = 'title' }) => {
                                 <ChatBubbleIcon />
                             </IconButton>
                             <Box sx={{ flexGrow: 1 }} />
-                            <IconButton>
+                            <IconButton onClick={e => {
+                                shareBlog(blog)
+                            }}>
                                 <SendIcon />
                             </IconButton>
 

@@ -31,9 +31,6 @@ export const SearchPage = () => {
     return (
         <>
             <ThemeProvider theme={darkTheme}>
-
-
-
                 <Container sx={{ m: 2 }}>
                     <CssBaseline />
                     <Stack direction='row' sx={{ flexDirection: { xs: 'column', md: 'row' } }}>

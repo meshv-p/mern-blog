@@ -10,6 +10,8 @@ import { BlogDetail } from "./Compo/BlogDetail";
 import { BottomNavbar } from "./Compo/BottomNavbar";
 import { CreateBlog } from "./Compo/CreateBlog";
 import { SearchPage } from "./Compo/SearchPage";
+import { Upload } from "./Compo/Upload";
+import { TagWiseBlog } from "./Compo/TagWiseBlog";
 
 function App() {
   return (
@@ -24,7 +26,9 @@ function App() {
             <Route path="/user/:userId" element={<Profie />} />
             <Route path="/signup" element={<Signup />} />
             <Route path="/blog/:blogId" element={<BlogDetail />} />
+            <Route path="/t/:tag" element={<TagWiseBlog />} />
             <Route path="/create/" element={<CreateBlog />} />
+            <Route path="/upload" element={<Upload />} />
           </Routes>
           <BottomNavbar />
         </div>

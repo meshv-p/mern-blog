@@ -8,14 +8,14 @@ import { Spinner } from './Spinner';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import { Alert, AlertBar } from './Alert';
 export const Home = () => {
+    const [allBlogs, setAllBlogs] = useState([]);
 
-    const [allBlogs, setAllBlogs] = useState([])
     const [isLoading, setIsLoading] = useState(false)
     const [pageNo, setPageNo] = useState(1)
     const [totalPage, setTotalPage] = useState(null)
     const context = useContext(blogContext)
     const [open, setOpen] = useState(false)
-    let { theme, url, setProgress, loggedinUser } = context;
+    let { theme, url, setProgress } = context;
     const darkTheme = createTheme({
         palette: {
             mode: theme ? 'light' : 'dark',

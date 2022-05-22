@@ -19,3 +19,25 @@ Bug
     Snackbar compo
 
     
+
+
+    {
+  "_id": "6245c9a799b2268d8bccc49e",
+  "username": "maanp",
+  "email": "maan",
+  "number": 0,
+  "Profile_pic": "https://res.cloudinary.com/dqveulwdc/image/upload/v1653151530/ehb63t4kg1x3ptusht9x.png",
+  "saved_blogs": [],
+  "user": "6245c9a799b2268d8bccc49c",
+  "createdAt": "2022-03-31T15:32:55.742Z",
+  "updatedAt": "2022-05-21T16:45:31.216Z",
+  "__v": 6,
+  "followers": [
+    "6245cdd699b2268d8bccc4ce",
+    "6245c68299b2268d8bccc47d"
+  ],
+  "following": []
+}
+
+
+{"result":true,"authToken":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYyNDVjOWE3OTliMjI2OGQ4YmNjYzQ5YyIsInVzZXJuYW1lIjoibWFhbnAiLCJpYXQiOjE2NTMxNTE3NTd9.Xr7DY8_5bRn4QIQwK3MpIZzg-ss_EqHERdUF4nr8-No","profile":{"_id":"6245c9a799b2268d8bccc49e","username":"maanp","email":"maan","number":0,"Profile_pic":"https://res.cloudinary.com/dqveulwdc/image/upload/v1653151530/ehb63t4kg1x3ptusht9x.png","saved_blogs":[],"user":"6245c9a799b2268d8bccc49c","createdAt":"2022-03-31T15:32:55.742Z","updatedAt":"2022-05-21T16:45:31.216Z","__v":6,"followers":["6245cdd699b2268d8bccc4ce","6245c68299b2268d8bccc47d"],"following":[]}}

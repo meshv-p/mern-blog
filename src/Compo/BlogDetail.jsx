@@ -14,7 +14,6 @@ import { UserAvatar } from './UserAvatar';
 
 
 export const BlogDetail = () => {
-    const [blog, setBlog] = useState(null)
     const [comment, setComment] = useState([])
     const [isLoading, setIsLoading] = useState(false)
     const [commentByUser, setCommentByUser] = useState("")
@@ -23,7 +22,7 @@ export const BlogDetail = () => {
 
     let { blogId } = useParams()
     const context = useContext(blogContext)
-    let { theme, url, loggedinUser, progress, setProgress } = context;
+    let { theme, url, loggedinUser, blog, setBlog, setProgress } = context;
     // let { data: { blog }, isLoading, error } = useFetch(`${url}/api/v1/blog/${blogId}`)
     // if (data !== null) {
 
@@ -184,12 +183,14 @@ export const BlogDetail = () => {
                                     <Stack direction="row" gap={2} sx={{ my: 1 }}>
                                         {
                                             blog.tag.map(tag => (
-                                                <React.Fragment key={tag}>
+                                                // <React.Fragment key={tag}>
+                                                <Link to={`/t/${tag}`} key={tag}>
                                                     <Typography component="span" sx={{ cursor: 'pointer', padding: .8, border: 1, borderColor: stringToColor(tag), borderRadius: 1, ":hover": { background: stringToRgba(tag) } }}>
                                                         <span  ># </span>
                                                         <span style={{ color: stringToColor(tag) }}>{tag} </span>
                                                     </Typography>
-                                                </React.Fragment>
+                                                </Link>
+                                                // </React.Fragment>
                                             ))
                                         }
                                     </Stack>

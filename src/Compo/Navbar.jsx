@@ -23,6 +23,7 @@ export const Navbar = () => {
     let history = useNavigate()
 
     useEffect(() => {
+        console.log('pic change')
         setCurrentUser(loggedinUser?.profile);
         // console.log(loggedinUser.profile.user)
     }, [loggedinUser])
@@ -141,7 +142,7 @@ export const Navbar = () => {
                                         >
                                             <MenuItem onClick={() => setAnchorElUser(null)}>
                                                 <Link to={{
-                                                    pathname: `/user/${loggedinUser?.profile?.user}`,
+                                                    pathname: `/user/${loggedinUser?.profile?._id}`,
                                                     state: { name: 'meshv' }
 
                                                 }} >
