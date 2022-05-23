@@ -9,12 +9,12 @@ import blogContext from '../Context/BlogContext';
 
 export const SearchBar = () => {
     const context = useContext(blogContext);
-    let { setSearchData, alignment, search, setSearch } = context;
+    let { setSearchData, alignment, search, setSearch, url } = context;
     const [options, setOptions] = React.useState([]);
     const [loading, setLoading] = React.useState(false);
 
     function SearchData(searchValue) {
-        fetch(`http://localhost:5000/api/v1/search?${alignment}=${searchValue}`).then(res => res.json()).then(data => {
+        fetch(`${url}/api/v1/search?${alignment}=${searchValue}`).then(res => res.json()).then(data => {
             if (data.message) {
                 // console.log('not usr');
                 setLoading(false);
