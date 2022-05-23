@@ -138,7 +138,13 @@ export const Profie = () => {
                     <CssBaseline />
                     <Paper sx={{ p: 2 }}>
                         <Typography sx={{ m: 1 }}>
-                            <Button variant="outlined" onClick={() => history(-1 || '/')} color="inherit" startIcon={<ArrowBackIosNewIcon />}>
+                            <Button variant="outlined" onClick={() => {
+                                if (history(-1)) {
+
+                                    history(-1)
+                                }
+                                history('/')
+                            }} color="inherit" startIcon={<ArrowBackIosNewIcon />}>
                                 Go back
                             </Button>
                         </Typography>
