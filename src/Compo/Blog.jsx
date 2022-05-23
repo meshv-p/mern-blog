@@ -117,7 +117,7 @@ export const Blog = ({ blog, theme, BlogType = 'title' }) => {
             navigator
                 .share({
                     title: `${blog.title} | ${document.location.href}`,
-                    text: `Check out ${blog.title} on ${document.location.href}`,
+                    text: `Check out ${blog.title}`,
                     url: document.location.href + `blog/${blog._id}`,
                 })
                 .then(() => {
