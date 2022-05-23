@@ -1,5 +1,5 @@
 import { Box, Button, Dialog, DialogContent, DialogTitle, IconButton, TextField } from '@mui/material';
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import Stack from '@mui/material/Stack';
 import styled from '@emotion/styled';
 
@@ -8,6 +8,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import EditIcon from '@mui/icons-material/Edit';
 import DoneIcon from '@mui/icons-material/Done';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
+import blogContext from '../Context/BlogContext';
 
 
 
@@ -20,7 +21,8 @@ export const Upload = ({ user, profile }) => {
     })
     // const [file, setFile] = useState();
     const [modelOpen, setModelOpen] = useState(false)
-
+    const context = useContext(blogContext);
+    let { url } = context;
 
     useEffect(() => {
         setEditProfile({
@@ -36,7 +38,7 @@ export const Upload = ({ user, profile }) => {
 
 
     function updateProfile() {
-        fetch(`http://localhost:5000/api/v1/users/${user}`, {
+        fetch(`${url}/api/v1/users/${user}`, {
             method: "PATCH",
             body: JSON.stringify(editProfile),
             headers: {
@@ -91,7 +93,7 @@ export const Upload = ({ user, profile }) => {
                                 <Stack direction='row' spacing={2}>
                                     <UserAvatar src={profile?.oneUser?.Profile_pic} name={profile?.oneUser?.username} />
                                     <label htmlFor="outlined-button-file">
-                                        <Input accept="image/*" id="outlined-button-file" name="Profile_pic" multiple type="file" onChange={e => setEditProfile({ ...editProfile, [e.target.name]: e.target.files[0] })} />
+                                        <Input id="outlined-button-file" name="Profile_pic" multiple type="file" onChange={e => setEditProfile({ ...editProfile, [e.target.name]: e.target.files[0] })} />
 
                                         {
                                             <Button variant="outlined" type={editProfile.Profile_pic ? 'submit' : 'button'} component={editProfile.Profile_pic ? "" : "span"} startIcon={<CloudUploadIcon />} >
