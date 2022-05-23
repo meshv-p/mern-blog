@@ -9,7 +9,7 @@ export const TagWiseBlog = () => {
     const [searchData, setSearchData] = useState()
     let { tag } = useParams()
     const context = useContext(blogContext);
-    let { theme } = context;
+    let { theme, url } = context;
 
     const darkTheme = createTheme({
         palette: {
@@ -22,7 +22,7 @@ export const TagWiseBlog = () => {
     useEffect(() => {
         console.log(tag)
 
-        fetch(`http://localhost:5000/api/v1/search?tag=${tag}`).then(res => res.json()).then(data => {
+        fetch(`${url}/api/v1/search?tag=${tag}`).then(res => res.json()).then(data => {
 
             setSearchData(data.result);
 
