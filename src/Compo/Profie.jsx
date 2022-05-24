@@ -37,15 +37,15 @@ export const Profie = () => {
         profileSet()
         setFollow((profile?.followers)?.includes(loggedinUser?.profile.user))
 
-        if (profile && (JSON.stringify(profile) !== JSON.stringify(JSON.parse(localStorage.getItem("user"))?.profile))) {
-            console.log('not same')
-            let newJson = JSON.parse(localStorage.getItem("user"))
-            newJson.profile = profile.oneUser;
-            localStorage.setItem("user", JSON.stringify(newJson))
-        }
-        else {
-            console.log('s');
-        }
+        // if (profile && (JSON.stringify(profile) !== JSON.stringify(JSON.parse(localStorage.getItem("user"))?.profile))) {
+        //     console.log('not same')
+        //     let newJson = JSON.parse(localStorage.getItem("user"))
+        //     newJson.profile = profile.oneUser;
+        //     localStorage.setItem("user", JSON.stringify(newJson))
+        // }
+        // else {
+        //     console.log('s');
+        // }
 
         // eslint-disable-next-line
     }, [profile, loggedinUser])

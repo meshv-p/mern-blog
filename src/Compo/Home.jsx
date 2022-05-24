@@ -63,30 +63,31 @@ export const Home = () => {
 
                 <Container sx={{ pt: 2 }}>
                     <CssBaseline />
-                    {
-                        isLoading && <Spinner />
-                    }
-                    {
-                        allBlogs &&
 
-                        <InfiniteScroll
-                            dataLength={allBlogs.length} //This is important field to render the next data
-                            next={fetchData}
-                            hasMore={allBlogs.length !== totalPage}
-                            loader={<Spinner />}
-                            pullDownToRefreshContent={
-                                <h3 style={{ textAlign: 'center' }}>&#8595; Pull down to refresh</h3>
-                            }
-                            releaseToRefreshContent={
-                                <h3 style={{ textAlign: 'center' }}>&#8593; Release to refresh</h3>
-                            }
-                        >
+                    <React.Suspense fallback={<Spinner />}>
 
-                            {allBlogs.map(blog => (
-                                <Blog blog={blog} key={blog._id} theme={theme} />
-                            ))}
-                        </InfiniteScroll>
-                    }
+                        {
+                            allBlogs &&
+
+                            <InfiniteScroll
+                                dataLength={allBlogs.length} //This is important field to render the next data
+                                next={fetchData}
+                                hasMore={allBlogs.length !== totalPage}
+                                loader={<Spinner />}
+                                pullDownToRefreshContent={
+                                    <h3 style={{ textAlign: 'center' }}>&#8595; Pull down to refresh</h3>
+                                }
+                                releaseToRefreshContent={
+                                    <h3 style={{ textAlign: 'center' }}>&#8593; Release to refresh</h3>
+                                }
+                            >
+
+                                {allBlogs.map(blog => (
+                                    <Blog blog={blog} key={blog._id} theme={theme} />
+                                ))}
+                            </InfiniteScroll>
+                        }
+                    </React.Suspense>
 
                 </Container>
             </ThemeProvider>

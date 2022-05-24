@@ -153,8 +153,9 @@ export const Blog = ({ blog, theme, BlogType = 'title' }) => {
                         }}>
                             {blog.title}
                         </Typography>
+                        <Typography dangerouslySetInnerHTML={{ __html: (blog?.desc)?.slice(0, 50) }} variant='body2' color="text.secondary">
+                        </Typography>
                         <Typography variant='body2' color="text.secondary">
-                            {blog.desc}
                             {
                                 BlogType === 'user' && (
                                     <Stack direction='column'>

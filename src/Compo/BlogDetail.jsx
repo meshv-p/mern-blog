@@ -40,7 +40,13 @@ export const BlogDetail = () => {
             },
         },
     });
+    var stringToHTML = function (str) {
+        var dom = document.createElement('div');
+        dom.innerHTML = str;
+        console.log(dom, typeof dom, dom.childNodes)
 
+        // return dom;
+    };
     useEffect(() => {
         // console.log(loggedinUser?.authToken, url);
         setProgress(10)
@@ -52,9 +58,6 @@ export const BlogDetail = () => {
         })
         getComment()
 
-        // let { findBlog: [a] } = data ?? ''
-        // console.log(data ?? data, a, error, isLoading)
-        // console.log(blog);
     }, [])
 
 
@@ -136,174 +139,175 @@ export const BlogDetail = () => {
 
                 <CssBaseline />
                 <Container sx={{ py: 2 }}>
-                    {
-                        isLoading && <Spinner />
-                    }
+
                     {/* {
                         error && <div>{error}</div>
                     } */}
-                    {
-                        !isLoading && blog &&
-                        // <Card sx={{ background: '#bbdefb' || '#e3f2fd' }}>
-                        <Card >
-                            <Typography sx={{ m: 1 }}>
-                                <Button variant="outlined" onClick={() => {
-                                    if (history(-1)) {
+                    <React.Suspense fallback={<Spinner />}>
+                        {
+                            blog &&
+                            // <Card sx={{ background: '#bbdefb' || '#e3f2fd' }}>
 
-                                        history(-1)
-                                    }
-                                    history('/')
-                                }
+                            <Card >
+                                <Typography sx={{ m: 1 }}>
+                                    <Button variant="outlined" onClick={() => {
+                                        if (history(-1)) {
 
-
-                                }
-
-                                    color="inherit" startIcon={<ArrowBackIosNewIcon />}>
-                                    Go back
-                                </Button>
-                            </Typography>
-                            <CardHeader
-                                avatar={
-                                    <UserAvatar src={blog.user[0]?.Profile_pic} name={blog.user[0]?.username ?? 'User'} />
-
-                                }
-                                title={
-                                    <Link to={`/user/${blog.user[0]?.user}`}>
-                                        {blog.user[0]?.username}
-                                    </Link>
-                                }
-                                subheader={new Date(blog.createdAt).toLocaleString()}
-                                action={
-                                    <IconButton aria-label="settings">
-                                        <MoreVertIcon />
-                                    </IconButton>
-                                }
-                            />
-                            <CardMedia
-                                component="img"
-                                alt="green iguana"
-                                height="440"
-                                image={'https://source.unsplash.com/random/300x200'}
-                                loading='lazy'
-                                decoding='async'
-                            />
-                            <CardContent >
-                                <Typography variant='h4'>
-                                    {blog.title}
-                                    {/* <Typography>#tag</Typography> */}
-                                    <Stack direction="row" gap={2} sx={{ my: 1 }}>
-                                        {
-                                            blog.tag.map(tag => (
-                                                // <React.Fragment key={tag}>
-                                                <Link to={`/t/${tag}`} key={tag}>
-                                                    <Typography component="span" sx={{ cursor: 'pointer', padding: .8, border: 1, borderColor: stringToColor(tag), borderRadius: 1, ":hover": { background: stringToRgba(tag) } }}>
-                                                        <span  ># </span>
-                                                        <span style={{ color: stringToColor(tag) }}>{tag} </span>
-                                                    </Typography>
-                                                </Link>
-                                                // </React.Fragment>
-                                            ))
+                                            history(-1)
                                         }
-                                    </Stack>
-                                    {/* {blog.title} */}
+                                        history('/')
+                                    }
+
+
+                                    }
+
+                                        color="inherit" startIcon={<ArrowBackIosNewIcon />}>
+                                        Go back
+                                    </Button>
                                 </Typography>
-                                <Typography variant='body2' sx={{ my: 2 }} color="text.secondary">
-                                    {blog.desc}
-                                    {/* {blog.desc} */}
-                                </Typography>
+                                <CardHeader
+                                    avatar={
+                                        <UserAvatar src={blog.user[0]?.Profile_pic} name={blog.user[0]?.username ?? 'User'} />
 
-                                <Divider sx={{ mt: 2 }} />
-
-                                <Box sx={{ my: 2 }}>
-                                    <Typography variant='body1'>Comments:</Typography>
-                                </Box>
-                                {
-                                    loggedinUser ?
-                                        <form onSubmit={handleSubmit}>
-
-                                            <TextField
-                                                id="outlined-multiline-static"
-                                                label="Add a comment"
-                                                multiline
-                                                rows={3}
-                                                fullWidth
-                                                value={commentByUser}
-                                                onChange={e => setCommentByUser(e.target.value)}
-                                            />
-                                            <Stack spacing={2} sx={{ mt: 2 }} direction="row">
-                                                <Button variant="contained" type="submit" onClick={handleSubmit}>Submit</Button>
-                                                <Button variant="text">Cancel</Button>
-                                            </Stack>
-                                        </form>
-                                        :
-                                        <Typography>Login to comment</Typography>
-                                }
-
-
-
-                                {/* comment part */}
-                                {
-                                    comment.length !== 0 ?
-
-                                        <InfiniteScroll
-                                            dataLength={comment?.length} //This is important field to render the next data
-                                            next={getComment}
-                                            hasMore={(comment?.length) !== totalPage}
-                                            // {console.log(comment,totalPage)}
-                                            loader={<Spinner />}
-                                            pullDownToRefreshContent={
-                                                <h3 style={{ textAlign: 'center' }}>&#8595; Pull down to refresh</h3>
+                                    }
+                                    title={
+                                        <Link to={`/user/${blog.user[0]?.user}`}>
+                                            {blog.user[0]?.username}
+                                        </Link>
+                                    }
+                                    subheader={new Date(blog.createdAt).toLocaleString()}
+                                    action={
+                                        <IconButton aria-label="settings">
+                                            <MoreVertIcon />
+                                        </IconButton>
+                                    }
+                                />
+                                <CardMedia
+                                    component="img"
+                                    alt="green iguana"
+                                    height="440"
+                                    image={'https://source.unsplash.com/random/300x200'}
+                                    loading='lazy'
+                                    decoding='async'
+                                />
+                                <CardContent >
+                                    <Typography variant='h4'>
+                                        {blog.title}
+                                        {/* <Typography>#tag</Typography> */}
+                                        <Stack direction="row" gap={2} sx={{ my: 1 }}>
+                                            {
+                                                blog.tag.map(tag => (
+                                                    // <React.Fragment key={tag}>
+                                                    <Link to={`/t/${tag}`} key={tag}>
+                                                        <Typography component="span" sx={{ cursor: 'pointer', padding: .8, border: 1, borderColor: stringToColor(tag), borderRadius: 1, ":hover": { background: stringToRgba(tag) } }}>
+                                                            <span  ># </span>
+                                                            <span style={{ color: stringToColor(tag) }}>{tag} </span>
+                                                        </Typography>
+                                                    </Link>
+                                                    // </React.Fragment>
+                                                ))
                                             }
-                                            releaseToRefreshContent={
-                                                <h3 style={{ textAlign: 'center' }}>&#8593; Release to refresh</h3>
-                                            }
-                                        >
+                                        </Stack>
+                                        {/* {blog.title} */}
+                                    </Typography>
+                                    <span>
+                                        <Typography dangerouslySetInnerHTML={{ __html: blog.desc }} variant='body2' sx={{ my: 2 }} color="text.secondary">
+                                        </Typography>
+                                    </span>
 
-                                            {comment?.map(c => (
-                                                <Paper variant="outlined" sx={{ m: 2 }} key={c._id}>
-                                                    <Card>
-                                                        <CardHeader
-                                                            avatar={
-                                                                <UserAvatar src={c.user[0]?.Profile_pic} name={c.user[0]?.username ?? 'User'} />
-                                                            }
-                                                            title={c.user[0].username ? c.user[0].username : loggedinUser.profile.username}
-                                                            subheader={c.createdAt ? new Date(c?.createdAt)?.toLocaleString() : new Date().toLocaleString()}
-                                                            action={
-                                                                <IconButton aria-label="settings">
-                                                                    <MoreVertIcon />
-                                                                </IconButton>
-                                                            }
-                                                        />
-                                                        <CardContent>
-                                                            <Typography>{c.title}</Typography>
-                                                        </CardContent>
-                                                        <CardActions>
-                                                            <Button variant="outlined" color='success' startIcon={<FavoriteIcon />}>
-                                                                9 Like
-                                                            </Button>
+                                    <Divider sx={{ mt: 2 }} />
 
-                                                        </CardActions>
-                                                    </Card>
-                                                </Paper>
-                                            ))}
+                                    <Box sx={{ my: 2 }}>
+                                        <Typography variant='body1'>Comments:</Typography>
+                                    </Box>
+                                    {
+                                        loggedinUser ?
+                                            <form onSubmit={handleSubmit}>
 
-                                        </InfiniteScroll>
-                                        :
-                                        <Typography sx={{ m: 2 }} color="GrayText">No comments yet.Be first commenter on this post...</Typography>
-
-                                }
-
-
-                            </CardContent>
+                                                <TextField
+                                                    id="outlined-multiline-static"
+                                                    label="Add a comment"
+                                                    multiline
+                                                    rows={3}
+                                                    fullWidth
+                                                    value={commentByUser}
+                                                    onChange={e => setCommentByUser(e.target.value)}
+                                                />
+                                                <Stack spacing={2} sx={{ mt: 2 }} direction="row">
+                                                    <Button variant="contained" type="submit" onClick={handleSubmit}>Submit</Button>
+                                                    <Button variant="text">Cancel</Button>
+                                                </Stack>
+                                            </form>
+                                            :
+                                            <Typography>Login to comment</Typography>
+                                    }
 
 
 
-                        </Card>
-                    }
+                                    {/* comment part */}
+                                    {
+                                        comment.length !== 0 ?
+
+                                            <InfiniteScroll
+                                                dataLength={comment?.length} //This is important field to render the next data
+                                                next={getComment}
+                                                hasMore={(comment?.length) !== totalPage}
+                                                // {console.log(comment,totalPage)}
+                                                loader={<Spinner />}
+                                                pullDownToRefreshContent={
+                                                    <h3 style={{ textAlign: 'center' }}>&#8595; Pull down to refresh</h3>
+                                                }
+                                                releaseToRefreshContent={
+                                                    <h3 style={{ textAlign: 'center' }}>&#8593; Release to refresh</h3>
+                                                }
+                                            >
+
+                                                {comment?.map(c => (
+                                                    <Paper variant="outlined" sx={{ m: 2 }} key={c._id}>
+                                                        <Card>
+                                                            <CardHeader
+                                                                avatar={
+                                                                    <UserAvatar src={c.user[0]?.Profile_pic} name={c.user[0]?.username ?? 'User'} />
+                                                                }
+                                                                title={c.user[0].username ? c.user[0].username : loggedinUser.profile.username}
+                                                                subheader={c.createdAt ? new Date(c?.createdAt)?.toLocaleString() : new Date().toLocaleString()}
+                                                                action={
+                                                                    <IconButton aria-label="settings">
+                                                                        <MoreVertIcon />
+                                                                    </IconButton>
+                                                                }
+                                                            />
+                                                            <CardContent>
+                                                                <Typography>{c.title}</Typography>
+                                                            </CardContent>
+                                                            <CardActions>
+                                                                <Button variant="outlined" color='success' startIcon={<FavoriteIcon />}>
+                                                                    9 Like
+                                                                </Button>
+
+                                                            </CardActions>
+                                                        </Card>
+                                                    </Paper>
+                                                ))}
+
+                                            </InfiniteScroll>
+                                            :
+                                            <Typography sx={{ m: 2 }} color="GrayText">No comments yet.Be first commenter on this post...</Typography>
+
+                                    }
+
+
+                                </CardContent>
+
+
+
+                            </Card>
+                        }
+                    </React.Suspense>
 
                 </Container>
             </ThemeProvider>
 
-        </div>
+        </div >
     )
 }
