@@ -18,6 +18,7 @@ export const SearchPage = () => {
     });
 
     const handleChange = (event, newAlignment) => {
+        console.log(newAlignment, 'chenged')
         if (!newAlignment) return
         setAlignment(newAlignment);
     };

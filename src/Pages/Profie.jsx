@@ -215,10 +215,10 @@ export const Profie = () => {
                                             alignItems="center"
                                             spacing={22}
                                         >
-                                            <div>
+                                            <span>
 
                                                 @{profile?.username}
-                                            </div>
+                                            </span>
                                             <Stack direction='row' gap={2}>
 
                                                 <Stack
