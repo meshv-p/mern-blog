@@ -34,8 +34,8 @@ export const Profie = () => {
         console.log(profile);
         // a.find(({user})=>user === '6245cdd699b2268d8bccc4ce')
 
-        profile && console.log((profile?.oneUser[0]?.followers)?.find(({ user }) => user === loggedinUser?.profile.user), 'current user is following?');
-        profile && setFollow((profile?.oneUser[0]?.followers)?.find(({ user }) => user === loggedinUser?.profile.user))
+        profile && console.log((profile?.followers)?.find(({ user }) => user === loggedinUser?.profile.user), 'current user is following?');
+        profile && setFollow((profile?.followers)?.find(({ user }) => user === loggedinUser?.profile.user))
 
         // if (profile && (JSON.stringify(profile) !== JSON.stringify(JSON.parse(localStorage.getItem("user"))?.profile))) {
         //     console.log('not same')
@@ -189,7 +189,7 @@ export const Profie = () => {
                                             onClick={() => setModelOpen(true)}
                                             sx={{ display: 'flex', justifyContent: 'center', width: 100, height: 100, mt: -8 }}
                                             loading='lazy'
-                                            src={profile?.oneUser[0]?.Profile_pic} alt="Username"  {...stringAvatar(profile?.oneUser[0]?.username ? profile?.oneUser[0]?.username : 'Abc')} />
+                                            src={profile?.Profile_pic} alt="Username"  {...stringAvatar(profile?.username ? profile?.username : 'Abc')} />
                                     </Box>
 
                                     {
@@ -217,7 +217,7 @@ export const Profie = () => {
                                         >
                                             <div>
 
-                                                @{profile?.oneUser[0]?.username}
+                                                @{profile?.username}
                                             </div>
                                             <Stack direction='row' gap={2}>
 
@@ -229,7 +229,7 @@ export const Profie = () => {
                                                     role="button"
                                                     onClick={() => { showFollowers() }}
                                                 >
-                                                    <Typography>{(profile?.oneUser[0]?.followers)?.length}</Typography>
+                                                    <Typography>{(profile?.followers)?.length}</Typography>
                                                     <Divider variant='middle' sx={{ width: '100%' }} />
 
                                                     <Typography>Followers</Typography>
@@ -247,7 +247,7 @@ export const Profie = () => {
                                                 >
                                                     {/* <div> */}
 
-                                                    <Typography>{(profile?.oneUser[0]?.following)?.length}</Typography>
+                                                    <Typography>{(profile?.following)?.length}</Typography>
                                                     <Divider variant='middle' sx={{ width: '100%' }} />
 
                                                     <Typography>Following</Typography>
@@ -260,7 +260,7 @@ export const Profie = () => {
                                         <Modal modelOpen={modelOpen} setModelOpen={setModelOpen} >
                                             <List>
                                                 {
-                                                    (profile?.oneUser[0]?.followers)?.map(user => (
+                                                    (profile?.followers)?.map(user => (
                                                         <>
                                                             <ListItem secondaryAction={
                                                                 <IconButton edge="end" aria-label="delete">
@@ -314,11 +314,11 @@ export const Profie = () => {
 
                                         <Stack direction="row" alignItems="center" gap={3}>
                                             <Typography>Email:</Typography>
-                                            {profile && profile?.oneUser[0]?.email}
+                                            {profile && profile?.email}
                                         </Stack>
                                         <Stack direction="row" alignItems="center" gap={3}>
                                             <Typography>Number:</Typography>
-                                            {profile && profile?.oneUser[0]?.number}
+                                            {profile && profile?.number}
                                         </Stack>
                                         {/* <Upload user={userId} /> */}
 
