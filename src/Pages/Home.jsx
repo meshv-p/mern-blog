@@ -3,10 +3,11 @@ import React, { useState, useContext, useEffect } from 'react'
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { Box } from '@mui/system';
 import blogContext from '../Context/BlogContext';
-import { Blog } from './Blog';
-import { Spinner } from './Spinner';
+import { Blog } from '../Compo/Blog';
+import { Spinner } from '../Compo/Spinner';
 import InfiniteScroll from 'react-infinite-scroll-component';
-import { Alert, AlertBar } from './Alert';
+import { Alert, AlertBar } from '../Compo/Alert';
+import { NetworkStatus } from '../Compo/NetworkStatus';
 export const Home = () => {
     const [allBlogs, setAllBlogs] = useState([]);
 
@@ -15,7 +16,7 @@ export const Home = () => {
     const [totalPage, setTotalPage] = useState(null)
     const context = useContext(blogContext)
     const [open, setOpen] = useState(false)
-    let { theme, url, setProgress } = context;
+    let { theme, url, setProgress, userIsOnline, setUserIsOnline } = context;
     const darkTheme = createTheme({
         palette: {
             mode: theme ? 'light' : 'dark',
@@ -32,6 +33,8 @@ export const Home = () => {
         fetchData()
         // setOpen(false)
         console.log(navigator.onLine ? 'you are online' : 'you are offline')
+        console.log(navigator.online)
+        // setUserIsOnline(navigator.online)
 
     }, [])
 
@@ -65,9 +68,11 @@ export const Home = () => {
                     <CssBaseline />
 
                     <React.Suspense fallback={<Spinner />}>
-
                         {
-                            allBlogs &&
+                            !userIsOnline && <NetworkStatus />
+                        }
+                        {
+                            userIsOnline && allBlogs &&
 
                             <InfiniteScroll
                                 dataLength={allBlogs.length} //This is important field to render the next data

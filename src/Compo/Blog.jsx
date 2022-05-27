@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext } from 'react'
-import { Avatar, AvatarGroup, Box, Button, Card, CardActions, CardContent, CardHeader, IconButton, Stack, Typography } from '@mui/material'
+import { AvatarGroup, Box, Button, Card, CardActions, CardContent, CardHeader, IconButton, Stack, Typography } from '@mui/material'
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import SendIcon from '@mui/icons-material/Send';
 import ChatBubbleIcon from '@mui/icons-material/ChatBubble';
@@ -16,7 +16,7 @@ export const Blog = ({ blog, theme, BlogType = 'title' }) => {
     const [totalLike, setTotalLike] = useState(0)
     const [open, setOpen] = useState(false)
     const context = useContext(blogContext)
-    let { url, loggedinUser, setUserNotification, userNotification } = context;
+    let { url, loggedinUser } = context;
 
     let history = useNavigate();
 
@@ -42,21 +42,21 @@ export const Blog = ({ blog, theme, BlogType = 'title' }) => {
         //     // console.clear()
         // }
         // console.log(totalLike);
-    }, [])
+    }, [blog.like, blog.totalLike])
 
 
 
 
 
-    const openBlog = (e) => {
-        // console.log(e.currentTarget.dataset.key)
-        let id = e.currentTarget.dataset.key;
-        if (BlogType === 'user') {
-            return history(`/user/${id}`);
+    // const openBlog = (e) => {
+    //     // console.log(e.currentTarget.dataset.key)
+    //     let id = e.currentTarget.dataset.key;
+    //     if (BlogType === 'user') {
+    //         return history(`/user/${id}`);
 
-        }
-        history(`/blog/${id}`);
-    }
+    //     }
+    //     history(`/blog/${id}`);
+    // }
     const openProfile = (e) => {
         console.log(e.currentTarget.dataset.key)
         let id = e.currentTarget.dataset.key;
@@ -81,6 +81,11 @@ export const Blog = ({ blog, theme, BlogType = 'title' }) => {
             }
         }).then(res => res.json()).then(data => console.log(data))
     }
+
+    function goToBlogComment() {
+        history(`/blog/${blog._id}#Comments`)
+    }
+
 
     const removeAlert = () => {
         setOpen(false)
@@ -208,7 +213,7 @@ export const Blog = ({ blog, theme, BlogType = 'title' }) => {
                             </IconButton>
                             {/* <Typography>{blog.totalLike ? blog.totalLike : 0}  likes</Typography> */}
                             <Typography>{totalLike ? totalLike : 0} likes</Typography>
-                            <IconButton>
+                            <IconButton onClick={goToBlogComment}>
                                 <ChatBubbleIcon />
                             </IconButton>
                             <Box sx={{ flexGrow: 1 }} />

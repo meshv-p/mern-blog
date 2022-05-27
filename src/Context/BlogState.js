@@ -8,7 +8,7 @@ export const BlogState = (props) => {
   const [searchData, setSearchData] = useState([]);
   const [search, setSearch] = React.useState("");
   const [blog, setBlog] = useState(null);
-
+  const [userIsOnline, setUserIsOnline] = useState(navigator.onLine);
   const [alignment, setAlignment] = React.useState("title");
 
   let url = process.env.REACT_APP_URL;
@@ -26,6 +26,16 @@ export const BlogState = (props) => {
       // console.log(loggedinUser);
     }
   }, []);
+
+  useEffect(() => {
+    window.addEventListener("offline", userOffline);
+    // console.log(navigator.onLine, "changes user online");
+    setUserIsOnline(navigator.onLine);
+  }, [navigator]);
+
+  function userOffline() {
+    setUserIsOnline(false);
+  }
 
   const toggleTheme = () => {
     setTheme(!theme);
@@ -50,6 +60,8 @@ export const BlogState = (props) => {
         setSearch,
         blog,
         setBlog,
+        userIsOnline,
+        setUserIsOnline,
       }}
     >
       {props.children}

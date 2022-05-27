@@ -29,5 +29,5 @@ export const useFetch = (url, depth = "") => {
 
 
 
-    return { data, isLoading, error }
+    return { data, isLoading, error, setData }
 }

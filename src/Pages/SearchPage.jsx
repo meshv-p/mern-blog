@@ -1,7 +1,7 @@
 import { Container, CssBaseline, Paper, Stack, ToggleButton, ToggleButtonGroup, Typography } from '@mui/material'
-import React, { useContext, useEffect } from 'react'
+import React, { useContext } from 'react'
 import blogContext from '../Context/BlogContext';
-import { Blog } from './Blog';
+import { Blog } from '../Compo/Blog';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 
 export const SearchPage = () => {

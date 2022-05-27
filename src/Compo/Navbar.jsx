@@ -23,7 +23,7 @@ export const Navbar = () => {
     let history = useNavigate()
 
     useEffect(() => {
-        console.log('pic change')
+        // console.log('pic change')
         setCurrentUser(loggedinUser?.profile);
         // console.log(loggedinUser.profile.user)
     }, [loggedinUser])

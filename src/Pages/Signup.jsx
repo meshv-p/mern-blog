@@ -37,7 +37,7 @@ export const Signup = () => {
 
     const handleSubmit = () => {
         console.log(signupDetails)
-        let res = fetch(`${url}/api/v1/users/`, {
+        fetch(`${url}/api/v1/users/`, {
             method: "POST",
             body: JSON.stringify(signupDetails),
             headers: {

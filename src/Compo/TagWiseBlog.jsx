@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom'
 import blogContext from '../Context/BlogContext'
 import { Blog } from './Blog'
 import { ThemeProvider, createTheme } from '@mui/material/styles';
-import { Card, CardContent, CardMedia, Container, CssBaseline, Typography } from '@mui/material';
+import { Card, CardContent, Container, CssBaseline, Typography } from '@mui/material';
 
 export const TagWiseBlog = () => {
     const [searchData, setSearchData] = useState()

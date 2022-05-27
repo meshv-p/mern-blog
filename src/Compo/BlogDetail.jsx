@@ -1,6 +1,6 @@
-import { Avatar, backdropClasses, Button, Card, CardActionArea, CardActions, CardContent, CardHeader, CardMedia, Container, CssBaseline, Divider, Icon, IconButton, Paper, Stack, TextField, Typography } from '@mui/material'
+import { Button, Card, CardActions, CardContent, CardHeader, CardMedia, Container, CssBaseline, Divider, IconButton, Paper, Stack, TextField, Typography } from '@mui/material'
 import { Box } from '@mui/system'
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useCallback, useContext, useEffect, useState } from 'react'
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
@@ -9,7 +9,6 @@ import blogContext from '../Context/BlogContext';
 import { Spinner } from './Spinner';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import InfiniteScroll from 'react-infinite-scroll-component';
-import { useFetch } from '../hooks/useFetch';
 import { UserAvatar } from './UserAvatar';
 
 
@@ -40,13 +39,18 @@ export const BlogDetail = () => {
             },
         },
     });
-    var stringToHTML = function (str) {
-        var dom = document.createElement('div');
-        dom.innerHTML = str;
-        console.log(dom, typeof dom, dom.childNodes)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    const getComment = useCallback((pageNo) => {
+        // console.log(page);
+        fetch(`${url}/api/v1/comment/${blogId}/?page=${pageNo || page}`).then(res => res.json()).then(data => {
+            setComment(comment.concat(data.commentByBlog));
+            setTotalPage(data.length)
+            // console.log(data);
+            setPage(page + 1)
+        })
+        console.log(page);
+    })
 
-        // return dom;
-    };
     useEffect(() => {
         // console.log(loggedinUser?.authToken, url);
         setProgress(10)
@@ -61,16 +65,7 @@ export const BlogDetail = () => {
     }, [])
 
 
-    const getComment = (pageNo) => {
-        // console.log(page);
-        fetch(`${url}/api/v1/comment/${blogId}/?page=${pageNo || page}`).then(res => res.json()).then(data => {
-            setComment(comment.concat(data.commentByBlog));
-            setTotalPage(data.length)
-            // console.log(data);
-            setPage(page + 1)
-        })
-        console.log(page);
-    }
+
 
 
 
@@ -139,10 +134,10 @@ export const BlogDetail = () => {
 
                 <CssBaseline />
                 <Container sx={{ py: 2 }}>
+                    {
+                        isLoading && <Spinner />
+                    }
 
-                    {/* {
-                        error && <div>{error}</div>
-                    } */}
                     <React.Suspense fallback={<Spinner />}>
                         {
                             blog &&
@@ -218,7 +213,7 @@ export const BlogDetail = () => {
                                     <Divider sx={{ mt: 2 }} />
 
                                     <Box sx={{ my: 2 }}>
-                                        <Typography variant='body1'>Comments:</Typography>
+                                        <Typography variant='body1' id="Comments">Comments:</Typography>
                                     </Box>
                                     {
                                         loggedinUser ?

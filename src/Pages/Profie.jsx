@@ -1,4 +1,4 @@
-import { Avatar, Button, Card, CardContent, CardMedia, Container, CssBaseline, Dialog, DialogContent, DialogTitle, Divider, IconButton, Paper, Stack, TextField, Typography } from '@mui/material'
+import { Avatar, Button, Card, CardContent, CardMedia, Container, CssBaseline, Dialog, DialogContent, DialogTitle, Divider, IconButton, Paper, Stack, Typography } from '@mui/material'
 import { Box } from '@mui/system'
 import React, { useContext, useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
@@ -6,12 +6,10 @@ import { ThemeProvider, createTheme } from '@mui/material/styles';
 import blogContext from '../Context/BlogContext';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import { useFetch } from '../hooks/useFetch';
-import { UserAvatar } from './UserAvatar';
-import { Upload } from './Upload';
+import { Upload } from '../Compo/Upload';
 import CloseIcon from '@mui/icons-material/Close';
-import EditIcon from '@mui/icons-material/Edit';
-import DoneIcon from '@mui/icons-material/Done';
-import CloudUploadIcon from '@mui/icons-material/CloudUpload';
+import { UserAvatar } from '../Compo/UserAvatar';
+import { Modal } from '../Compo/Modal';
 
 
 export const Profie = () => {
@@ -23,7 +21,7 @@ export const Profie = () => {
 
     let history = useNavigate()
     let { userId } = useParams()
-    let { data: profile, isLoading, error } = useFetch(`${url}/api/v1/users/${userId}`)
+    let { data: profile, isLoading, error, setData } = useFetch(`${url}/api/v1/users/${userId}`)
 
     useEffect(() => {
 
@@ -32,10 +30,11 @@ export const Profie = () => {
         }
 
 
-
-        console.log(profile, loggedinUser);
-        profileSet()
-        setFollow((profile?.followers)?.includes(loggedinUser?.profile.user))
+        console.log(profile);
+        profile && console.log((profile?.oneUser?.followers)?.includes(loggedinUser?.profile.user), 'current user is following?');
+        // profileSet()
+        console.log(profile?.oneUser?.followers)
+        profile && setFollow((profile?.oneUser?.followers)?.includes(loggedinUser?.profile.user))
 
         // if (profile && (JSON.stringify(profile) !== JSON.stringify(JSON.parse(localStorage.getItem("user"))?.profile))) {
         //     console.log('not same')
@@ -58,7 +57,7 @@ export const Profie = () => {
 
     const profileSet = () => {
         fetch(`${url}/api/v1/users/${userId}`).then(res => res.json()).then(data => {
-            // setProfile(data.oneUser)
+            setData(data)
             // console.log(profile);
             // console.log(profile?.followers);
             // console.log(follow);
@@ -88,7 +87,7 @@ export const Profie = () => {
                 'Authorization': `${loggedinUser.authToken}`
             }
         }).then(res => res.json()).then(data => {
-            // console.log(data);
+            console.log(data);
             profileSet()
         })
     }
@@ -112,6 +111,24 @@ export const Profie = () => {
         return color;
     }
 
+
+
+    function showFollowers() {
+        setModelOpen(true);
+        <Modal modelOpen={modelOpen} setModelOpen={setModelOpen} >
+
+            'followers list'
+        </Modal>
+
+    }
+
+    function showFollowing() {
+        <Modal modelOpen={modelOpen} setModelOpen={setModelOpen}>
+            {
+                'followings list'
+            }
+        </Modal>
+    }
 
 
     function stringAvatar(name) {
@@ -164,11 +181,6 @@ export const Profie = () => {
                                 />
                                 <CardContent >
                                     <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-                                        {/* <Avatar sx={{ display: 'flex', justifyContent: 'center', width: 100, height: 100, mt: -8 }}>
-                                            
-                                        </Avatar> */}
-                                        {/* <UserAvatar src={profile?.oneUser?.Profile_pic} name={profile?.oneUser?.user[0]?.username ?? 'User'} big={true} /> */}
-
                                         <Avatar
                                             onClick={() => setModelOpen(true)}
                                             sx={{ display: 'flex', justifyContent: 'center', width: 100, height: 100, mt: -8 }}
@@ -187,22 +199,7 @@ export const Profie = () => {
 
 
 
-                                    {/* <Dialog open={modelOpen} onClose={() => setModelOpen(false)} maxWidth='md'>
-                                        <DialogTitle>
-                                            <Stack direction='row' justifyContent='space-between' alignItems='center'>
 
-                                                Profile pic
-
-                                                <IconButton onClick={() => setModelOpen(false)}>
-                                                    <CloseIcon />
-                                                </IconButton>
-
-                                            </Stack>
-                                        </DialogTitle>
-                                        <DialogContent>
-                                            <img src={profile?.oneUser?.Profile_pic} alt={profile?.oneUser?.Username} width='auto' style={{ borderRadius: 8, width: '1200px', height: 'auto' }} />
-                                        </DialogContent>
-                                    </Dialog> */}
                                     {/* Profile data goes here */}
 
                                     <div style={{ display: 'flex', justifyContent: 'center' }}>
@@ -221,9 +218,12 @@ export const Profie = () => {
                                             <Stack direction='row' gap={2}>
 
                                                 <Stack
+                                                    sx={{ cursor: 'pointer' }}
                                                     direction="column"
                                                     justifyContent="center"
                                                     alignItems="center"
+                                                    role="button"
+                                                    onClick={() => { showFollowers() }}
                                                 >
                                                     <Typography>{(profile?.oneUser?.followers)?.length}</Typography>
                                                     <Divider variant='middle' sx={{ width: '100%' }} />
@@ -231,9 +231,15 @@ export const Profie = () => {
                                                     <Typography>Followers</Typography>
                                                 </Stack>
                                                 <Stack
+                                                    sx={{ cursor: 'pointer' }}
+
                                                     direction="column"
                                                     justifyContent="center"
                                                     alignItems="center"
+                                                    role="button"
+                                                    onClick={() => { showFollowing() }}
+
+
                                                 >
                                                     {/* <div> */}
 
@@ -260,18 +266,17 @@ export const Profie = () => {
                                             alignItems="center"
                                             spacing={2}
                                         >
-                                            <Button
 
-                                                variant={
-                                                    follow !== null ?
-                                                        'contained'
-                                                        : 'text'
-                                                }
+                                            {
+                                                follow ? <Button variant='contained' onClick={followUser}>Unfollow</Button> : <Button variant='text' onClick={followUser}>Follow</Button>
+                                            }
+                                            {/* <Button variant={
+                                                follow !== null ?
+                                                    'contained'
+                                                    : 'text'
+                                            }
+                                                onClick={followUser}>{follow !== null ? 'Unfollow' : 'Follow'}</Button> */}
 
-
-
-
-                                                onClick={followUser}>{follow !== null ? 'Unfollow' : 'Follow'}</Button>
                                             <Button variant='outlined'>Message</Button>
 
 

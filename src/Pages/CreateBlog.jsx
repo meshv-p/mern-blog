@@ -6,6 +6,9 @@ import { useNavigate } from 'react-router-dom';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import MuiAlert from '@mui/material/Alert';
 import { Editor } from '@tinymce/tinymce-react';
+import ChipInput from 'material-ui-chip-input'
+
+// uncontrolled input
 
 export const CreateBlog = () => {
     const context = useContext(blogContext);
@@ -51,7 +54,7 @@ export const CreateBlog = () => {
     const handleSubmit = async () => {
         await console.log('before', blog);
         await setBlog({ ...blog, desc: editorRef.current.getContent() })
-        await setBlog({ ...blog, tag: blog.tag?.split(',') })
+        // await setBlog({ ...blog, tag: blog.tag?.split(',') })
         await console.log('after', blog);
 
         let res = await fetch(`${url}/api/v1/blogs`, {
@@ -92,6 +95,14 @@ export const CreateBlog = () => {
     });
     const useDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches;
     const isSmallScreen = window.matchMedia('(max-width: 1023.5px)').matches;
+
+
+    function handleAddChip(chip) {
+        setBlog({ ...blog, tag: [...blog.tag, chip] })
+    }
+    function handleDeleteChip(chipToDelete) {
+        setBlog({ ...blog, tag: blog.tag.filter((tag) => tag !== chipToDelete) })
+    }
 
     return (
         <>
@@ -180,12 +191,27 @@ export const CreateBlog = () => {
 
                                 }}
                             />
-                            <button onClick={log}>Log editor content</button>
+                            <div className="chip" style={{ color: 'red' }}>
+
+                                <ChipInput
+                                    name="tags"
+                                    variant="outlined"
+                                    label="Tags"
+                                    fullWidth
+                                    color='error'
+                                    onChange={e => {
+                                        console.log(e)
+                                    }}
+                                    value={blog.tag}
+                                    onAdd={(chip) => handleAddChip(chip)}
+                                    onDelete={(chip, index) => handleDeleteChip(chip, index)}
+                                />
+                            </div>
                             {/* <TextField
                                 multiline
                                 rows={4}
                                 id="descText" name='desc' onChange={e => setBlog({ ...blog, [e.target.name]: e.target.value })} label="Enter your descriptions.." variant="outlined" /> */}
-                            <TextField id="tag" name='tag' onChange={e => setBlog({ ...blog, tag: e.target.value })} label="Tags" variant="outlined" />
+                            {/* <TextField id="tag" name='tag' onChange={e => setBlog({ ...blog, tag: e.target.value })} label="Tags" variant="outlined" /> */}
                             <Button variant="text">Cancel</Button>
                             <Button variant="contained" onClick={handleSubmit}>Publish blog</Button>
 

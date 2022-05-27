@@ -1,15 +1,15 @@
 import "./App.css";
-import { Home } from "./Compo/Home";
+import { Home } from "./Pages/Home";
 import { Navbar } from "./Compo/Navbar";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { Profie } from "./Compo/Profie";
-import { Login } from "./Compo/Login";
-import { Signup } from "./Compo/Signup";
+import { Profie } from "./Pages/Profie";
+import { Login } from "./Pages/Login";
+import { Signup } from "./Pages/Signup";
 import { BlogState } from "./Context/BlogState";
 import { BlogDetail } from "./Compo/BlogDetail";
 import { BottomNavbar } from "./Compo/BottomNavbar";
-import { CreateBlog } from "./Compo/CreateBlog";
-import { SearchPage } from "./Compo/SearchPage";
+import { CreateBlog } from "./Pages/CreateBlog";
+import { SearchPage } from "./Pages/SearchPage";
 import { Upload } from "./Compo/Upload";
 import { TagWiseBlog } from "./Compo/TagWiseBlog";
 
