@@ -219,7 +219,12 @@ export const Profie = () => {
 
                                                 @{profile?.username}
                                             </span>
-                                            <Stack direction='row' gap={2}>
+                                            <Stack direction='row'
+                                                sx={{ m: 0, ml: 0 }}
+                                                style={{ margin: 0, marginLeft: '90px' }}
+                                                className='this'
+                                            // sx={{ ml: { xs: '90px', md: '176px' }, margin: { xs: 0, md: 'auto' } }}
+                                            >
 
                                                 <Stack
                                                     sx={{ cursor: 'pointer' }}

@@ -150,7 +150,7 @@ export const Blog = ({ blog, theme, BlogType = 'title' }) => {
                     subheader={new Date(blog.createdAt).toLocaleString()}
                 />
                 <CardContent sx={{ cursor: 'pointer' }} data-key={blog._id}>
-                    <Link to={`/blog/${blog._id}`}>
+                    <Link to={BlogType === 'user' ? `/user/${blog._id}` : `/blog/${blog._id}`}>
                         <Typography variant='body1' sx={{
                             ":hover": {
                                 color: 'blue'
@@ -224,9 +224,15 @@ export const Blog = ({ blog, theme, BlogType = 'title' }) => {
                             </IconButton>
 
                         </CardActions> : <Stack spacing={2} direction='row' sx={{ p: 1 }}>
-                            <Button variant='text'>
-                                Follow
-                            </Button>
+                            {
+                                (blog?.followers)?.find(({ user }) => user === loggedinUser?.profile.user) ?
+                                    <Button variant='contained'>
+                                        UnFollow
+                                    </Button> :
+                                    <Button variant='text'>
+                                        Follow
+                                    </Button>
+                            }
                             <Button variant='outlined'>Message</Button>
                         </Stack>
                 }
