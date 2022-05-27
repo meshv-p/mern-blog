@@ -26,10 +26,10 @@ export const Upload = ({ user, profile }) => {
 
     useEffect(() => {
         setEditProfile({
-            username: profile.oneUser.username,
-            email: profile.oneUser.email,
-            number: profile.oneUser.number,
-            Profile_pic: profile.oneUser.Profile_pic
+            username: profile.username,
+            email: profile.email,
+            number: profile.number,
+            Profile_pic: profile.Profile_pic
         })
 
         console.log(editProfile.Profile_pic, profile)
