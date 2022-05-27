@@ -1,4 +1,4 @@
-import { Avatar, Button, Card, CardContent, CardMedia, Container, CssBaseline, Dialog, DialogContent, DialogTitle, Divider, IconButton, Paper, Stack, Typography } from '@mui/material'
+import { Avatar, Button, Card, CardContent, CardMedia, Container, CssBaseline, Dialog, DialogContent, DialogTitle, Divider, IconButton, List, ListItem, ListItemAvatar, ListItemText, Paper, Stack, Typography } from '@mui/material'
 import { Box } from '@mui/system'
 import React, { useContext, useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
@@ -10,6 +10,7 @@ import { Upload } from '../Compo/Upload';
 import CloseIcon from '@mui/icons-material/Close';
 import { UserAvatar } from '../Compo/UserAvatar';
 import { Modal } from '../Compo/Modal';
+import { Blog } from '../Compo/Blog';
 
 
 export const Profie = () => {
@@ -31,10 +32,13 @@ export const Profie = () => {
 
 
         console.log(profile);
-        profile && console.log((profile?.oneUser?.followers)?.includes(loggedinUser?.profile.user), 'current user is following?');
-        // profileSet()
-        console.log(profile?.oneUser?.followers)
-        profile && setFollow((profile?.oneUser?.followers)?.includes(loggedinUser?.profile.user))
+
+        profile && console.log((profile?.oneUser[0]?.followers)?.map(user => (
+            user._id === loggedinUser?.profile.user
+        )), 'current user is following?');
+        profile && setFollow((profile?.oneUser[0]?.followers)?.map(user => (
+            user.user === loggedinUser?.profile.user
+        )))
 
         // if (profile && (JSON.stringify(profile) !== JSON.stringify(JSON.parse(localStorage.getItem("user"))?.profile))) {
         //     console.log('not same')
@@ -114,8 +118,9 @@ export const Profie = () => {
 
 
     function showFollowers() {
+        console.log('opening followeres list')
         setModelOpen(true);
-        <Modal modelOpen={modelOpen} setModelOpen={setModelOpen} >
+        return <Modal modelOpen={modelOpen} setModelOpen={setModelOpen} >
 
             'followers list'
         </Modal>
@@ -123,7 +128,9 @@ export const Profie = () => {
     }
 
     function showFollowing() {
-        <Modal modelOpen={modelOpen} setModelOpen={setModelOpen}>
+        setModelOpen(true);
+
+        return <Modal modelOpen={modelOpen} setModelOpen={setModelOpen}>
             {
                 'followings list'
             }
@@ -185,7 +192,7 @@ export const Profie = () => {
                                             onClick={() => setModelOpen(true)}
                                             sx={{ display: 'flex', justifyContent: 'center', width: 100, height: 100, mt: -8 }}
                                             loading='lazy'
-                                            src={profile?.oneUser?.Profile_pic} alt="Username"  {...stringAvatar(profile?.oneUser?.username ? profile?.oneUser?.username : 'Abc')} />
+                                            src={profile?.oneUser[0]?.Profile_pic} alt="Username"  {...stringAvatar(profile?.oneUser[0]?.username ? profile?.oneUser[0]?.username : 'Abc')} />
                                     </Box>
 
                                     {
@@ -213,7 +220,7 @@ export const Profie = () => {
                                         >
                                             <div>
 
-                                                @{profile?.oneUser?.username}
+                                                @{profile?.oneUser[0]?.username}
                                             </div>
                                             <Stack direction='row' gap={2}>
 
@@ -225,7 +232,7 @@ export const Profie = () => {
                                                     role="button"
                                                     onClick={() => { showFollowers() }}
                                                 >
-                                                    <Typography>{(profile?.oneUser?.followers)?.length}</Typography>
+                                                    <Typography>{(profile?.oneUser[0]?.followers)?.length}</Typography>
                                                     <Divider variant='middle' sx={{ width: '100%' }} />
 
                                                     <Typography>Followers</Typography>
@@ -243,7 +250,7 @@ export const Profie = () => {
                                                 >
                                                     {/* <div> */}
 
-                                                    <Typography>{(profile?.oneUser?.following)?.length}</Typography>
+                                                    <Typography>{(profile?.oneUser[0]?.following)?.length}</Typography>
                                                     <Divider variant='middle' sx={{ width: '100%' }} />
 
                                                     <Typography>Following</Typography>
@@ -253,7 +260,31 @@ export const Profie = () => {
 
                                         </Stack>
 
+                                        <Modal modelOpen={modelOpen} setModelOpen={setModelOpen} >
+                                            <List>
+                                                {
+                                                    (profile?.oneUser[0]?.followers)?.map(user => (
+                                                        <>
+                                                            <ListItem secondaryAction={
+                                                                <IconButton edge="end" aria-label="delete">
+                                                                    g
+                                                                </IconButton>
+                                                            }>
+                                                                <ListItemAvatar>
 
+                                                                    <UserAvatar src={user?.Profile_pic} name={user.username} />
+                                                                </ListItemAvatar>
+                                                                <ListItemText
+                                                                    primary={user.username}
+                                                                    secondary='Secondary text'
+                                                                />
+                                                            </ListItem>
+                                                        </>
+                                                    ))
+                                                }
+                                            </List>
+
+                                        </Modal>
                                     </div>
                                     {
                                         loggedinUser?.profile?._id !== userId &&
@@ -268,7 +299,7 @@ export const Profie = () => {
                                         >
 
                                             {
-                                                follow ? <Button variant='contained' onClick={followUser}>Unfollow</Button> : <Button variant='text' onClick={followUser}>Follow</Button>
+                                                follow.length !== 0 ? <Button variant='contained' onClick={followUser}>Unfollow</Button> : <Button variant='text' onClick={followUser}>Follow</Button>
                                             }
                                             {/* <Button variant={
                                                 follow !== null ?
@@ -286,11 +317,11 @@ export const Profie = () => {
 
                                         <Stack direction="row" alignItems="center" gap={3}>
                                             <Typography>Email:</Typography>
-                                            {profile && profile?.oneUser?.email}
+                                            {profile && profile?.oneUser[0]?.email}
                                         </Stack>
                                         <Stack direction="row" alignItems="center" gap={3}>
                                             <Typography>Number:</Typography>
-                                            {profile && profile?.oneUser?.number}
+                                            {profile && profile?.oneUser[0]?.number}
                                         </Stack>
                                         {/* <Upload user={userId} /> */}
 
