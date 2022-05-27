@@ -32,13 +32,10 @@ export const Profie = () => {
 
 
         console.log(profile);
+        // a.find(({user})=>user === '6245cdd699b2268d8bccc4ce')
 
-        profile && console.log((profile?.oneUser[0]?.followers)?.map(user => (
-            user._id === loggedinUser?.profile.user
-        )), 'current user is following?');
-        profile && setFollow((profile?.oneUser[0]?.followers)?.map(user => (
-            user.user === loggedinUser?.profile.user
-        )))
+        profile && console.log((profile?.oneUser[0]?.followers)?.find(({ user }) => user === loggedinUser?.profile.user), 'current user is following?');
+        profile && setFollow((profile?.oneUser[0]?.followers)?.find(({ user }) => user === loggedinUser?.profile.user))
 
         // if (profile && (JSON.stringify(profile) !== JSON.stringify(JSON.parse(localStorage.getItem("user"))?.profile))) {
         //     console.log('not same')
@@ -299,7 +296,7 @@ export const Profie = () => {
                                         >
 
                                             {
-                                                follow.length !== 0 ? <Button variant='contained' onClick={followUser}>Unfollow</Button> : <Button variant='text' onClick={followUser}>Follow</Button>
+                                                follow ? <Button variant='contained' onClick={followUser}>Unfollow</Button> : <Button variant='text' onClick={followUser}>Follow</Button>
                                             }
                                             {/* <Button variant={
                                                 follow !== null ?
