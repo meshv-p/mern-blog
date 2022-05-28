@@ -27,7 +27,7 @@ export const Home = () => {
     });
 
     useEffect(() => {
-
+        window.history.scrollRestoration = 'manual'
         setOpen(true)
         setIsLoading(true)
         fetchData()
