@@ -10,19 +10,20 @@ import { Spinner } from './Spinner';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import { UserAvatar } from './UserAvatar';
+import { useFetch } from '../hooks/useFetch';
 
 
 export const BlogDetail = () => {
     const [comment, setComment] = useState([])
-    const [isLoading, setIsLoading] = useState(false)
+    // const [isLoading, setIsLoading] = useState(false)
     const [commentByUser, setCommentByUser] = useState("")
     const [page, setPage] = useState(1)
     const [totalPage, setTotalPage] = useState(null)
 
     let { blogId } = useParams()
     const context = useContext(blogContext)
-    let { theme, url, loggedinUser, blog, setBlog, setProgress } = context;
-    // let { data: { blog }, isLoading, error } = useFetch(`${url}/api/v1/blog/${blogId}`)
+    let { theme, url, loggedinUser, setProgress } = context;
+    let { data: blog, isLoading, error } = useFetch(`${url}/api/v1/blog/${blogId}`)
     // if (data !== null) {
 
     //     let { findBlog: blog } = data
@@ -54,16 +55,20 @@ export const BlogDetail = () => {
     useEffect(() => {
         // console.log(loggedinUser?.authToken, url);
         setProgress(10)
-        setIsLoading(true)
-        fetch(`${url}/api/v1/blog/${blogId}`).then(res => res.json()).then(data => {
-            setIsLoading(false);
-            setBlog(data.findBlog[0])
-            setProgress(100)
-        })
+        // setIsLoading(true)
+        // fetch(`${url}/api/v1/blog/${blogId}`).then(res => res.json()).then(data => {
+        //     setIsLoading(false);
+        //     setBlog(data.findBlog[0])
+        // })
         getComment()
 
     }, [])
 
+    useEffect(() => {
+
+        blog && setProgress(100)
+
+    }, [blog])
 
 
 
@@ -134,9 +139,9 @@ export const BlogDetail = () => {
 
                 <CssBaseline />
                 <Container sx={{ py: 2 }}>
-                    {
+                    {/* {
                         isLoading && <Spinner />
-                    }
+                    } */}
 
                     <React.Suspense fallback={<Spinner />}>
                         {

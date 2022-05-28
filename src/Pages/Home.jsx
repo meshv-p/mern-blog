@@ -40,17 +40,29 @@ export const Home = () => {
 
 
 
-
+    let cache = {}
 
     const fetchData = () => {
         setProgress(10)
-        fetch(`${url}/api/v1/blogs/?page=${pageNo}`).then(res => res.json()).then(data => {
-            // fetch(`${url}/api/v1/blogs`).then(res => res.json()).then(data => {
-            setAllBlogs(allBlogs?.concat(data.allBlogs))
-            setTotalPage(data.length)
+        let URL = `${url}/api/v1/blogs/?page=${pageNo}`
+        if (cache[URL]) {
+            console.log('fetched from cache');
+            setAllBlogs(allBlogs)
             setIsLoading(false);
             setOpen(false)
-        })
+        }
+
+        else {
+
+            fetch(`${url}/api/v1/blogs/?page=${pageNo}`).then(res => res.json()).then(data => {
+                // fetch(`${url}/api/v1/blogs`).then(res => res.json()).then(data => {
+                cache[URL] = data.allBlogs
+                setAllBlogs(allBlogs?.concat(data.allBlogs))
+                setTotalPage(data.length)
+                setIsLoading(false);
+                setOpen(false)
+            })
+        }
         setProgress(100)
         setPageNo(pageNo + 1)
     }
