@@ -27,7 +27,7 @@ export const Profie = () => {
     useEffect(() => {
 
         console.log(profile);
-        if (!JSON.parse(localStorage.getItem("user")) || !sessionStorage.getItem("user")) {
+        if (!JSON.parse(localStorage.getItem("user")) && !sessionStorage.getItem("user")) {
             console.log('Not logged in')
             return history('/login')
         }
