@@ -269,7 +269,7 @@ export const Profie = () => {
                                                         <>
                                                             <ListItem secondaryAction={
                                                                 <IconButton edge="end" aria-label="delete">
-                                                                    g
+
                                                                 </IconButton>
                                                             }>
                                                                 <ListItemAvatar>
@@ -278,7 +278,7 @@ export const Profie = () => {
                                                                 </ListItemAvatar>
                                                                 <ListItemText
                                                                     primary={user.username}
-                                                                    secondary='Secondary text'
+                                                                    secondary={user?.name ?? ''}
                                                                 />
                                                             </ListItem>
                                                         </>
