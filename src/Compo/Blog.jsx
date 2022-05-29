@@ -77,7 +77,7 @@ export const Blog = ({ blog, theme, BlogType = 'title' }) => {
             // body: JSON.stringify(loginDetails),
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': JSON.parse(localStorage.getItem('user')).authToken
+                'Authorization': (JSON.parse(localStorage.getItem('user'))?.authToken || JSON.parse(sessionStorage.getItem('user'))?.authToken)
             }
         }).then(res => res.json()).then(data => console.log(data))
     }

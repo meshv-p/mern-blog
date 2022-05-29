@@ -22,7 +22,10 @@ export const BlogState = (props) => {
 
     if (localStorage.getItem("user")) {
       // console.log(JSON.parse(localStorage.getItem("user")));
-      setLoggedinUser(JSON.parse(localStorage.getItem("user")));
+      setLoggedinUser(
+        JSON.parse(localStorage.getItem("user")) ||
+          JSON.parse(sessionStorage.getItem("user"))
+      );
       // console.log(loggedinUser);
     }
   }, []);

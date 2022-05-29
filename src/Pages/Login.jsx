@@ -9,17 +9,18 @@ import blogContext from '../Context/BlogContext';
 import { Link, useNavigate } from 'react-router-dom';
 import CloseIcon from '@mui/icons-material/Close';
 import MuiAlert from '@mui/material/Alert';
-
+import LoadingButton from '@mui/lab/LoadingButton';
+import { } from '@mui/system/esm/createBox'
 
 export const Login = () => {
     let history = useNavigate()
     const context = useContext(blogContext)
     let { theme, url, setLoggedinUser } = context;
 
-    const [loginDetails, setLoginDetails] = useState({ username: "", password: "" })
+    const [loginDetails, setLoginDetails] = useState({ username: "", password: "", remember: false })
     const [loginError, setLoginError] = useState(null)
     const [open, setOpen] = React.useState(false);
-
+    const [loading, setLoading] = useState(false)
     const darkTheme = createTheme({
         palette: {
             mode: theme ? 'light' : 'dark',
@@ -31,6 +32,7 @@ export const Login = () => {
 
     const handleSubmit = async () => {
         // console.log(loginDetails)
+        setLoading(true)
         let res = await fetch(`${url}/api/v1/users/login/`, {
             method: "POST",
             body: JSON.stringify(loginDetails),
@@ -40,32 +42,23 @@ export const Login = () => {
         })
         let status = await res.json()
         if (res.status === 200) {
+            setLoading(false)
             setLoggedinUser(status)
             setLoginError({ type: "success", msg: "Logged in success." })
-            localStorage.setItem('user', JSON.stringify(status))
+
+            loginDetails.remember && localStorage.setItem('user', JSON.stringify(status))
+            !loginDetails.remember && sessionStorage.setItem('user', JSON.stringify(status))
+
             history('/')
         }
         else {
+            setLoading(false)
 
             setLoginError({ type: "error", msg: status.msg })
             setOpen(true)
             // await console.log(loginError);
         }
-        // .then(data => {
 
-        //     if (data.status == 401) {
-        //         console.log(data.json().then(d => console.log(d)));
-        //         // setLoginError(data.json())
-        //     }
-
-        //     console.log(loginError);
-        //     // data.json()
-        // })
-        // .then(d => (
-        //     // setLoggedinUser(d),
-        //     // localStorage.setItem('user', JSON.stringify(d)),
-        //     history('/')
-        // ))
 
     }
     const handleClose = (event, reason) => {
@@ -125,10 +118,23 @@ export const Login = () => {
                                 onChange={(e) => setLoginDetails({ ...loginDetails, [e.target.name]: e.target.value })}
                             />
                             <FormControlLabel
+                                name='remember'
+                                onChange={e => setLoginDetails({ ...loginDetails, [e.target.name]: e.target.checked })}
                                 control={<Checkbox value="remember" color="primary" />}
                                 label="Remember me"
                             />
-                            <Button
+                            <LoadingButton
+                                onClick={handleSubmit}
+                                loading={loading}
+                                loadingPosition="end"
+                                variant="contained"
+                                fullWidth
+                                sx={{ mt: 3, mb: 2 }}
+                                endIcon={<LockOutlinedIcon />} s
+                            >
+                                sign in
+                            </LoadingButton>
+                            {/* <Button
                                 type="button"
                                 fullWidth
                                 variant="contained"
@@ -136,7 +142,7 @@ export const Login = () => {
                                 onClick={handleSubmit}
                             >
                                 Sign In
-                            </Button>
+                            </Button> */}
                             <Grid container>
                                 <Grid item xs>
                                     <Link to="#" variant="body2" color='blue'>

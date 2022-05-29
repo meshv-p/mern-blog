@@ -12,9 +12,14 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import blogContext from '../Context/BlogContext';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import LoadingButton from '@mui/lab/LoadingButton';
+import { useFetch } from '../hooks/useFetch';
+import { Alert, Snackbar } from '@mui/material';
 
 export const Signup = () => {
+
+    let history = useNavigate()
 
     const [signupDetails, setSignupDetails] = useState({
         username: "",
@@ -22,9 +27,13 @@ export const Signup = () => {
         email: "",
         name: ""
     })
+    const [loading, setLoading] = useState(false)
+    const [signinError, setSigninError] = useState("")
+    const [open, setOpen] = React.useState(false);
 
     const context = useContext(blogContext)
     let { theme, url } = context;
+    // let { isLoading, data, error } = useFetch(`${url}/api/v1/users/`)
     const darkTheme = createTheme({
         palette: {
             mode: theme ? 'light' : 'dark',
@@ -35,18 +44,41 @@ export const Signup = () => {
     });
 
 
-    const handleSubmit = () => {
+    const handleSubmit = async () => {
         console.log(signupDetails)
-        fetch(`${url}/api/v1/users/`, {
+
+
+
+        let res = await fetch(`${url}/api/v1/users/`, {
             method: "POST",
             body: JSON.stringify(signupDetails),
             headers: {
                 'Content-Type': 'application/json',
             }
-        }).then(data => data.json()).then(d => console.log(d))
+        })
+        let status = await res.json()
+        if (res.status === 200) {
+            setLoading(false)
+            setSigninError({ type: "success", msg: "Account Created successfully." })
+            // localStorage.setItem('user', JSON.stringify(status))
+            history('/login')
+        }
+        else {
+            setLoading(false)
+            console.log(status.msg, status);
+            setSigninError({ type: "error", msg: status.err })
+            setOpen(true)
+            // await console.log(loginError);
+        }
 
     }
+    const handleClose = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
 
+        setOpen(false);
+    };
     return (
         <div>
             <ThemeProvider theme={darkTheme}>
@@ -125,7 +157,18 @@ export const Signup = () => {
                                     />
                                 </Grid>
                             </Grid>
-                            <Button
+                            <LoadingButton
+                                onClick={handleSubmit}
+                                loading={loading}
+                                loadingPosition="end"
+                                variant="contained"
+                                sx={{ mt: 3, mb: 2 }}
+                                fullWidth
+                                endIcon={<LockOutlinedIcon />}
+                            >
+                                sign in
+                            </LoadingButton>
+                            {/* <Button
                                 type="button"
                                 fullWidth
                                 variant="contained"
@@ -133,7 +176,7 @@ export const Signup = () => {
                                 onClick={handleSubmit}
                             >
                                 Sign Up
-                            </Button>
+                            </Button> */}
                             <Grid container justifyContent="flex-end">
                                 <Grid item>
                                     <Link to="/login" variant="body2">
@@ -143,6 +186,12 @@ export const Signup = () => {
                             </Grid>
                         </Box>
                     </Box>
+                    <Snackbar open={open} autoHideDuration={1000} onClose={handleClose}
+                        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}>
+                        <Alert onClose={handleClose} severity={signinError?.type} sx={{ width: '100%' }}>
+                            {signinError?.msg}
+                        </Alert>
+                    </Snackbar>
                 </Container>
             </ThemeProvider>
         </div>
