@@ -11,6 +11,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import { UserAvatar } from '../Compo/UserAvatar';
 import { Modal } from '../Compo/Modal';
 import { Blog } from '../Compo/Blog';
+import BasicTabs from '../Compo/BasicTabs';
 
 
 export const Profie = () => {
@@ -263,29 +264,10 @@ export const Profie = () => {
 
                                         </Stack>
 
-                                        <Modal modelOpen={modelOpen} setModelOpen={setModelOpen} >
-                                            <List>
-                                                {
-                                                    (profile?.followers)?.map(user => (
-                                                        <>
-                                                            <ListItem secondaryAction={
-                                                                <IconButton edge="end" aria-label="delete">
+                                        <Modal title='Friends' modelOpen={modelOpen} setModelOpen={setModelOpen} >
+                                            <BasicTabs followers={profile?.followers} following={profile?.following} />
 
-                                                                </IconButton>
-                                                            }>
-                                                                <ListItemAvatar>
 
-                                                                    <UserAvatar src={user?.Profile_pic} name={user.username} />
-                                                                </ListItemAvatar>
-                                                                <ListItemText
-                                                                    primary={user.username}
-                                                                    secondary={user?.name ?? ''}
-                                                                />
-                                                            </ListItem>
-                                                        </>
-                                                    ))
-                                                }
-                                            </List>
 
                                         </Modal>
                                     </div>

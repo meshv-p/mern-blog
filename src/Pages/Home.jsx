@@ -37,7 +37,11 @@ export const Home = () => {
 
     }, [])
 
-
+    window.addEventListener("online", () => {
+        // setUserIsOnline(navigator.onLine);
+        // fetchData()
+        // console.log("online", navigator.onLine);
+    });
 
     // useEffect(() => {
     //     setUserIsOnline(navigator.onLine)

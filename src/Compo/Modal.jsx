@@ -1,10 +1,8 @@
 import React from 'react'
 import CloseIcon from '@mui/icons-material/Close';
-import { Stack, Dialog, DialogContent, DialogTitle, IconButton, Button } from '@mui/material';
-import { Box } from '@mui/system';
-import { UserAvatar } from './UserAvatar';
+import { Stack, Dialog, DialogContent, DialogTitle, IconButton } from '@mui/material';
 
-export const Modal = ({ modelOpen, setModelOpen, children }) => {
+export const Modal = ({ title, modelOpen, setModelOpen, children }) => {
 
     return (
         <div>
@@ -13,7 +11,7 @@ export const Modal = ({ modelOpen, setModelOpen, children }) => {
                     <Stack direction='row' justifyContent='space-between' alignItems='center'>
 
                         {/* <Typography > */}
-                        Edit Profile
+                        {title}
                         {/* </Typography> */}
 
                         <IconButton onClick={() => setModelOpen(false)}>
