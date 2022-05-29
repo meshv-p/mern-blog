@@ -26,12 +26,13 @@ export const Profie = () => {
 
     useEffect(() => {
 
-        if (!JSON.parse(localStorage.getItem("user")) || !JSON.parse(sessionStorage.getItem("user"))) {
+        console.log(profile);
+        if (!JSON.parse(localStorage.getItem("user")) || !sessionStorage.getItem("user")) {
+            console.log('Not logged in')
             return history('/login')
         }
 
 
-        console.log(profile);
         // a.find(({user})=>user === '6245cdd699b2268d8bccc4ce')
 
         profile && console.log((profile?.followers)?.find(({ user }) => user === loggedinUser?.profile.user), 'current user is following?');
