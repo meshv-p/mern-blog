@@ -26,7 +26,7 @@ export const Profie = () => {
 
     useEffect(() => {
 
-        if (!JSON.parse(localStorage.getItem("user"))) {
+        if (!JSON.parse(localStorage.getItem("user")) || !JSON.parse(sessionStorage.getItem("user"))) {
             return history('/login')
         }
 
@@ -317,6 +317,10 @@ export const Profie = () => {
                                     }
                                     <Stack gap={3}>
 
+                                        <Stack direction="row" alignItems="center" gap={3}>
+                                            <Typography>Name:</Typography>
+                                            {profile && profile?.name}
+                                        </Stack>
                                         <Stack direction="row" alignItems="center" gap={3}>
                                             <Typography>Email:</Typography>
                                             {profile && profile?.email}

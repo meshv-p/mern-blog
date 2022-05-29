@@ -17,7 +17,7 @@ export const Login = () => {
     const context = useContext(blogContext)
     let { theme, url, setLoggedinUser } = context;
 
-    const [loginDetails, setLoginDetails] = useState({ username: "", password: "", remember: false })
+    const [loginDetails, setLoginDetails] = useState({ username: "", password: "", remember: true })
     const [loginError, setLoginError] = useState(null)
     const [open, setOpen] = React.useState(false);
     const [loading, setLoading] = useState(false)
@@ -119,6 +119,7 @@ export const Login = () => {
                             />
                             <FormControlLabel
                                 name='remember'
+                                checked={loginDetails.remember}
                                 onChange={e => setLoginDetails({ ...loginDetails, [e.target.name]: e.target.checked })}
                                 control={<Checkbox value="remember" color="primary" />}
                                 label="Remember me"
@@ -130,7 +131,7 @@ export const Login = () => {
                                 variant="contained"
                                 fullWidth
                                 sx={{ mt: 3, mb: 2 }}
-                                endIcon={<LockOutlinedIcon />} s
+                                endIcon={<LockOutlinedIcon />}
                             >
                                 sign in
                             </LoadingButton>

@@ -31,10 +31,18 @@ export const BlogState = (props) => {
   }, []);
 
   useEffect(() => {
+    window.addEventListener("online", () => {
+      setUserIsOnline(navigator.onLine);
+      // console.log("online", navigator.onLine);
+    });
+    window.addEventListener("offline", () => {
+      setUserIsOnline(navigator.onLine);
+      // console.log("offline", navigator.onLine);
+    });
     window.addEventListener("offline", userOffline);
     // console.log(navigator.onLine, "changes user online");
     setUserIsOnline(navigator.onLine);
-  }, [navigator]);
+  }, []);
 
   function userOffline() {
     setUserIsOnline(false);

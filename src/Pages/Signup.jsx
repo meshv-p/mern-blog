@@ -48,7 +48,7 @@ export const Signup = () => {
         console.log(signupDetails)
 
 
-
+        setLoading(true)
         let res = await fetch(`${url}/api/v1/users/`, {
             method: "POST",
             body: JSON.stringify(signupDetails),
@@ -59,13 +59,14 @@ export const Signup = () => {
         let status = await res.json()
         if (res.status === 200) {
             setLoading(false)
+            setOpen(true)
             setSigninError({ type: "success", msg: "Account Created successfully." })
             // localStorage.setItem('user', JSON.stringify(status))
-            history('/login')
+            // history('/login')
         }
         else {
             setLoading(false)
-            console.log(status.msg, status);
+            console.log(status);
             setSigninError({ type: "error", msg: status.err })
             setOpen(true)
             // await console.log(loginError);
@@ -128,11 +129,11 @@ export const Signup = () => {
                                 <Grid item xs={12}>
                                     <TextField
                                         required
+                                        type='email'
                                         fullWidth
                                         id="email"
                                         label="Email Address"
                                         name="email"
-                                        autoComplete="email"
                                         value={signupDetails.email}
                                         onChange={(e) => setSignupDetails({ ...signupDetails, [e.target.name]: e.target.value })}
                                     />

@@ -15,6 +15,7 @@ import blogContext from '../Context/BlogContext';
 export const Upload = ({ user, profile }) => {
     const [editProfile, setEditProfile] = useState({
         username: "",
+        name: "",
         email: "",
         number: "",
         Profile_pic: null
@@ -27,6 +28,7 @@ export const Upload = ({ user, profile }) => {
     useEffect(() => {
         setEditProfile({
             username: profile.username,
+            name: profile.name,
             email: profile.email,
             number: profile.number,
             Profile_pic: profile.Profile_pic
@@ -104,7 +106,8 @@ export const Upload = ({ user, profile }) => {
 
                                     </label>
                                 </Stack>
-                                <TextField id="outlined-basic" value={editProfile.username} name="username" onChange={e => setEditProfile({ ...editProfile, [e.target.name]: e.target.value })} label="Name" variant="outlined" />
+                                <TextField id="outlined-basic" value={editProfile.username} name="username" onChange={e => setEditProfile({ ...editProfile, [e.target.name]: e.target.value })} label="Username" variant="outlined" />
+                                <TextField id="outlined-basic" value={editProfile.name} name="name" onChange={e => setEditProfile({ ...editProfile, [e.target.name]: e.target.value })} label="Name" variant="outlined" />
                                 <TextField id="outlined-basic" value={editProfile.email} name="email" onChange={e => setEditProfile({ ...editProfile, [e.target.name]: e.target.value })} label="Email" variant="outlined" />
                                 <TextField id="outlined-basic" value={editProfile.number} name="number" onChange={e => setEditProfile({ ...editProfile, [e.target.name]: e.target.value })} label="Number" variant="outlined" />
                                 {/* <TextField id="outlined-basic" label="Number" variant="outlined" /> */}
