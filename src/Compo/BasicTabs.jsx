@@ -58,7 +58,7 @@ export default function BasicTabs({ followers, following }) {
             <TabPanel value={value} index={0}>
                 <List>
                     {
-                        followers?.map(user => (
+                        followers.length !== 0 ? followers?.map(user => (
                             <ListItem key={user._id} secondaryAction={
                                 <IconButton edge="end" aria-label="delete">
 
@@ -74,6 +74,7 @@ export default function BasicTabs({ followers, following }) {
                                 />
                             </ListItem>
                         ))
+                            : "Not followers other"
                     }
                 </List>
             </TabPanel>

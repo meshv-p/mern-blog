@@ -152,6 +152,21 @@ export const Profie = () => {
     }
 
 
+
+
+
+    function openModal(type) {
+        console.log(type);
+        setModelOpen(true);
+        <Modal title='Profile Pic' modelOpen={modelOpen} setModelOpen={setModelOpen} >
+
+
+            type
+
+        </Modal >
+        // return type
+    }
+
     return (
         <>
             <ThemeProvider theme={darkTheme}>
@@ -188,11 +203,20 @@ export const Profie = () => {
                                 <CardContent >
                                     <Box sx={{ display: 'flex', justifyContent: 'center' }}>
                                         <Avatar
-                                            onClick={() => setModelOpen(true)}
+                                            onClick={(e) => {
+                                                // console.log(e)
+                                                setModelOpen(true);
+                                            }
+
+
+                                            }
                                             sx={{ display: 'flex', justifyContent: 'center', width: 100, height: 100, mt: -8 }}
                                             loading='lazy'
                                             src={profile?.Profile_pic} alt="Username"  {...stringAvatar(profile?.username ? profile?.username : 'Abc')} />
                                     </Box>
+
+
+
 
                                     {
                                         loggedinUser?.profile?._id === userId &&
@@ -204,6 +228,7 @@ export const Profie = () => {
                                     }
 
 
+                                    {/* <Modal title='Profile Pic' modelOpen={modelOpen} setModelOpen={setModelOpen}  {...'dsd'} /> */}
 
 
                                     {/* Profile data goes here */}
@@ -266,8 +291,6 @@ export const Profie = () => {
 
                                         <Modal title='Friends' modelOpen={modelOpen} setModelOpen={setModelOpen} >
                                             <BasicTabs followers={profile?.followers} following={profile?.following} />
-
-
 
                                         </Modal>
                                     </div>
