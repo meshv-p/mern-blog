@@ -2,6 +2,7 @@ import { Box, Button, Dialog, DialogContent, DialogTitle, IconButton, TextField 
 import React, { useContext, useEffect, useState } from 'react'
 import Stack from '@mui/material/Stack';
 import styled from '@emotion/styled';
+import LoadingButton from '@mui/lab/LoadingButton';
 
 import { UserAvatar } from './UserAvatar';
 import CloseIcon from '@mui/icons-material/Close';
@@ -20,6 +21,8 @@ export const Upload = ({ user, profile }) => {
         number: profile.number,
         Profile_pic: profile.Profile_pic
     })
+    const [loading, setLoading] = useState(false)
+
     const [updateProfile_pic, setUpdatedProfile_pic] = useState(null);
     const [modelOpen, setModelOpen] = useState(false)
     const context = useContext(blogContext);
@@ -42,6 +45,7 @@ export const Upload = ({ user, profile }) => {
                 'Content-Type': 'application/json',
             }
         }).then(res => res.json()).then(data => {
+            setLoading(false)
             let user = loggedinUser || JSON.parse(localStorage.getItem("user"));
             user.profile = data.newProfile;
             setLoggedinUser(user)
@@ -54,7 +58,7 @@ export const Upload = ({ user, profile }) => {
 
     function handleS(e) {
         e.preventDefault();
-
+        setLoading(true)
         let fd = new FormData()
         fd.append('upload_preset', 'yio8fvkd');
         fd.append('file', editProfile.Profile_pic);
@@ -119,9 +123,22 @@ export const Upload = ({ user, profile }) => {
                                 <TextField id="outlined-basic" value={editProfile.number} name="number" onChange={e => setEditProfile({ ...editProfile, [e.target.name]: e.target.value })} label="Number" variant="outlined" />
                                 {/* <TextField id="outlined-basic" label="Number" variant="outlined" /> */}
 
-                                <Button variant="outlined" type='submit' color='success' startIcon={<DoneIcon />} onClick={handleS} >
+                                {/* <Button variant="outlined" type='submit' color='success' startIcon={<DoneIcon />} onClick={handleS} >
                                     Save
-                                </Button>
+                                </Button> */}
+                                <LoadingButton
+                                    onClick={handleS}
+                                    loading={loading}
+                                    color='success'
+                                    loadingPosition="end"
+                                    variant="outlined"
+                                    fullWidth
+                                    sx={{ mt: 3, mb: 2 }}
+                                    endIcon={<DoneIcon />}
+
+                                >
+                                    Save
+                                </LoadingButton>
                             </Stack>
                         </Box>
 

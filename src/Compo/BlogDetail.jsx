@@ -11,7 +11,7 @@ import FavoriteIcon from '@mui/icons-material/Favorite';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import { UserAvatar } from './UserAvatar';
 import { useFetch } from '../hooks/useFetch';
-
+import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 
 export const BlogDetail = () => {
     const [comment, setComment] = useState([])
@@ -24,10 +24,6 @@ export const BlogDetail = () => {
     const context = useContext(blogContext)
     let { theme, url, loggedinUser, setProgress } = context;
     let { data: blog, isLoading, error } = useFetch(`${url}/api/v1/blog/${blogId}`)
-    // if (data !== null) {
-
-    //     let { findBlog: blog } = data
-    // }
 
     let history = useNavigate()
 
@@ -61,7 +57,10 @@ export const BlogDetail = () => {
         //     setBlog(data.findBlog[0])
         // })
         getComment()
+        window.addEventListener('load', () => {
 
+
+        })
     }, [])
 
     useEffect(() => {
@@ -72,6 +71,18 @@ export const BlogDetail = () => {
 
 
 
+    function handleDelete() {
+        console.log(blog._id)
+        fetch(`${url}/api/v1/blog/${blog._id}`, {
+            method: 'DELETE',
+            headers: {
+                'Authorization': `${loggedinUser.authToken}`
+            }
+        }).then(res => res.json()).then(data => {
+            console.log(data)
+            history('/')
+        })
+    }
 
 
 
@@ -177,8 +188,10 @@ export const BlogDetail = () => {
                                     }
                                     subheader={new Date(blog.createdAt).toLocaleString()}
                                     action={
-                                        <IconButton aria-label="settings">
-                                            <MoreVertIcon />
+                                        blog.user[0]._id === loggedinUser.profile._id &&
+
+                                        <IconButton aria-label="settings" onClick={handleDelete}>
+                                            <DeleteOutlineIcon />
                                         </IconButton>
                                     }
                                 />
