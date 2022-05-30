@@ -104,9 +104,9 @@ export const Upload = ({ user, profile }) => {
                                                 <Button variant="outlined" type='button' component="span" startIcon={<CloudUploadIcon />} >
                                                     Upload
                                                 </Button>
-                                                <Button variant="outlined" type='submit' startIcon={<CloudUploadIcon />} >
+                                                {/* <Button variant="outlined" type='submit' startIcon={<CloudUploadIcon />} >
                                                     Change Pic
-                                                </Button>
+                                                </Button> */}
                                             </>
                                         }
 
