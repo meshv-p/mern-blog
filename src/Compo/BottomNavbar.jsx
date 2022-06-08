@@ -70,7 +70,7 @@ export const BottomNavbar = () => {
                             icon={<AddCircleIcon />}
                         />
                         <BottomNavigationAction
-                            onClick={() => history(`/user/${loggedinUser?.profile?.user}`)}
+                            onClick={() => history(`/user/${loggedinUser?.profile?._id}`)}
                             label={loggedinUser?.profile?.username}
                             value="account"
                             icon={

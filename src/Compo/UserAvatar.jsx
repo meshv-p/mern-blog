@@ -34,7 +34,7 @@ export const UserAvatar = ({ src: url, name = 'User' }) => {
 
 
             },
-            children: name.charAt(0) || 'U',
+            children: name.charAt(0).toUpperCase() || 'U',
         };
     }
 
