@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useRef, useState } from 'react'
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import blogContext from '../Context/BlogContext';
-import { Button, Card, Container, CssBaseline, Stack, TextField, Typography, Snackbar } from '@mui/material';
+import { Button, Card, Container, CssBaseline, Stack, TextField, Typography, Snackbar, Chip, Autocomplete } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import MuiAlert from '@mui/material/Alert';
@@ -20,8 +20,13 @@ export const CreateBlog = () => {
         desc: "",
         tag: []
     })
+    let alert = useRef(document.querySelector('.tox-notification'));
 
     useEffect(() => {
+        console.log(alert, 'a');
+        // if (alert) {
+
+        // }
         // tinymce.init({
         //     selector: 'textarea#descText',  // change this value according to your HTML
         //     plugins: 'a_tinymce_plugin',
@@ -31,7 +36,7 @@ export const CreateBlog = () => {
         // });
         // console.log(tinymce)
 
-    }, [])
+    }, [alert])
 
     const editorRef = useRef(null);
     const log = () => {
@@ -192,8 +197,35 @@ export const CreateBlog = () => {
                                 }}
                             />
                             <div className="chip" style={{ color: 'red' }}>
-
-                                <ChipInput
+                                <Autocomplete
+                                    multiple
+                                    id="tags-filled"
+                                    options={[]}
+                                    defaultValue={[]}
+                                    freeSolo
+                                    onChange={(e, value) => setBlog({ ...blog, tag: (state) => value })
+                                    }
+                                    renderTags={(value, getTagProps) =>
+                                        value.map((option, index) => {
+                                            return (
+                                                <Chip
+                                                    key={index}
+                                                    variant="outlined"
+                                                    label={option}
+                                                    {...getTagProps({ index })}
+                                                />
+                                            );
+                                        })
+                                    }
+                                    renderInput={(params) => (
+                                        <TextField
+                                            {...params}
+                                            label="Tags"
+                                            placeholder="Add a tag and seprate by enter."
+                                        />
+                                    )}
+                                />
+                                {/* <ChipInput
                                     name="tags"
                                     variant="outlined"
                                     label="Tags"
@@ -205,7 +237,7 @@ export const CreateBlog = () => {
                                     value={blog.tag}
                                     onAdd={(chip) => handleAddChip(chip)}
                                     onDelete={(chip, index) => handleDeleteChip(chip, index)}
-                                />
+                                /> */}
                             </div>
                             {/* <TextField
                                 multiline
