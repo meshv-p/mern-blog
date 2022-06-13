@@ -39,7 +39,7 @@ export const UserAvatar = ({ src: url, name = 'User' }) => {
     }
 
     return (
-        <Avatar src={url} alt="Username" {...stringAvatar(name)} title={name} />
+        <Avatar loading='lazy' src={url} alt="Username" {...stringAvatar(name)} title={name} />
 
     )
 }

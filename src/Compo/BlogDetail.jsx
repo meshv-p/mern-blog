@@ -100,6 +100,7 @@ export const BlogDetail = () => {
             }
         }).then(res => res.json()).then((data) => {
             setCommentByUser("");
+            data.newComment = { ...data.newComment, Profile_pic: loggedinUser?.profile?.Profile_pic }
             console.log(comment.unshift(data.newComment))
             // setComment(comment.concat(data.newComment).reverse())
             console.log(comment);
@@ -112,6 +113,20 @@ export const BlogDetail = () => {
 
             // }, 1000);
         })
+
+
+        fetch(`${url}/api/v1/notification/`, {
+            method: 'POST',
+            body: JSON.stringify({
+                from: `${JSON.parse(localStorage.getItem('user')).profile._id}`,
+                to: `${blog.user[0].user}`,
+                text: `has commented on your post - ${commentByUser}.`
+            }),
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': (JSON.parse(localStorage.getItem('user'))?.authToken || JSON.parse(sessionStorage.getItem('user'))?.authToken)
+            }
+        }).then(res => res.json()).then(data => console.log(data));
         // console.log(comment)
     }
 

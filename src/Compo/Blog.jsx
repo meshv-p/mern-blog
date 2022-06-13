@@ -70,6 +70,22 @@ export const Blog = ({ blog, theme, BlogType = 'title' }) => {
             return
         }
 
+        // "from":"123",
+        // "to":"6245c68299b2268d8bccc47d",
+        // "text":"maan has Followed you."
+        fetch(`${url}/api/v1/notification/`, {
+            method: 'POST',
+            body: JSON.stringify({
+                "from": `${JSON.parse(localStorage.getItem('user')).profile._id}`,
+                "to": `${blog.user[0].user}`,
+                "text": `has ${userLiked ? 'unliked' : 'liked'} your blog ${blog.title}.`
+            }),
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': (JSON.parse(localStorage.getItem('user'))?.authToken || JSON.parse(sessionStorage.getItem('user'))?.authToken)
+            }
+        }).then(res => res.json()).then(data => console.log(data));
+
         setTotalLike(userLiked ? totalLike - 1 : totalLike + 1)
         setUserLiked(!userLiked)
         fetch(`${url}/api/v1/blog/like/${blog._id}`, {

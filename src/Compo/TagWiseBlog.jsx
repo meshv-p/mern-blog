@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom'
 import blogContext from '../Context/BlogContext'
 import { Blog } from './Blog'
 import { ThemeProvider, createTheme } from '@mui/material/styles';
-import { Card, CardContent, Container, CssBaseline, Typography } from '@mui/material';
+import { Card, CardContent, CardHeader, Container, CssBaseline, Skeleton, Typography } from '@mui/material';
 
 export const TagWiseBlog = () => {
     const [searchData, setSearchData] = useState()
@@ -20,7 +20,7 @@ export const TagWiseBlog = () => {
         },
     });
     useEffect(() => {
-        console.log(tag)
+        // console.log(tag)
 
         fetch(`${url}/api/v1/search?tag=${tag}`).then(res => res.json()).then(data => {
 
@@ -73,12 +73,53 @@ export const TagWiseBlog = () => {
             <Container sx={{ pt: 2 }}>
                 <CssBaseline />
                 {
+                    !searchData && (
+                        <Card sx={{ m: 2 }}>
+                            <CardHeader
+                                avatar={
+
+                                    <Skeleton animation="wave" variant="circular" width={40} height={40} />
+
+                                }
+
+                                title={
+
+                                    <Skeleton
+                                        animation="wave"
+                                        height={10}
+                                        width="80%"
+                                        style={{ marginBottom: 6 }}
+                                    />
+
+                                }
+                                subheader={
+
+                                    <Skeleton animation="wave" height={10} width="40%" />
+
+                                }
+                            />
+
+                            <Skeleton sx={{ height: 190 }} animation="wave" variant="rectangular" />
+
+
+                            <CardContent>
+
+                                <React.Fragment>
+                                    <Skeleton animation="wave" height={10} style={{ marginBottom: 6 }} />
+                                    <Skeleton animation="wave" height={10} width="80%" />
+                                </React.Fragment>
+
+                            </CardContent>
+                        </Card>
+                    )
+                }
+                {
                     searchData &&
                     searchData?.map(blog => (
                         <Blog blog={blog} key={blog._id} />
                     ))
                 }
             </Container>
-        </ThemeProvider>
+        </ThemeProvider >
     )
 }

@@ -2,20 +2,22 @@ import { useEffect, useState } from 'react'
 
 let cache = {}
 
-export const useFetch = (url, depth = "") => {
+export const useFetch = (url, options = {}) => {
     const [data, setData] = useState(null)
     const [isLoading, setIsLoading] = useState(true)
     const [error, setError] = useState(null)
     useEffect(() => {
         console.log(url);
         if (cache[url]) {
-            console.log('from cache');
+            // console.log('from cache', cache[url]);
             setData(cache[url])
+            setIsLoading(false);
+            setError(null)
         }
         else {
-            console.log('fetching from fetch');
+            // console.log('fetching from fetch');
 
-            fetch(url)
+            fetch(url, options)
                 .then(res => {
                     if (!res.ok) {
                         throw Error('could not fetch data')
@@ -23,10 +25,10 @@ export const useFetch = (url, depth = "") => {
 
                     return res.json()
                 })
-                .then(data => {
+                .then(d => {
                     // console.log(depth)
-                    cache[url] = data;
-                    setData(data)
+                    setData(d)
+                    cache[url] = d;
                     // console.log(data)
                     setIsLoading(false);
                     setError(null)

@@ -51,6 +51,7 @@ export const SearchBar = () => {
 
 
             <form
+                style={{ marginLeft: '10px' }}
                 onSubmit={e => {
                     e.preventDefault()
                     history('/search')
@@ -58,11 +59,12 @@ export const SearchBar = () => {
             >
 
                 <TextField
+                    variant='filled'
                     value={search}
                     id="outlined-name"
-                    label="Search..."
+                    label="Search"
                     onChange={handleSearch}
-                    placeholder="Search…"
+                    placeholder="Search blog by name,tag"
                 />
             </form>
         </div>

@@ -1,4 +1,4 @@
-import { Avatar, Button, Card, CardContent, CardMedia, Container, CssBaseline, Dialog, DialogContent, DialogTitle, Divider, IconButton, List, ListItem, ListItemAvatar, ListItemText, Paper, Stack, Typography } from '@mui/material'
+import { Avatar, Button, Card, CardContent, CardMedia, Container, CssBaseline, Dialog, DialogContent, DialogTitle, Divider, IconButton, List, ListItem, ListItemAvatar, ListItemText, Paper, Skeleton, Stack, Typography } from '@mui/material'
 import { Box } from '@mui/system'
 import React, { useContext, useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
@@ -7,12 +7,10 @@ import blogContext from '../Context/BlogContext';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import { useFetch } from '../hooks/useFetch';
 import { Upload } from '../Compo/Upload';
-import CloseIcon from '@mui/icons-material/Close';
-import { UserAvatar } from '../Compo/UserAvatar';
 import { Modal } from '../Compo/Modal';
 import { Blog } from '../Compo/Blog';
 import BasicTabs from '../Compo/BasicTabs';
-
+import { SkeletonPage } from '../Compo/SkeletonPage';
 
 export const Profie = () => {
     const context = useContext(blogContext);
@@ -83,6 +81,20 @@ export const Profie = () => {
 
     const followUser = () => {
         setFollow(!follow)
+        fetch(`${url}/api/v1/notification/`, {
+            method: 'POST',
+            body: JSON.stringify({
+                from: `${JSON.parse(localStorage.getItem('user')).profile._id}`,
+                to: `${profile.user}`,
+                text: `has ${follow ? 'Unfollowed' : 'Followed'} you.`
+            }),
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': (JSON.parse(localStorage.getItem('user'))?.authToken || JSON.parse(sessionStorage.getItem('user'))?.authToken)
+            }
+        }).then(res => res.json()).then(data => console.log(data));
+
+
         fetch(`${url}/api/v1/users/friends/${userId}`, {
             method: 'PATCH',
             headers: {
@@ -187,186 +199,172 @@ export const Profie = () => {
                             </Button>
                         </Typography>
 
-
-
                         {
-                            (profile) !== null &&
+                            isLoading ? <SkeletonPage />
+                                :
 
 
-                            <Card>
-                                <CardMedia
-                                    component="img"
-                                    height="240"
-                                    image="https://source.unsplash.com/random/300x200"
-                                    alt="green iguana"
-                                />
-                                <CardContent >
-                                    <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-                                        <Avatar
-                                            onClick={(e) => {
-                                                // console.log(e)
-                                                setModelOpen(true);
-                                            }
-
-
-                                            }
-                                            sx={{ display: 'flex', justifyContent: 'center', width: 100, height: 100, mt: -8 }}
-                                            loading='lazy'
-                                            src={profile?.Profile_pic} alt="Username"  {...stringAvatar(profile?.username ? profile?.username : 'Abc')} />
-                                    </Box>
-
-
-
-
+                                // <React.Suspense fallback={<Spinner />}>
+                                <>
                                     {
-                                        loggedinUser?.profile?._id === userId &&
-
-                                        <Box sx={{ display: 'flex', justifyContent: 'end', position: 'relative', top: '-39px', right: '-1%' }}>
-                                            <Upload profile={profile} user={userId} />
-                                        </Box>
-
-                                    }
+                                        profile !== null &&
 
 
-                                    {/* <Modal title='Profile Pic' modelOpen={modelOpen} setModelOpen={setModelOpen}  {...'dsd'} /> */}
-
-
-                                    {/* Profile data goes here */}
-
-                                    <div style={{ display: 'flex', justifyContent: 'center' }}>
-
-                                        <Stack
-                                            sx={{ my: 2, width: '50%' }}
-                                            direction="row"
-                                            justifyContent="center"
-                                            alignItems="center"
-                                            spacing={22}
-                                        >
-                                            <span>
-
-                                                @{profile?.username}
-                                            </span>
-                                            <Stack direction='row'
-                                                sx={{ m: 0, ml: 0 }}
-                                                style={{ margin: 0, marginLeft: '90px' }}
-                                                className='this'
-                                            // sx={{ ml: { xs: '90px', md: '176px' }, margin: { xs: 0, md: 'auto' } }}
-                                            >
-
-                                                <Stack
-                                                    sx={{ cursor: 'pointer' }}
-                                                    direction="column"
-                                                    justifyContent="center"
-                                                    alignItems="center"
-                                                    role="button"
-                                                    onClick={() => { showFollowers() }}
-                                                >
-                                                    <Typography>{(profile?.followers)?.length}</Typography>
-                                                    <Divider variant='middle' sx={{ width: '100%' }} />
-
-                                                    <Typography>Followers</Typography>
-                                                </Stack>
-                                                <Stack
-                                                    sx={{ cursor: 'pointer' }}
-
-                                                    direction="column"
-                                                    justifyContent="center"
-                                                    alignItems="center"
-                                                    role="button"
-                                                    onClick={() => { showFollowing() }}
-
-
-                                                >
-                                                    {/* <div> */}
-
-                                                    <Typography>{(profile?.following)?.length}</Typography>
-                                                    <Divider variant='middle' sx={{ width: '100%' }} />
-
-                                                    <Typography>Following</Typography>
-                                                    {/* </div> */}
-                                                </Stack>
-                                            </Stack>
-
-                                        </Stack>
-
-                                        <Modal title='Friends' modelOpen={modelOpen} setModelOpen={setModelOpen} >
-                                            <BasicTabs followers={profile?.followers} following={profile?.following} />
-
-                                        </Modal>
-                                    </div>
-                                    {
-                                        loggedinUser?.profile?._id !== userId &&
-
-
-                                        <Stack
-                                            sx={{ my: 2 }}
-                                            direction="row"
-                                            justifyContent="center"
-                                            alignItems="center"
-                                            spacing={2}
-                                        >
-
+                                        <Card>
                                             {
-                                                follow ? <Button variant='contained' onClick={followUser}>Unfollow</Button> : <Button variant='text' onClick={followUser}>Follow</Button>
+                                                isLoading ? (
+                                                    <Skeleton sx={{ height: 190 }} animation="wave" variant="rectangular" />
+                                                ) :
+
+                                                    <CardMedia
+                                                        component="img"
+                                                        height="240"
+                                                        image="https://source.unsplash.com/random/300x200"
+                                                        alt="green iguana"
+                                                        loading='lazy'
+                                                    />
                                             }
-                                            {/* <Button variant={
+                                            <CardContent >
+                                                <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+                                                    <Avatar
+                                                        onClick={(e) => setModelOpen(true)}
+                                                        sx={{ display: 'flex', justifyContent: 'center', width: 100, height: 100, mt: -8 }}
+                                                        loading='lazy'
+                                                        src={profile?.Profile_pic} alt="Username"  {...stringAvatar(profile?.username ? profile?.username : 'Abc')}
+                                                    />
+                                                </Box>
+
+
+
+
+                                                {
+                                                    loggedinUser?.profile?._id === userId &&
+
+                                                    <Box sx={{ display: 'flex', justifyContent: 'end', position: 'relative', top: '-39px', right: '-1%' }}>
+                                                        <Upload profile={profile} user={userId} />
+                                                    </Box>
+
+                                                }
+
+
+                                                {/* <Modal title='Profile Pic' modelOpen={modelOpen} setModelOpen={setModelOpen}  {...'dsd'} /> */}
+
+
+                                                {/* Profile data goes here */}
+
+                                                <div style={{ display: 'flex', justifyContent: 'center' }}>
+
+                                                    <Stack
+                                                        sx={{ my: 2, width: '50%' }}
+                                                        direction="row"
+                                                        justifyContent="center"
+                                                        alignItems="center"
+                                                        spacing={22}
+                                                    >
+                                                        <span>
+
+                                                            @{profile?.username}
+                                                        </span>
+                                                        <Stack direction='row'
+                                                            sx={{ m: 0, ml: 0 }}
+                                                            style={{ margin: 0, marginLeft: '90px' }}
+                                                            className='this'
+                                                        // sx={{ ml: { xs: '90px', md: '176px' }, margin: { xs: 0, md: 'auto' } }}
+                                                        >
+
+                                                            <Stack
+                                                                sx={{ cursor: 'pointer' }}
+                                                                direction="column"
+                                                                justifyContent="center"
+                                                                alignItems="center"
+                                                                role="button"
+                                                                onClick={() => { showFollowers() }}
+                                                            >
+                                                                <Typography>{(profile?.followers)?.length}</Typography>
+                                                                <Divider variant='middle' sx={{ width: '100%' }} />
+
+                                                                <Typography>Followers</Typography>
+                                                            </Stack>
+                                                            <Stack
+                                                                sx={{ cursor: 'pointer' }}
+
+                                                                direction="column"
+                                                                justifyContent="center"
+                                                                alignItems="center"
+                                                                role="button"
+                                                                onClick={() => { showFollowing() }}
+
+
+                                                            >
+                                                                {/* <div> */}
+
+                                                                <Typography>{(profile?.following)?.length}</Typography>
+                                                                <Divider variant='middle' sx={{ width: '100%' }} />
+
+                                                                <Typography>Following</Typography>
+                                                                {/* </div> */}
+                                                            </Stack>
+                                                        </Stack>
+
+                                                    </Stack>
+
+                                                    <Modal title='Friends' modelOpen={modelOpen} setModelOpen={setModelOpen} >
+                                                        <BasicTabs followers={profile?.followers} following={profile?.following} />
+
+                                                    </Modal>
+                                                </div>
+                                                {
+                                                    loggedinUser?.profile?._id !== userId &&
+
+
+                                                    <Stack
+                                                        sx={{ my: 2 }}
+                                                        direction="row"
+                                                        justifyContent="center"
+                                                        alignItems="center"
+                                                        spacing={2}
+                                                    >
+
+                                                        {
+                                                            follow ? <Button variant='contained' onClick={followUser}>Unfollow</Button> : <Button variant='text' onClick={followUser}>Follow</Button>
+                                                        }
+                                                        {/* <Button variant={
                                                 follow !== null ?
                                                     'contained'
                                                     : 'text'
                                             }
                                                 onClick={followUser}>{follow !== null ? 'Unfollow' : 'Follow'}</Button> */}
 
-                                            <Button variant='outlined'>Message</Button>
+                                                        <Button variant='outlined'>Message</Button>
 
 
-                                        </Stack>
+                                                    </Stack>
+                                                }
+                                                <Stack gap={3}>
+
+                                                    <Stack direction="row" alignItems="center" gap={3}>
+                                                        <Typography>Name:</Typography>
+                                                        {profile && profile?.name}
+                                                    </Stack>
+                                                    <Stack direction="row" alignItems="center" gap={3}>
+                                                        <Typography>Email:</Typography>
+                                                        {profile && profile?.email}
+                                                    </Stack>
+                                                    <Stack direction="row" alignItems="center" gap={3}>
+                                                        <Typography>Number:</Typography>
+                                                        {profile && profile?.number}
+                                                    </Stack>
+                                                    {/* <Upload user={userId} /> */}
+
+                                                </Stack>
+                                            </CardContent>
+                                        </Card>
+
                                     }
-                                    <Stack gap={3}>
-
-                                        <Stack direction="row" alignItems="center" gap={3}>
-                                            <Typography>Name:</Typography>
-                                            {profile && profile?.name}
-                                        </Stack>
-                                        <Stack direction="row" alignItems="center" gap={3}>
-                                            <Typography>Email:</Typography>
-                                            {profile && profile?.email}
-                                        </Stack>
-                                        <Stack direction="row" alignItems="center" gap={3}>
-                                            <Typography>Number:</Typography>
-                                            {profile && profile?.number}
-                                        </Stack>
-                                        {/* <Upload user={userId} /> */}
-
-                                    </Stack>
-                                </CardContent>
-                            </Card>
+                                </>
 
                         }
 
-
-                        {/* <Typography variant="body1" >Profile</Typography> */}
-                        {/* <Grid container >
-                            <Grid item>
-                                {/* here back pic */}
-                        {/* <Stack direction="row" alignItems="center" gap={2}   >
-                                    <Avatar>A</Avatar> */}
-                        {/* <Avatar src={blog.user[0]?.Profile_pic} alt="Username" {...stringAvatar(blog.user[0]?.username ? blog.user[0].username : 'Admin')} /> */}
-
-                        {/* <Typography>Profile</Typography>
-                                </Stack>
-                                <Box sx={{ m: 2 }}>
-                                    <Paper sx={{ p: 1 }} elevation={2}>
-                                        <Stack gap={2} >
-                                            <TextField id="outlined-basic" label="username" value={username} disabled variant="outlined" />
-                                            <TextField id="outlined-basic" label="Email" value={username} variant="outlined" />
-                                            <TextField id="outlined-basic" label="Number" value={username} variant="outlined" />
-                                        </Stack>
-                                    </Paper>
-                                </Box>
-                                <Button variant='text' >Cancel</Button>
-                                <Button variant='contained'>Save</Button>
-                            </Grid>
-                        </Grid>  */}
 
 
 
