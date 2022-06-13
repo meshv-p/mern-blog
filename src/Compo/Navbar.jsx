@@ -19,7 +19,7 @@ export const Navbar = () => {
     const [anchorElUser, setAnchorElUser] = React.useState(null);
     const [currentUser, setCurrentUser] = useState(JSON.parse(localStorage.getItem('user'))?.profile)
     const [notifications, setNotiAnchorEl] = React.useState(null);
-    let { data, isLoading, error, setData } = useFetch('http://127.0.0.1:5000/api/v1/notification/', {
+    let { data, isLoading, error, setData } = useFetch(`${url}/api/v1/notification/`, {
         method: 'GET',
         headers: {
             'Authorization': `${JSON.parse(localStorage.getItem("user"))?.authToken}`
