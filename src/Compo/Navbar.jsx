@@ -148,7 +148,7 @@ export const Navbar = () => {
                                         error && <div>{error}</div>
                                     } */}
                                     {
-                                        data?.length !== 0 &
+                                        data !== null && data?.length !== 0 &&
                                         data?.map(noti => (
                                             <>
 
