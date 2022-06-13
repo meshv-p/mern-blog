@@ -6,7 +6,6 @@ import { useNavigate } from 'react-router-dom';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import MuiAlert from '@mui/material/Alert';
 import { Editor } from '@tinymce/tinymce-react';
-import ChipInput from 'material-ui-chip-input'
 
 // uncontrolled input
 
