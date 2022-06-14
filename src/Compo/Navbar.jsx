@@ -27,10 +27,13 @@ export const Navbar = () => {
     });
 
 
+
+
     let history = useNavigate()
 
     useEffect(() => {
         console.log(loggedinUser)
+
         setCurrentUser(loggedinUser?.profile);
         // console.log(loggedinUser.profile.user)
     }, [loggedinUser])
@@ -43,6 +46,8 @@ export const Navbar = () => {
 
         }
     }, [isLoading])
+
+
 
 
 
