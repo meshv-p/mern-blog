@@ -198,12 +198,12 @@ export const BlogDetail = () => {
                                     }
                                     title={
                                         <Link to={`/user/${blog.user[0]?.user}`}>
-                                            {blog.user[0]?.username}
+                                            {blog?.user[0]?.username}
                                         </Link>
                                     }
                                     subheader={new Date(blog.createdAt).toLocaleString()}
                                     action={
-                                        blog.user[0]._id === loggedinUser.profile._id &&
+                                        blog?.user[0]?._id === loggedinUser?.profile._id &&
 
                                         <IconButton aria-label="settings" onClick={handleDelete}>
                                             <DeleteOutlineIcon />
