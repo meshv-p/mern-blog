@@ -15,11 +15,11 @@ import { SearchBar } from './SearchBar';
 import DoneIcon from '@mui/icons-material/Done';
 export const Navbar = () => {
     const context = useContext(blogContext);
-    let { theme, toggleTheme, loggedinUser, progress, userNotification, url } = context;
+    let { theme, toggleTheme, loggedinUser, progress, url } = context;
     const [anchorElUser, setAnchorElUser] = React.useState(null);
     const [currentUser, setCurrentUser] = useState(JSON.parse(localStorage.getItem('user'))?.profile)
     const [notifications, setNotiAnchorEl] = React.useState(null);
-    let { data, isLoading, error, setData } =  useFetch(`${url}/api/v1/notification/`, {
+    let { data, isLoading, error, setData } = useFetch(`${url}/api/v1/notification/`, {
         method: 'GET',
         headers: {
             'Authorization': `${JSON.parse(localStorage.getItem("user"))?.authToken}`
@@ -148,7 +148,7 @@ export const Navbar = () => {
                                         error && <div>{error}</div>
                                     } */}
                                     {
-                                        loggedinUser && data?.length !== 0 &&
+                                        localStorage.getItem("user") && data?.length !== 0 &&
                                         data?.map(noti => (
                                             <>
 
