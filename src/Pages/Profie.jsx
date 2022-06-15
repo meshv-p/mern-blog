@@ -11,6 +11,7 @@ import { Modal } from '../Compo/Modal';
 import { Blog } from '../Compo/Blog';
 import BasicTabs from '../Compo/BasicTabs';
 import { SkeletonPage } from '../Compo/SkeletonPage';
+import { Head } from '../Compo/Head';
 
 export const Profie = () => {
     const context = useContext(blogContext);
@@ -182,7 +183,7 @@ export const Profie = () => {
     return (
         <>
             <ThemeProvider theme={darkTheme}>
-
+                <Head title={`${profile?.name ?? ""} || @${profile?.username ?? ""} || Dev Blog Profile`} />
                 {/* <Typography variant="body1" sx={{ mt: 2, ml: 5 }}>Profile</Typography> */}
                 <Container sx={{ mt: 3 }} component="main" >
                     <CssBaseline />

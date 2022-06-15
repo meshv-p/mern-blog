@@ -8,6 +8,7 @@ import { Spinner } from '../Compo/Spinner';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import { Alert, AlertBar } from '../Compo/Alert';
 import { NetworkStatus } from '../Compo/NetworkStatus';
+import { Head } from '../Compo/Head';
 export const Home = () => {
     const [allBlogs, setAllBlogs] = useState([]);
 
@@ -81,6 +82,7 @@ export const Home = () => {
 
                 <Container sx={{ pt: 2 }}>
                     <CssBaseline />
+                    <Head title='Dev Blog' />
 
                     <React.Suspense fallback={<Spinner />}>
                         {

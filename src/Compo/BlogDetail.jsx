@@ -12,6 +12,7 @@ import InfiniteScroll from 'react-infinite-scroll-component';
 import { UserAvatar } from './UserAvatar';
 import { useFetch } from '../hooks/useFetch';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
+import { Head } from './Head';
 
 export const BlogDetail = () => {
     const [comment, setComment] = useState([])
@@ -164,6 +165,7 @@ export const BlogDetail = () => {
             <ThemeProvider theme={darkTheme}>
 
                 <CssBaseline />
+                <Head title={`${blog?.title} by ${blog?.user[0].username} - Dev Blog`} />
                 <Container sx={{ py: 2 }}>
                     {/* {
                         isLoading && <Spinner />

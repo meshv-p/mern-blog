@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import MuiAlert from '@mui/material/Alert';
 import { Editor } from '@tinymce/tinymce-react';
+import { Head } from '../Compo/Head';
 
 // uncontrolled input
 
@@ -113,6 +114,8 @@ export const CreateBlog = () => {
             <ThemeProvider theme={darkTheme}>
                 <CssBaseline />
                 <Container>
+                    <Head title='Make New Blog - Dev Blog' />
+
                     <Card sx={{ m: 1, p: 1 }}>
                         <Typography sx={{ m: 1 }}>
                             <Button variant="outlined" onClick={() => history('/')} color="inherit" startIcon={<ArrowBackIosNewIcon />}>

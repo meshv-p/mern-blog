@@ -3,6 +3,7 @@ import React, { useContext } from 'react'
 import blogContext from '../Context/BlogContext';
 import { Blog } from '../Compo/Blog';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
+import { Head } from '../Compo/Head';
 
 export const SearchPage = () => {
     const context = useContext(blogContext);
@@ -34,6 +35,8 @@ export const SearchPage = () => {
             <ThemeProvider theme={darkTheme}>
                 <Container sx={{ m: 2 }}>
                     <CssBaseline />
+                    <Head title={`${search} • Dev Blog`} />
+
                     <Stack direction='row' sx={{ flexDirection: { xs: 'column', md: 'row' } }}>
 
                         <ToggleButtonGroup

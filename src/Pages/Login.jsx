@@ -11,6 +11,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import MuiAlert from '@mui/material/Alert';
 import LoadingButton from '@mui/lab/LoadingButton';
 import { } from '@mui/system/esm/createBox'
+import { Head } from '../Compo/Head';
 
 export const Login = () => {
     let history = useNavigate()
@@ -78,6 +79,7 @@ export const Login = () => {
             <ThemeProvider theme={darkTheme}>
                 <Container component="main" maxWidth="xs">
                     <CssBaseline />
+                    <Head title='Login to Dev blog' />
                     <Box
                         sx={{
                             marginTop: 8,

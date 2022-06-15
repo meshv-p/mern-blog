@@ -16,6 +16,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import LoadingButton from '@mui/lab/LoadingButton';
 import { useFetch } from '../hooks/useFetch';
 import { Alert, Snackbar } from '@mui/material';
+import { Head } from '../Compo/Head';
 
 export const Signup = () => {
 
@@ -85,6 +86,8 @@ export const Signup = () => {
             <ThemeProvider theme={darkTheme}>
                 <Container component="main" maxWidth="xs">
                     <CssBaseline />
+                    <Head title='Make a new account on Dev Blog' />
+
                     <Box
                         sx={{
                             marginTop: 8,

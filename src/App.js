@@ -12,11 +12,13 @@ import { CreateBlog } from "./Pages/CreateBlog";
 import { SearchPage } from "./Pages/SearchPage";
 import { Upload } from "./Compo/Upload";
 import { TagWiseBlog } from "./Compo/TagWiseBlog";
+import { Head } from "./Compo/Head";
 
 function App() {
   return (
     <BlogState>
       <BrowserRouter>
+        <Head title="Dev Blog" />
         <div className="App" style={{ paddingBottom: 50 }}>
           <Navbar />
           <Routes>
