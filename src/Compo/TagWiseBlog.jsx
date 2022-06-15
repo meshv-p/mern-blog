@@ -4,6 +4,7 @@ import blogContext from '../Context/BlogContext'
 import { Blog } from './Blog'
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { Card, CardContent, CardHeader, Container, CssBaseline, Skeleton, Typography } from '@mui/material';
+import { Head } from './Head';
 
 export const TagWiseBlog = () => {
     const [searchData, setSearchData] = useState()
@@ -52,6 +53,7 @@ export const TagWiseBlog = () => {
     return (
         <ThemeProvider theme={darkTheme}>
             <Container maxWidth='lg' sx={{ p: 1 }}>
+                <Head title={`#${tag} - Dev Blog`} />
                 <Card sx={{ minWidth: 275 }}>
 
                     <CardContent sx={{ borderTop: `1rem solid ${stringToColor(tag)}` }}>

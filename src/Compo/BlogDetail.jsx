@@ -50,6 +50,7 @@ export const BlogDetail = () => {
     })
 
     useEffect(() => {
+
         // console.log(loggedinUser?.authToken, url);
         setProgress(10)
         // setIsLoading(true)
