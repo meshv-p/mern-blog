@@ -10,7 +10,6 @@ import { Link, useNavigate } from 'react-router-dom';
 import CloseIcon from '@mui/icons-material/Close';
 import MuiAlert from '@mui/material/Alert';
 import LoadingButton from '@mui/lab/LoadingButton';
-import { } from '@mui/system/esm/createBox'
 import { Head } from '../Compo/Head';
 
 export const Login = () => {
@@ -40,7 +39,11 @@ export const Login = () => {
             headers: {
                 'Content-Type': 'application/json',
             }
-        })
+        }).catch(err => {
+            setLoginError({ type: 'error', msg: err.message })
+            setOpen(true)
+            setLoading(false)
+        });
         let status = await res.json()
         if (res.status === 200) {
             setLoading(false)
@@ -137,18 +140,10 @@ export const Login = () => {
                             >
                                 sign in
                             </LoadingButton>
-                            {/* <Button
-                                type="button"
-                                fullWidth
-                                variant="contained"
-                                sx={{ mt: 3, mb: 2 }}
-                                onClick={handleSubmit}
-                            >
-                                Sign In
-                            </Button> */}
+
                             <Grid container>
                                 <Grid item xs>
-                                    <Link to="#" variant="body2" color='blue'>
+                                    <Link to="/password/reset" variant="body2" color='blue'>
                                         Forgot password?
                                     </Link>
                                 </Grid>

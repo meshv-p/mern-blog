@@ -56,7 +56,11 @@ export const Signup = () => {
             headers: {
                 'Content-Type': 'application/json',
             }
-        })
+        }).catch(err => {
+            setSigninError({ type: 'error', msg: err.message })
+            setOpen(true)
+            setLoading(false)
+        });
         let status = await res.json()
         if (res.status === 200) {
             setLoading(false)

@@ -13,6 +13,8 @@ import { SearchPage } from "./Pages/SearchPage";
 import { Upload } from "./Compo/Upload";
 import { TagWiseBlog } from "./Compo/TagWiseBlog";
 import { Head } from "./Compo/Head";
+import { ForgotPassword } from "./Compo/ForgotPassword";
+import { ResetPassword } from "./Pages/ResetPassword";
 
 function App() {
   return (
@@ -31,6 +33,11 @@ function App() {
             <Route path="/t/:tag" element={<TagWiseBlog />} />
             <Route path="/create/" element={<CreateBlog />} />
             <Route path="/upload" element={<Upload />} />
+            <Route path="/password/reset" element={<ForgotPassword />} />
+            <Route
+              path="/password-reset/:userId/:token"
+              element={<ResetPassword />}
+            />
           </Routes>
           <BottomNavbar />
         </div>
