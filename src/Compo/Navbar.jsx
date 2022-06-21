@@ -11,9 +11,11 @@ import LoadingBar from 'react-top-loading-bar'
 import { UserAvatar } from './UserAvatar';
 import ChatBubble from '@mui/icons-material/ChatBubble';
 import { SearchBar } from './SearchBar';
-
 import DoneIcon from '@mui/icons-material/Done';
+import { useSocket } from '../Context/socketProider';
+
 export const Navbar = () => {
+    let socket = useSocket();
     const context = useContext(blogContext);
     let { theme, toggleTheme, loggedinUser, progress, url } = context;
     const [anchorElUser, setAnchorElUser] = React.useState(null);
@@ -28,24 +30,42 @@ export const Navbar = () => {
 
 
 
-
     let history = useNavigate()
 
     useEffect(() => {
-        console.log(loggedinUser)
+
+
+
+
 
         setCurrentUser(loggedinUser?.profile);
         // console.log(loggedinUser.profile.user)
     }, [loggedinUser])
 
 
+
     useEffect(() => {
-        console.log(data);
+        if (socket === null) return
+        console.log(socket);
+        socket?.on('connect', () => {
+            console.log('connected')
+        });
 
+        socket?.on("hey", (data) => {
+            console.log(data);
+        });
+        // socket?.emit("hey", {
+        //     user: "meshv",
+        //     id: 12,
+        //     msg: "Hello",
+        //     to: "6245c9a799b2268d8bccc49e",
+        // });
         return () => {
-
+            socket?.off('connect')
         }
-    }, [isLoading])
+    }, [socket])
+
+
 
 
 
@@ -155,7 +175,7 @@ export const Navbar = () => {
                                     {
                                         localStorage.getItem("user") && data?.length !== 0 &&
                                         data?.map(noti => (
-                                            <>
+                                            <React.Fragment key={noti._id}>
 
                                                 <ListItem alignItems="flex-start"
                                                     key={noti._id}
@@ -182,7 +202,7 @@ export const Navbar = () => {
                                                     />
                                                 </ListItem>
                                                 <Divider variant="inset" component="li" />
-                                            </>
+                                            </React.Fragment>
                                         ))
                                     }
                                 </List>

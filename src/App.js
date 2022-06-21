@@ -15,34 +15,42 @@ import { TagWiseBlog } from "./Compo/TagWiseBlog";
 import { Head } from "./Compo/Head";
 import { ForgotPassword } from "./Compo/ForgotPassword";
 import { ResetPassword } from "./Pages/ResetPassword";
+import { SocketProvider } from "./Context/socketProider";
+import { Chat } from "./Pages/Chat";
+import { ConversatioinsProvider } from "./Context/ConversatioinsProvider";
 
 function App() {
   return (
-    <BlogState>
-      <BrowserRouter>
-        <Head title="Dev Blog" />
-        <div className="App" style={{ paddingBottom: 50 }}>
-          <Navbar />
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/search" element={<SearchPage />} />
-            <Route path="/user/:userId" element={<Profie />} />
-            <Route path="/signup" element={<Signup />} />
-            <Route path="/blog/:blogId" element={<BlogDetail />} />
-            <Route path="/t/:tag" element={<TagWiseBlog />} />
-            <Route path="/create/" element={<CreateBlog />} />
-            <Route path="/upload" element={<Upload />} />
-            <Route path="/password/reset" element={<ForgotPassword />} />
-            <Route
-              path="/password-reset/:userId/:token"
-              element={<ResetPassword />}
-            />
-          </Routes>
-          <BottomNavbar />
-        </div>
-      </BrowserRouter>
-    </BlogState>
+    <SocketProvider>
+      <ConversatioinsProvider>
+        <BlogState>
+          <BrowserRouter>
+            <Head title="Dev Blog" />
+            <div className="App" style={{ paddingBottom: 50 }}>
+              <Navbar />
+              <Routes>
+                <Route path="/" element={<Home />} />
+                <Route path="/login" element={<Login />} />
+                <Route path="/search" element={<SearchPage />} />
+                <Route path="/user/:userId" element={<Profie />} />
+                <Route path="/signup" element={<Signup />} />
+                <Route path="/blog/:blogId" element={<BlogDetail />} />
+                <Route path="/t/:tag" element={<TagWiseBlog />} />
+                <Route path="/create/" element={<CreateBlog />} />
+                <Route path="/chat/" element={<Chat />} />
+                <Route path="/upload" element={<Upload />} />
+                <Route path="/password/reset" element={<ForgotPassword />} />
+                <Route
+                  path="/password-reset/:userId/:token"
+                  element={<ResetPassword />}
+                />
+              </Routes>
+              {/* <BottomNavbar /> */}
+            </div>
+          </BrowserRouter>
+        </BlogState>
+      </ConversatioinsProvider>
+    </SocketProvider>
   );
 }
 

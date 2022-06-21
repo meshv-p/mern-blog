@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { Avatar, Box, Button, Container, Grid, IconButton, Snackbar, TextField, Typography } from '@mui/material'
 import CssBaseline from '@mui/material/CssBaseline';
 import FormControlLabel from '@mui/material/FormControlLabel';
@@ -29,6 +29,9 @@ export const Login = () => {
             },
         },
     });
+
+
+
 
     const handleSubmit = async () => {
         // console.log(loginDetails)
@@ -140,7 +143,7 @@ export const Login = () => {
                             >
                                 sign in
                             </LoadingButton>
-
+                            <div class="g-signin2" data-onsuccess="onSignIn"></div>
                             <Grid container>
                                 <Grid item xs>
                                     <Link to="/password/reset" variant="body2" color='blue'>
