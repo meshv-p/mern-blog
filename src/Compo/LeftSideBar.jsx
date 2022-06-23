@@ -16,7 +16,7 @@ import { timeAgo } from '../utils/timeAgo';
 export const LeftSideBar = ({ data: users }) => {
     let user = JSON.parse(localStorage.getItem('user'))
 
-    let { data: list, error } = useFetch(`${process.env.URL}/api/v1/chats/friendlist`, {
+    let { data: list, error } = useFetch(`${process.env.REACT_APP_URL}/api/v1/chats/friendlist`, {
         method: 'POST',
         body: JSON.stringify({
             userId: user.profile._id
