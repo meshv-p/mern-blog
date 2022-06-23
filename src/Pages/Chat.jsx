@@ -80,7 +80,7 @@ export const Chat = () => {
                 <Grid container>
                     <AlertBar open={open} msg="Follow more user to chat with them" type='info' />
 
-                    <Grid item xs={2} sx={{ height: '91vh' }} className='hey'>
+                    <Grid item xs={2} sx={{ height: '91vh', overflow: 'auto' }} className='hey'>
 
                         <LeftSideBar data={data} />
 

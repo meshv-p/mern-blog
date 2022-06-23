@@ -19,7 +19,7 @@ export const LeftSideBar = ({ data: users }) => {
     let { data: list, error } = useFetch(`${process.env.REACT_APP_URL}/api/v1/chats/friendlist`, {
         method: 'POST',
         body: JSON.stringify({
-            userId: user.profile._id
+            userId: user?.profile._id
         }),
         headers: {
             'Content-Type': 'application/json',

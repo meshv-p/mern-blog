@@ -14,7 +14,7 @@ export function SocketProvider({ children }) {
     let user = JSON.parse(localStorage.getItem("user"));
     // console.log(user);
     if (user) {
-      const newSocket = io(process.env.URL, {
+      const newSocket = io(process.env.REACT_APP_URL, {
         // reconnectionDelayMax: 10000,
         // auth: {
         //   token: "123",

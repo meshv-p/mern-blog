@@ -178,7 +178,7 @@ export const ChatScreen = ({ data: user }) => {
             <Box sx={{ bgcolor: 'background.paper', border: '0 1 1 1' }}>
                 <Card>
                     <CardHeader
-                        avatar={<UserAvatar src={user[selectedUser]?.Profile_pic} name={user[selectedUser]?.username} />}
+                        avatar={<UserAvatar src={user[selectedUser]?.Profile_pic} name={user[selectedUser]?.username ?? 'user'} />}
                         title={user[selectedUser]?.username}
                         subheader={header || user[selectedUser]?.email}
                         action={<IconButton aria-label="settings">
