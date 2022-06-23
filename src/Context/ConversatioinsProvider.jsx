@@ -9,10 +9,10 @@ export function useConversations() {
 
 
 export const ConversatioinsProvider = ({ children }) => {
-    let user = JSON.parse(localStorage.getItem('user'))
+    let user = JSON.parse(localStorage.getItem('user')) || []
     const [selectedUser, setSelectedUser] = useState(0)
     const [messages, setMessages] = React.useState([])
-    const [selectedUserData, setSelectedUserData] = useState(user[selectedUser])
+    const [selectedUserData, setSelectedUserData] = useState(user[selectedUser] || [])
     const [onlineU, setOnlineU] = useState([])
     //for unread messages
     const [unread, setUnread] = useState([])
@@ -43,7 +43,7 @@ export const ConversatioinsProvider = ({ children }) => {
 
     useEffect(() => {
         // console.log(selectedUser)
-        setSelectedUserData(user.profile.following[selectedUser])
+        setSelectedUserData(user?.profile?.following[selectedUser])
         console.log(db)
 
     }, [])
