@@ -61,11 +61,12 @@ export const SearchBar = () => {
                 <TextField
                     variant='filled'
                     value={search}
-                    id="outlined-name"
+                    // id="outlined-name"
                     label="Search"
                     onChange={handleSearch}
                     placeholder="Search blog by name,tag"
                 />
+
             </form>
         </div>
     )

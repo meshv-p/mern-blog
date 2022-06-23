@@ -12,9 +12,9 @@ export function SocketProvider({ children }) {
 
   useEffect(() => {
     let user = JSON.parse(localStorage.getItem("user"));
-    console.log(user);
+    // console.log(user);
     if (user) {
-      const newSocket = io("http://localhost:5001", {
+      const newSocket = io(process.env.URL, {
         // reconnectionDelayMax: 10000,
         // auth: {
         //   token: "123",

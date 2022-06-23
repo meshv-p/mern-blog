@@ -46,7 +46,7 @@ export const Navbar = () => {
 
     useEffect(() => {
         if (socket === null) return
-        console.log(socket);
+        // console.log(socket);
         socket?.on('connect', () => {
             console.log('connected')
         });

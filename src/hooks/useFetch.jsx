@@ -7,7 +7,7 @@ export const useFetch = (url, options = {}) => {
     const [isLoading, setIsLoading] = useState(true)
     const [error, setError] = useState(null)
     useEffect(() => {
-        console.log(url);
+        // console.log(url);
         if (cache[url]) {
             // console.log('from cache', cache[url]);
             setData(cache[url])
