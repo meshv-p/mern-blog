@@ -22,7 +22,7 @@ export const ChatScreen = ({ data: user }) => {
     useEffect(() => {
         setSelectedUserData(user[selectedUser]);
 
-        fetch(`http://localhost:5000/api/v1/chats/`, {
+        fetch(`${process.env.URL}/api/v1/chats/`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
