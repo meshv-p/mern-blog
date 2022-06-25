@@ -23,20 +23,31 @@ import { useFetch } from "../hooks/useFetch";
 
 export const ChatScreen = ({ data: user }) => {
     const [message, setMessage] = React.useState('')
-    const [isLoading, setIsLoading] = useState(true);
+    // const [isLoading, setIsLoading] = useState(true);
     const [header, setHeader] = useState(null);
+    let Cuser = JSON.parse(localStorage.getItem('user'))
     let currentUser = JSON.parse(localStorage.getItem('user'))
     let {
         selectedUser,
-        messages,
-        setMessages,
+        // messages,
+        // setMessages,
         selectedUserData,
         setSelectedUserData,
         unread,
         setUnread,
         db
     } = useConversations()
-    let Cuser = JSON.parse(localStorage.getItem('user'))
+    let { data:messages,isLoading,error,setData} = useFetch(`${process.env.REACT_APP_URL}/api/v1/chats/friend/${Cuser.profile.following[selectedUser]?._id}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            sender: Cuser.profile._id,
+            receiver: Cuser.profile.following[selectedUser]?._id
+        })
+    })
+
     const setRef = useCallback(node => {
         if (node) {
             node.scrollIntoView({ smooth: true })
@@ -47,20 +58,20 @@ export const ChatScreen = ({ data: user }) => {
     useEffect(() => {
         setSelectedUserData(user[selectedUser]);
         // fetchAllChats()
-        setIsLoading(true)
-        fetch(`${process.env.REACT_APP_URL}/api/v1/chats/friend/${Cuser.profile.following[selectedUser]?._id}`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                sender: Cuser.profile._id,
-                receiver: Cuser.profile.following[selectedUser]?._id
-            })
-        }).then(res => res.json()).then(data => {
-            setIsLoading(false)
-            setMessages(data)
-        })
+        // setIsLoading(true)
+        // fetch(`${process.env.REACT_APP_URL}/api/v1/chats/friend/${Cuser.profile.following[selectedUser]?._id}`, {
+        //     method: 'POST',
+        //     headers: {
+        //         'Content-Type': 'application/json'
+        //     },
+        //     body: JSON.stringify({
+        //         sender: Cuser.profile._id,
+        //         receiver: Cuser.profile.following[selectedUser]?._id
+        //     })
+        // }).then(res => res.json()).then(data => {
+        //     // setIsLoading(false)
+        //     // setMessages(data)
+        // })
         // },[selectedUser])
 
     }, [selectedUser])
@@ -102,13 +113,13 @@ export const ChatScreen = ({ data: user }) => {
         }
         console.log(s);
         socket.emit('send-msg', s)
-        setMessages([...messages, s])
+        setData([...messages, s])
         window.scrollTo(0, document.body.scrollHeight);
         setMessage('')
     }
 
     useEffect(() => {
-
+        console.log(selectedUserData)
         // //save message to database
         // let db;
         // const request = window.indexedDB.open("chat-messages");
@@ -165,12 +176,12 @@ export const ChatScreen = ({ data: user }) => {
         if (socket === null) return
         socket?.on('receive-msg', (msg) => {
             console.log(selectedUserData);
-            console.log(selectedUserData._id === msg.sender);
+            console.log(selectedUserData?._id === msg.sender);
 
 
-            if (selectedUserData._id === msg.sender) {
+            if (selectedUserData?._id === msg.sender) {
 
-                setMessages([...messages, msg])
+                setData([...messages, msg])
             } else {
                 //update the information about unread messages with user Id
                 // //count the number of unread messages from upcoming messages
