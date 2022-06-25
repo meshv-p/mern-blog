@@ -25,7 +25,6 @@ export const ChatScreen = ({ data: user }) => {
     const [message, setMessage] = React.useState('')
     const [isLoading, setIsLoading] = useState(true);
     const [header, setHeader] = useState(null);
-    let Cuser = JSON.parse(localStorage.getItem('user'))
     let currentUser = JSON.parse(localStorage.getItem('user'))
     let {
         selectedUser,
@@ -37,8 +36,7 @@ export const ChatScreen = ({ data: user }) => {
         setUnread,
         db
     } = useConversations()
-
-
+    let Cuser = JSON.parse(localStorage.getItem('user'))
     const setRef = useCallback(node => {
         if (node) {
             node.scrollIntoView({ smooth: true })
@@ -49,7 +47,7 @@ export const ChatScreen = ({ data: user }) => {
     useEffect(() => {
         setSelectedUserData(user[selectedUser]);
         // fetchAllChats()
-        // setIsLoading(true)
+        setIsLoading(true)
         fetch(`${process.env.REACT_APP_URL}/api/v1/chats/friend/${Cuser.profile.following[selectedUser]?._id}`, {
             method: 'POST',
             headers: {
@@ -93,7 +91,7 @@ export const ChatScreen = ({ data: user }) => {
     // send msg to socket eith event 'send-message'
     const handleSubmit = (e) => {
         if (message.length < 0 || message === '') return;
-        console.log(message);
+        // console.log(message);
         e.preventDefault()
         let s = {
             'sender': currentUser.profile._id,
@@ -105,11 +103,12 @@ export const ChatScreen = ({ data: user }) => {
         console.log(s);
         socket.emit('send-msg', s)
         setMessages([...messages, s])
+        window.scrollTo(0, document.body.scrollHeight);
         setMessage('')
     }
 
     useEffect(() => {
-        console.log(selectedUserData)
+
         // //save message to database
         // let db;
         // const request = window.indexedDB.open("chat-messages");
@@ -166,12 +165,16 @@ export const ChatScreen = ({ data: user }) => {
         if (socket === null) return
         socket?.on('receive-msg', (msg) => {
             console.log(selectedUserData);
-            console.log(selectedUserData?._id === msg.sender);
+            console.log(selectedUserData._id === msg.sender);
 
 
-            if (selectedUserData?._id === msg.sender) {
+            if (selectedUserData._id === msg.sender) {
 
                 setMessages([...messages, msg])
+            } else {
+                //update the information about unread messages with user Id
+                // //count the number of unread messages from upcoming messages
+                setUnread([...unread, msg.sender])
             }
             // setSelectedUser(user.findIndex(u => u.name === msg.sender))
         })

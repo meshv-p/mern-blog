@@ -21,7 +21,7 @@ export const Chat = () => {
     let history = useNavigate()
 
     useEffect(()=>{
-        console.log(user)
+        // console.log(user)
         if(user === null){
             history('/login');
         }

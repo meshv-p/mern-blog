@@ -38,11 +38,11 @@ export const LeftSideBar = ({data: users}) => {
         })
         // offline users
         socket?.on('offline', (data) => {
-            console.log(data, socket.id);
+            // console.log(data, socket.id);
             //filter out the user that is offline
             let newOnlineU = onlineU.filter(user => user.id !== data)
             setOnlineU(newOnlineU)
-            console.log(newOnlineU)
+            // console.log(newOnlineU)
             // setOnlineU(data)
         })
 
