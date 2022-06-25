@@ -1,59 +1,67 @@
-import { Avatar, Button, Card, CardContent, CardMedia, Container, CssBaseline, Dialog, DialogContent, DialogTitle, Divider, IconButton, List, ListItem, ListItemAvatar, ListItemText, Paper, Skeleton, Stack, Typography } from '@mui/material'
-import { Box } from '@mui/system'
-import React, { useContext, useEffect, useState } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
-import { ThemeProvider, createTheme } from '@mui/material/styles';
+import {
+    Avatar,
+    Button,
+    Card,
+    CardContent,
+    CardMedia,
+    Container,
+    CssBaseline,
+    Dialog,
+    DialogContent,
+    DialogTitle,
+    Divider,
+    IconButton,
+    List,
+    ListItem,
+    ListItemAvatar,
+    ListItemText,
+    Paper,
+    Skeleton,
+    Stack,
+    Typography
+} from '@mui/material'
+import {Box} from '@mui/system'
+import React, {useContext, useEffect, useState} from 'react'
+import {useNavigate, useParams} from 'react-router-dom'
+import {ThemeProvider, createTheme} from '@mui/material/styles';
 import blogContext from '../Context/BlogContext';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
-import { useFetch } from '../hooks/useFetch';
-import { Upload } from '../Compo/Upload';
-import { Modal } from '../Compo/Modal';
-import { Blog } from '../Compo/Blog';
+import {useFetch} from '../hooks/useFetch';
+import {Upload} from '../Compo/Upload';
+import {Modal} from '../Compo/Modal';
+import {Blog} from '../Compo/Blog';
 import BasicTabs from '../Compo/BasicTabs';
-import { SkeletonPage } from '../Compo/SkeletonPage';
-import { Head } from '../Compo/Head';
+import {SkeletonPage} from '../Compo/SkeletonPage';
+import {Head} from '../Compo/Head';
 
 export const Profie = () => {
     const context = useContext(blogContext);
-    let { theme, url, loggedinUser } = context;
+    let {theme, url, loggedinUser} = context;
     // const [profile, setProfile] = useState(null)
     const [follow, setFollow] = useState(false)
     const [modelOpen, setModelOpen] = useState(false)
 
     let history = useNavigate()
-    let { userId } = useParams()
-    let { data: profile, isLoading, error, setData } = useFetch(`${url}/api/v1/users/${userId}`)
+    let {userId} = useParams()
+    let {data: profile, isLoading, error, setData} = useFetch(`${url}/api/v1/users/${userId}`)
 
     useEffect(() => {
 
-        console.log(profile);
-        if (!JSON.parse(localStorage.getItem("user")) && !sessionStorage.getItem("user")) {
-            console.log('Not logged in')
-            return history('/login')
-        }
+        // console.log(profile);
+        // if (!JSON.parse(localStorage.getItem("user")) && !sessionStorage.getItem("user")) {
+        //     console.log('Not logged in')
+        //     return history('/login')
+        // }
+        // else {
 
 
         // a.find(({user})=>user === '6245cdd699b2268d8bccc4ce')
 
-        profile && console.log((profile?.followers)?.find(({ user }) => user === loggedinUser?.profile.user), 'current user is following?');
-        profile && setFollow((profile?.followers)?.find(({ user }) => user === loggedinUser?.profile.user))
-
-        // if (profile && (JSON.stringify(profile) !== JSON.stringify(JSON.parse(localStorage.getItem("user"))?.profile))) {
-        //     console.log('not same')
-        //     let newJson = JSON.parse(localStorage.getItem("user"))
-        //     newJson.profile = profile.oneUser;
-        //     localStorage.setItem("user", JSON.stringify(newJson))
-        // }
-        // else {
-        //     console.log('s');
-        // }
+        // profile && console.log((profile?.followers)?.find(({user}) => user === loggedinUser?.profile.user), 'current user is following?');
+        profile && setFollow((profile?.followers)?.find(({user}) => user === loggedinUser?.profile.user))
 
         // eslint-disable-next-line
     }, [profile, loggedinUser])
-
-    // atlic,
-
-
 
 
 
@@ -75,9 +83,6 @@ export const Profie = () => {
             },
         },
     });
-
-
-
 
 
     const followUser = () => {
@@ -107,6 +112,7 @@ export const Profie = () => {
             profileSet()
         })
     }
+
     function stringToColor(string) {
         let hash = 0;
         let i;
@@ -128,11 +134,10 @@ export const Profie = () => {
     }
 
 
-
     function showFollowers() {
-        console.log('opening followeres list')
+        // console.log('opening followeres list')
         setModelOpen(true);
-        return <Modal modelOpen={modelOpen} setModelOpen={setModelOpen} >
+        return <Modal modelOpen={modelOpen} setModelOpen={setModelOpen}>
 
             'followers list'
         </Modal>
@@ -165,43 +170,40 @@ export const Profie = () => {
     }
 
 
-
-
-
     function openModal(type) {
-        console.log(type);
+        // console.log(type);
         setModelOpen(true);
-        <Modal title='Profile Pic' modelOpen={modelOpen} setModelOpen={setModelOpen} >
+        <Modal title='Profile Pic' modelOpen={modelOpen} setModelOpen={setModelOpen}>
 
 
             type
 
-        </Modal >
+        </Modal>
         // return type
     }
 
     return (
         <>
             <ThemeProvider theme={darkTheme}>
-                <Head title={`${profile?.name ?? ""} || @${profile?.username ?? ""} || Dev Blog Profile`} />
+                <Head title={`${profile?.name ?? ""} || @${profile?.username ?? ""} || Dev Blog Profile`}/>
                 {/* <Typography variant="body1" sx={{ mt: 2, ml: 5 }}>Profile</Typography> */}
-                <Container sx={{ mt: 3 }} component="main" >
-                    <CssBaseline />
-                    <Paper sx={{ p: 2 }}>
-                        <Typography sx={{ m: 1 }}>
+                <Container sx={{mt: 3}} component="main">
+                    <CssBaseline/>
+                    <Paper sx={{p: 2}}>
+                        <Typography sx={{m: 1}}>
                             <Button variant="outlined" onClick={() => {
                                 if (history(-1)) {
 
                                     history(-1)
                                 }
                                 history('/')
-                            }} color="inherit" startIcon={<ArrowBackIosNewIcon />}>
+                            }} color="inherit" startIcon={<ArrowBackIosNewIcon/>}>
                                 Go back
                             </Button>
                         </Typography>
 
                         {
-                            isLoading ? <SkeletonPage />
+                            isLoading ? <SkeletonPage/>
                                 :
 
 
@@ -214,8 +216,9 @@ export const Profie = () => {
                                         <Card>
                                             {
                                                 isLoading ? (
-                                                    <Skeleton sx={{ height: 190 }} animation="wave" variant="rectangular" />
-                                                ) :
+                                                        <Skeleton sx={{height: 190}} animation="wave"
+                                                                  variant="rectangular"/>
+                                                    ) :
 
                                                     <CardMedia
                                                         component="img"
@@ -225,24 +228,35 @@ export const Profie = () => {
                                                         loading='lazy'
                                                     />
                                             }
-                                            <CardContent >
-                                                <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+                                            <CardContent>
+                                                <Box sx={{display: 'flex', justifyContent: 'center'}}>
                                                     <Avatar
                                                         onClick={(e) => setModelOpen(true)}
-                                                        sx={{ display: 'flex', justifyContent: 'center', width: 100, height: 100, mt: -8 }}
+                                                        sx={{
+                                                            display: 'flex',
+                                                            justifyContent: 'center',
+                                                            width: 100,
+                                                            height: 100,
+                                                            mt: -8
+                                                        }}
                                                         loading='lazy'
-                                                        src={profile?.Profile_pic} alt="Username"  {...stringAvatar(profile?.username ? profile?.username : 'Abc')}
+                                                        src={profile?.Profile_pic}
+                                                        alt="Username"  {...stringAvatar(profile?.username ? profile?.username : 'Abc')}
                                                     />
                                                 </Box>
-
-
 
 
                                                 {
                                                     loggedinUser?.profile?._id === userId &&
 
-                                                    <Box sx={{ display: 'flex', justifyContent: 'end', position: 'relative', top: '-39px', right: '-1%' }}>
-                                                        <Upload profile={profile} user={userId} />
+                                                    <Box sx={{
+                                                        display: 'flex',
+                                                        justifyContent: 'end',
+                                                        position: 'relative',
+                                                        top: '-39px',
+                                                        right: '-1%'
+                                                    }}>
+                                                        <Upload profile={profile} user={userId}/>
                                                     </Box>
 
                                                 }
@@ -253,10 +267,10 @@ export const Profie = () => {
 
                                                 {/* Profile data goes here */}
 
-                                                <div style={{ display: 'flex', justifyContent: 'center' }}>
+                                                <div style={{display: 'flex', justifyContent: 'center'}}>
 
                                                     <Stack
-                                                        sx={{ my: 2, width: '50%' }}
+                                                        sx={{my: 2, width: '50%'}}
                                                         direction="row"
                                                         justifyContent="center"
                                                         alignItems="center"
@@ -267,40 +281,44 @@ export const Profie = () => {
                                                             @{profile?.username}
                                                         </span>
                                                         <Stack direction='row'
-                                                            sx={{ m: 0, ml: 0 }}
-                                                            style={{ margin: 0, marginLeft: '90px' }}
-                                                            className='this'
-                                                        // sx={{ ml: { xs: '90px', md: '176px' }, margin: { xs: 0, md: 'auto' } }}
+                                                               sx={{m: 0, ml: 0}}
+                                                               style={{margin: 0, marginLeft: '90px'}}
+                                                               className='this'
+                                                            // sx={{ ml: { xs: '90px', md: '176px' }, margin: { xs: 0, md: 'auto' } }}
                                                         >
 
                                                             <Stack
-                                                                sx={{ cursor: 'pointer' }}
+                                                                sx={{cursor: 'pointer'}}
                                                                 direction="column"
                                                                 justifyContent="center"
                                                                 alignItems="center"
                                                                 role="button"
-                                                                onClick={() => { showFollowers() }}
+                                                                onClick={() => {
+                                                                    showFollowers()
+                                                                }}
                                                             >
                                                                 <Typography>{(profile?.followers)?.length}</Typography>
-                                                                <Divider variant='middle' sx={{ width: '100%' }} />
+                                                                <Divider variant='middle' sx={{width: '100%'}}/>
 
                                                                 <Typography>Followers</Typography>
                                                             </Stack>
                                                             <Stack
-                                                                sx={{ cursor: 'pointer' }}
+                                                                sx={{cursor: 'pointer'}}
 
                                                                 direction="column"
                                                                 justifyContent="center"
                                                                 alignItems="center"
                                                                 role="button"
-                                                                onClick={() => { showFollowing() }}
+                                                                onClick={() => {
+                                                                    showFollowing()
+                                                                }}
 
 
                                                             >
                                                                 {/* <div> */}
 
                                                                 <Typography>{(profile?.following)?.length}</Typography>
-                                                                <Divider variant='middle' sx={{ width: '100%' }} />
+                                                                <Divider variant='middle' sx={{width: '100%'}}/>
 
                                                                 <Typography>Following</Typography>
                                                                 {/* </div> */}
@@ -309,17 +327,19 @@ export const Profie = () => {
 
                                                     </Stack>
 
-                                                    <Modal title='Friends' modelOpen={modelOpen} setModelOpen={setModelOpen} >
-                                                        <BasicTabs followers={profile?.followers} following={profile?.following} />
+                                                    <Modal title='Friends' modelOpen={modelOpen}
+                                                           setModelOpen={setModelOpen}>
+                                                        <BasicTabs followers={profile?.followers}
+                                                                   following={profile?.following}/>
 
                                                     </Modal>
                                                 </div>
                                                 {
-                                                    loggedinUser?.profile?._id !== userId &&
+                                                    loggedinUser && loggedinUser?.profile?._id !== userId &&
 
 
                                                     <Stack
-                                                        sx={{ my: 2 }}
+                                                        sx={{my: 2}}
                                                         direction="row"
                                                         justifyContent="center"
                                                         alignItems="center"
@@ -327,7 +347,10 @@ export const Profie = () => {
                                                     >
 
                                                         {
-                                                            follow ? <Button variant='contained' onClick={followUser}>Unfollow</Button> : <Button variant='text' onClick={followUser}>Follow</Button>
+                                                            follow ? <Button variant='contained'
+                                                                             onClick={followUser}>Unfollow</Button> :
+                                                                <Button variant='text'
+                                                                        onClick={followUser}>Follow</Button>
                                                         }
                                                         {/* <Button variant={
                                                 follow !== null ?
@@ -365,8 +388,6 @@ export const Profie = () => {
                                 </>
 
                         }
-
-
 
 
                     </Paper>

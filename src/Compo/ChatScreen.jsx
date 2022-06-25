@@ -1,10 +1,25 @@
-import { Box, Button, Card, CardHeader, IconButton, ListItem, ListItemText, Stack, TextField, Typography } from '@mui/material'
-import React, { useCallback, useEffect, useState } from 'react'
+import {
+    Box,
+    Button,
+    Card,
+    CardHeader,
+    IconButton,
+    LinearProgress,
+    ListItem,
+    ListItemText,
+    Stack,
+    TextField,
+    Typography
+} from '@mui/material'
+import React, {useCallback, useEffect, useMemo, useState} from 'react'
 import { useSocket } from '../Context/socketProider'
 import { UserAvatar } from './UserAvatar'
 import { useConversations } from '../Context/ConversatioinsProvider'
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { timeAgo } from '../utils/timeAgo'
+import {Spinner} from "./Spinner";
+import {FetchAPI} from "../utils/FetchAPI";
+import {useFetch} from "../hooks/useFetch";
 
 export const ChatScreen = ({ data: user }) => {
     const [message, setMessage] = React.useState('')
@@ -21,8 +36,8 @@ export const ChatScreen = ({ data: user }) => {
     let socket = useSocket();
     useEffect(() => {
         setSelectedUserData(user[selectedUser]);
-
-        fetch(`${process.env.REACT_APP_URL}/api/v1/chats/`, {
+        // fetchAllChats()
+        fetch(`${process.env.REACT_APP_URL}/api/v1/chats/friend/${Cuser.profile.following[selectedUser]?._id}`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -32,11 +47,33 @@ export const ChatScreen = ({ data: user }) => {
                 receiver: Cuser.profile.following[selectedUser]?._id
             })
         }).then(res => res.json()).then(data => setMessages(data))
-
-
-
+        // },[selectedUser])
 
     }, [selectedUser])
+
+
+    //retrieve messages according to user
+    // const  fetchAllChats =async ()=>{
+    //     // let cache = {}
+    //     // useMemo(()=>{
+    //     FetchAPI(`${process.env.REACT_APP_URL}/api/v1/chats/friend/${Cuser.profile.following[selectedUser]?._id}`, {
+    //         method: 'POST',
+    //         headers: {
+    //             'Content-Type': 'application/json'
+    //         },
+    //         body: JSON.stringify({
+    //             sender: Cuser.profile._id,
+    //             receiver: Cuser.profile.following[selectedUser]?._id
+    //         })
+    //     })
+    //         .then(data=>
+    //     console.log(data)
+    //         )
+    //         // setMessages(data)
+    //
+    //
+    //      }
+
     // send msg to socket eith event 'send-message'
     const handleSubmit = (e) => {
         if (message.length < 0 || message === '') return;
@@ -172,7 +209,8 @@ export const ChatScreen = ({ data: user }) => {
 
 
     return (
-        <Box sx={{ borderTop: 1, borderLeft: 1, borderColor: 'silver', height: '100%', display: 'grid', gridTemplateRows: 'auto 1fr auto' }}>
+            selectedUserData ?
+        <Box sx={{  borderColor: 'silver', height: '100%', display: 'grid', gridTemplateRows: 'auto 1fr auto' }}>
             {/* <Stack> */}
             {/* Chat header */}
             <Box sx={{ bgcolor: 'background.paper', border: '0 1 1 1' }}>
@@ -186,22 +224,13 @@ export const ChatScreen = ({ data: user }) => {
                         </IconButton>}
                     />
                 </Card>
-                {/* <Box sx={{ px: 3 }}>
-                        <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                            <Box sx={{ mr: 3 }}>
-                                <UserAvatar src={user?.Profile_pic} name={user[selectedUser]?.username} />
-                            </Box>
-                            <Box>
-                                <Typography variant='h6'>{user[selectedUser]?.username}</Typography>
-                                <Typography variant='body2'>{user[selectedUser]?.email || user[selectedUser]?.createdAt}</Typography>
-                            </Box>
-                        </Box>
-                    </Box> */}
+
             </Box>
             {/* Chat body */}
             <Box sx={{ p: 1, display: 'flex', flexDirection: 'column', flexGrow: '1', overflow: 'auto', maxHeight: '70vh' }}>
+               <React.Suspense fallback={<Spinner />}>
                 {
-                    messages.map((msg, index) => {
+                    messages?.map((msg, index) => {
                         const lastMessage = messages.length - 1 === index
 
                         return (
@@ -225,18 +254,7 @@ export const ChatScreen = ({ data: user }) => {
                     })
 
                 }
-                {/* // <List sx={{ width: 'min-content', borderRadius: 1, bgcolor: 'background.paper', border: 1, alignContent: 'end', justifyContent: 'right', display: 'flex' }}>
-                    //     <ListItem selected>
-
-                    //         <ListItemText >Hey</ListItemText>
-                    //     </ListItem>
-                    // </List>
-                    // <List sx={{ margin: 'auto', width: 'min-content', borderRadius: 1, bgcolor: 'background.paper', border: 1, alignContent: 'start', justifyContent: 'left', display: 'flex' }}>
-                    //     <ListItem selected>
-
-                    //         <ListItemText >Hey</ListItemText>
-                    //     </ListItem>
-                    // </List> */}
+               </React.Suspense>
             </Box>
 
 
@@ -259,5 +277,11 @@ export const ChatScreen = ({ data: user }) => {
 
             {/* </Stack> */}
         </Box>
+                :
+                <Box sx={{ borderTop: 1, borderLeft: 1, borderColor: 'silver', height: '100%',display:'flex',alignItems:'center',justifyContent:'center' }}>
+                    <Typography align='center' alignSelf='center' variant='h6' color='primary'>
+                    Select a chat to start conversion.
+                    </Typography>
+                </Box>
     )
 }

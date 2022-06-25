@@ -143,7 +143,7 @@ export const Login = () => {
                             >
                                 sign in
                             </LoadingButton>
-                            <div class="g-signin2" data-onsuccess="onSignIn"></div>
+                            <div className="g-signin2" data-onsuccess="onSignIn"></div>
                             <Grid container>
                                 <Grid item xs>
                                     <Link to="/password/reset" variant="body2" color='blue'>

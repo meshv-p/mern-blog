@@ -13,6 +13,7 @@ import { UserAvatar } from './UserAvatar';
 import { useFetch } from '../hooks/useFetch';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import { Head } from './Head';
+import {timeAgo} from "../utils/timeAgo";
 
 export const BlogDetail = () => {
     const [comment, setComment] = useState([])
@@ -46,7 +47,7 @@ export const BlogDetail = () => {
             // console.log(data);
             setPage(page + 1)
         })
-        console.log(page);
+        // console.log(page);
     })
 
     useEffect(() => {
@@ -59,10 +60,7 @@ export const BlogDetail = () => {
         //     setBlog(data.findBlog[0])
         // })
         getComment()
-        window.addEventListener('load', () => {
 
-
-        })
     }, [])
 
     useEffect(() => {
@@ -74,14 +72,14 @@ export const BlogDetail = () => {
 
 
     function handleDelete() {
-        console.log(blog._id)
+        // console.log(blog._id)
         fetch(`${url}/api/v1/blog/${blog._id}`, {
             method: 'DELETE',
             headers: {
                 'Authorization': `${loggedinUser.authToken}`
             }
         }).then(res => res.json()).then(data => {
-            console.log(data)
+            // console.log(data)
             history('/')
         })
     }
@@ -90,7 +88,7 @@ export const BlogDetail = () => {
 
     const handleSubmit = (e) => {
         // setPage(1)
-
+        if (commentByUser === '') return
         e.preventDefault()
         // console.log(commentByUser)
         fetch(`${url}/api/v1/comment/${blogId}`, {
@@ -103,9 +101,9 @@ export const BlogDetail = () => {
         }).then(res => res.json()).then((data) => {
             setCommentByUser("");
             data.newComment = { ...data.newComment, Profile_pic: loggedinUser?.profile?.Profile_pic }
-            console.log(comment.unshift(data.newComment))
+            // console.log(comment.unshift(data.newComment))
             // setComment(comment.concat(data.newComment).reverse())
-            console.log(comment);
+            // console.log(comment);
             // console.log(page)
             // console.log('before');
             // setTimeout(() => {
@@ -200,11 +198,12 @@ export const BlogDetail = () => {
 
                                     }
                                     title={
-                                        <Link to={`/user/${blog.user[0]?.user}`}>
+                                        <Link to={`/user/${blog.user[0]?._id}`}>
                                             {blog?.user[0]?.username}
                                         </Link>
                                     }
-                                    subheader={new Date(blog.createdAt).toLocaleString()}
+                                    // subheader={new Date(blog.createdAt).toLocaleString()}
+                                    subheader={`${timeAgo(blog.createdAt)} ago`}
                                     action={
                                         blog?.user[0]?._id === loggedinUser?.profile._id &&
 
@@ -217,7 +216,7 @@ export const BlogDetail = () => {
                                     component="img"
                                     alt="green iguana"
                                     height="440"
-                                    image={'https://source.unsplash.com/random/300x200'}
+                                    image={`https://source.unsplash.com/random/?${blog?.tag[0]},${blog?.tag[1]},web`}
                                     loading='lazy'
                                     decoding='async'
                                 />
@@ -261,6 +260,7 @@ export const BlogDetail = () => {
                                                     multiline
                                                     rows={3}
                                                     fullWidth
+                                                    required={true}
                                                     value={commentByUser}
                                                     onChange={e => setCommentByUser(e.target.value)}
                                                 />
@@ -300,8 +300,11 @@ export const BlogDetail = () => {
                                                                 avatar={
                                                                     <UserAvatar src={c.user[0]?.Profile_pic} name={c.user[0]?.username ?? 'User'} />
                                                                 }
-                                                                title={c.user[0].username ? c.user[0].username : loggedinUser.profile.username}
-                                                                subheader={c.createdAt ? new Date(c?.createdAt)?.toLocaleString() : new Date().toLocaleString()}
+                                                                title={<Link to={`/user/${c.user[0]?._id}`}>
+                                                                    {c?.user[0]?.username}
+                                                                </Link>}
+                                                                // subheader={c.createdAt ? new Date(c?.createdAt)?.toLocaleString() : new Date().toLocaleString()}
+                                                                subheader={c.createdAt ? `${timeAgo(c?.createdAt)} ago` : `${timeAgo(new Date().toLocaleString())} ago`}
                                                                 action={
                                                                     <IconButton aria-label="settings">
                                                                         <MoreVertIcon />

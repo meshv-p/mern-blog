@@ -12,6 +12,7 @@ import { useSocket } from '../Context/socketProider';
 import styled from '@emotion/styled';
 import { useFetch } from "../hooks/useFetch";
 import { timeAgo } from '../utils/timeAgo';
+import {Spinner} from "./Spinner";
 
 export const LeftSideBar = ({ data: users }) => {
     let user = JSON.parse(localStorage.getItem('user'))
@@ -82,10 +83,6 @@ export const LeftSideBar = ({ data: users }) => {
         },
     }));
 
-
-
-
-
     function checkOnlineUser(arr, userId) {
         return arr?.find(u => u.id === userId)
     }
@@ -102,6 +99,9 @@ export const LeftSideBar = ({ data: users }) => {
 
     return (
         <Box >
+            <React.Suspense fallback={<Spinner />}>
+
+
             <List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
                 {
                     list &&
@@ -186,6 +186,7 @@ export const LeftSideBar = ({ data: users }) => {
                 // </ListItem>
                 // <Divider variant="inset" component="li" /> */}
             </List>
+            </React.Suspense>
         </Box >
     )
 }

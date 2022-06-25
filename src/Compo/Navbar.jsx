@@ -1,27 +1,45 @@
-import React, { useState, useContext, useEffect } from 'react'
-import { AppBar, Avatar, Badge, Button, Divider, IconButton, List, ListItem, ListItemAvatar, ListItemText, Menu, MenuItem, Stack, Toolbar, Typography } from '@mui/material'
-import { Box } from '@mui/system';
-import { useFetch } from '../hooks/useFetch'
+import React, {useState, useContext, useEffect} from 'react'
+import {
+    AppBar,
+    Avatar,
+    Badge,
+    Button,
+    Divider,
+    IconButton,
+    List,
+    ListItem,
+    ListItemAvatar,
+    ListItemText,
+    Menu,
+    MenuItem,
+    Stack,
+    Toolbar,
+    Typography
+} from '@mui/material'
+import {Box} from '@mui/system';
+import {useFetch} from '../hooks/useFetch'
 import NotificationsIcon from '@mui/icons-material/Notifications';
-import { ThemeProvider, createTheme } from '@mui/material/styles';
+import {ThemeProvider, createTheme} from '@mui/material/styles';
 import Brightness4Icon from '@mui/icons-material/Brightness4';
-import { Link, useNavigate } from 'react-router-dom';
+import {Link, useNavigate} from 'react-router-dom';
 import blogContext from '../Context/BlogContext';
 import LoadingBar from 'react-top-loading-bar'
-import { UserAvatar } from './UserAvatar';
+import {UserAvatar} from './UserAvatar';
 import ChatBubble from '@mui/icons-material/ChatBubble';
-import { SearchBar } from './SearchBar';
+import {SearchBar} from './SearchBar';
 import DoneIcon from '@mui/icons-material/Done';
-import { useSocket } from '../Context/socketProider';
+import {useSocket} from '../Context/socketProider';
+
+let LOGO = require('../logo.png')
 
 export const Navbar = () => {
     let socket = useSocket();
     const context = useContext(blogContext);
-    let { theme, toggleTheme, loggedinUser, progress, url } = context;
+    let {theme, toggleTheme, loggedinUser, progress, url} = context;
     const [anchorElUser, setAnchorElUser] = React.useState(null);
     const [currentUser, setCurrentUser] = useState(JSON.parse(localStorage.getItem('user'))?.profile)
     const [notifications, setNotiAnchorEl] = React.useState(null);
-    let { data, isLoading, error, setData } = useFetch(`${url}/api/v1/notification/`, {
+    let {data, isLoading, error, setData} = useFetch(`${url}/api/v1/notification/`, {
         method: 'GET',
         headers: {
             'Authorization': `${JSON.parse(localStorage.getItem("user"))?.authToken}`
@@ -29,49 +47,11 @@ export const Navbar = () => {
     });
 
 
-
     let history = useNavigate()
 
     useEffect(() => {
-
-
-
-
-
         setCurrentUser(loggedinUser?.profile);
-        // console.log(loggedinUser.profile.user)
     }, [loggedinUser])
-
-
-
-    useEffect(() => {
-        if (socket === null) return
-        // console.log(socket);
-        socket?.on('connect', () => {
-            console.log('connected')
-        });
-
-        socket?.on("hey", (data) => {
-            console.log(data);
-        });
-        // socket?.emit("hey", {
-        //     user: "meshv",
-        //     id: 12,
-        //     msg: "Hello",
-        //     to: "6245c9a799b2268d8bccc49e",
-        // });
-        return () => {
-            socket?.off('connect')
-        }
-    }, [socket])
-
-
-
-
-
-
-
-
 
 
     const darkTheme = createTheme({
@@ -106,13 +86,14 @@ export const Navbar = () => {
                     <LoadingBar
                         color='#f11946'
                         progress={progress}
-                    // onLoaderFinished={() => setProgress(0)}
+                        // onLoaderFinished={() => setProgress(0)}
                     />
                     <Toolbar>
-                        <Link to="/" style={{ textDecoration: 'none', color: 'inherit' }}>
+                        <Link to="/" style={{textDecoration: 'none', color: 'inherit'}}>
+                            {/*<img src={LOGO} alt="Dev-Blog" style={{width:'auto',height:'auto'}}/>*/}
                             <Typography>Dev-Blog</Typography>
                         </Link>
-                        <SearchBar />
+                        <SearchBar/>
                         {/* <Search >
                             <SearchIconWrapper>
                                 <SearchIcon />
@@ -122,33 +103,33 @@ export const Navbar = () => {
                                 inputProps={{ 'aria-label': 'search' }}
                             />
                         </Search> */}
-                        <Box sx={{ flexGrow: 1 }} />
+                        <Box sx={{flexGrow: 1}}/>
 
                         <Box>
                             <IconButton
-                                sx={{ display: { xs: 'none', md: 'inline-flex' } }}
+                                sx={{display: {xs: 'none', md: 'inline-flex'}}}
                                 onClick={() => history('/chat')}
                                 size="large"
                                 aria-label="Change theme"
                                 color="inherit"
                             >
 
-                                <ChatBubble />
+                                <ChatBubble/>
 
                             </IconButton>
                             <IconButton
-                                sx={{ display: { xs: 'none', md: 'inline-flex' } }}
+                                sx={{display: {xs: 'none', md: 'inline-flex'}}}
                                 onClick={toggleTheme}
                                 size="large"
                                 aria-label="Change theme"
                                 color="inherit"
                             >
 
-                                <Brightness4Icon />
+                                <Brightness4Icon/>
 
                             </IconButton>
                             <IconButton
-                                sx={{ display: { xs: 'none', md: 'inline-flex' } }}
+                                sx={{display: {xs: 'none', md: 'inline-flex'}}}
                                 onClick={e => setNotiAnchorEl(e.currentTarget)}
                                 onClose={() => setNotiAnchorEl(null)}
                                 size="large"
@@ -156,7 +137,7 @@ export const Navbar = () => {
                                 color="inherit"
                             >
                                 <Badge badgeContent={data?.length} color="error">
-                                    <NotificationsIcon />
+                                    <NotificationsIcon/>
                                 </Badge>
                             </IconButton>
                             <Menu
@@ -168,7 +149,7 @@ export const Navbar = () => {
                                     'aria-labelledby': 'basic-button',
                                 }}
                             >
-                                <List sx={{ maxWidth: 360, }}>
+                                <List sx={{maxWidth: 360,}}>
                                     {/* {
                                         error && <div>{error}</div>
                                     } */}
@@ -178,18 +159,19 @@ export const Navbar = () => {
                                             <React.Fragment key={noti._id}>
 
                                                 <ListItem alignItems="flex-start"
-                                                    key={noti._id}
-                                                    secondaryAction={
-                                                        <IconButton edge="end" aria-label="delete"
-                                                            onClick={(e) => handleReadNoti(noti._id)}
-                                                        >
-                                                            <DoneIcon />
-                                                        </IconButton>
-                                                    }
+                                                          key={noti._id}
+                                                          secondaryAction={
+                                                              <IconButton edge="end" aria-label="delete"
+                                                                          onClick={(e) => handleReadNoti(noti._id)}
+                                                              >
+                                                                  <DoneIcon/>
+                                                              </IconButton>
+                                                          }
                                                 >
                                                     <ListItemAvatar>
                                                         <Avatar>
-                                                            <UserAvatar src={noti.from[0].Profile_pic} name={noti.from[0].username} />
+                                                            <UserAvatar src={noti.from[0].Profile_pic}
+                                                                        name={noti.from[0].username}/>
                                                         </Avatar>
                                                     </ListItemAvatar>
                                                     <ListItemText
@@ -201,7 +183,7 @@ export const Navbar = () => {
                                                         secondary={`${noti.from[0].username} ${noti.text}`}
                                                     />
                                                 </ListItem>
-                                                <Divider variant="inset" component="li" />
+                                                <Divider variant="inset" component="li"/>
                                             </React.Fragment>
                                         ))
                                     }
@@ -213,19 +195,23 @@ export const Navbar = () => {
                                 currentUser ?
                                     <>
                                         <Button variant='text'
-                                            color='inherit'
-                                            size='large'
-                                            onClick={(e) => setAnchorElUser(e.currentTarget)}
+                                                color='inherit'
+                                                size='large'
+                                                onClick={(e) => setAnchorElUser(e.currentTarget)}
 
-                                            startIcon={
-                                                <UserAvatar src={currentUser?.Profile_pic} name={currentUser?.username ?? 'User'} />
-                                            }>
-                                            <Typography sx={{ ml: 1, display: { xs: 'none', md: 'block' } }}>{currentUser?.username}</Typography>
+                                                startIcon={
+                                                    <UserAvatar src={currentUser?.Profile_pic}
+                                                                name={currentUser?.username ?? 'User'}/>
+                                                }>
+                                            <Typography sx={{
+                                                ml: 1,
+                                                display: {xs: 'none', md: 'block'}
+                                            }}>{currentUser?.username}</Typography>
 
                                         </Button>
 
                                         <Menu
-                                            sx={{ mt: '45px' }}
+                                            sx={{mt: '45px'}}
                                             id="menu-appbar"
                                             anchorEl={anchorElUser}
                                             anchorOrigin={{
@@ -243,9 +229,9 @@ export const Navbar = () => {
                                             <MenuItem onClick={() => setAnchorElUser(null)}>
                                                 <Link to={{
                                                     pathname: `/user/${loggedinUser?.profile?._id}`,
-                                                    state: { name: 'meshv' }
+                                                    state: {name: 'meshv'}
 
-                                                }} >
+                                                }}>
                                                     <Typography>Profile</Typography>
                                                 </Link>
                                             </MenuItem>
@@ -254,7 +240,11 @@ export const Navbar = () => {
                                                     <Typography>Create blog</Typography>
                                                 </Link>
                                             </MenuItem>
-                                            <MenuItem onClick={() => { localStorage.removeItem('user'); setCurrentUser(null); setAnchorElUser(null) }}>
+                                            <MenuItem onClick={() => {
+                                                localStorage.removeItem('user');
+                                                setCurrentUser(null);
+                                                setAnchorElUser(null)
+                                            }}>
                                                 <Typography>Logout</Typography>
                                             </MenuItem>
                                             {/* <MenuItem>
@@ -277,11 +267,12 @@ export const Navbar = () => {
                                     :
                                     <>
 
-                                        <Button color="inherit" variant="text" sx={{ mx: 1, fontSize: '10px' }} onClick={() => history('/signup')} >Sign Up</Button>
-                                        <Button color="inherit" sx={{ fontSize: { xs: '10px' } }} variant='outlined' onClick={() => history('/login')}>Login</Button>
+                                        <Button color="inherit" variant="text" sx={{mx: 1, fontSize: '10px'}}
+                                                onClick={() => history('/signup')}>Sign Up</Button>
+                                        <Button color="inherit" sx={{fontSize: {xs: '10px'}}} variant='outlined'
+                                                onClick={() => history('/login')}>Login</Button>
 
                                     </>
-
 
 
                             }
@@ -289,6 +280,6 @@ export const Navbar = () => {
                     </Toolbar>
                 </AppBar>
             </ThemeProvider>
-        </div >
+        </div>
     )
 }

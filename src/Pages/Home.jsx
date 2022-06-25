@@ -33,7 +33,7 @@ export const Home = () => {
         setIsLoading(true)
         fetchData()
         // setOpen(false)
-        console.log(navigator.onLine ? 'you are online' : 'you are offline')
+        // console.log(navigator.onLine ? 'you are online' : 'you are offline')
         // setUserIsOnline(navigator.online)
 
     }, [])
@@ -104,8 +104,8 @@ export const Home = () => {
                                 }
                             >
 
-                                {allBlogs.map(blog => (
-                                    <Blog blog={blog} key={blog._id} theme={theme} />
+                                {allBlogs.map((blog,index) => (
+                                    <Blog blog={blog} key={blog._id} theme={theme} index={index}/>
                                 ))}
                             </InfiniteScroll>
                         }

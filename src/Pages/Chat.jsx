@@ -7,6 +7,7 @@ import { useSocket } from '../Context/socketProider'
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import blogContext from '../Context/BlogContext'
 import { AlertBar } from '../Compo/Alert'
+import {useNavigate} from "react-router-dom";
 
 export const Chat = () => {
     const [open, setOpen] = useState(true)
@@ -17,7 +18,14 @@ export const Chat = () => {
     let { theme, } = context;
     let user = JSON.parse(localStorage.getItem('user'))
     let data = user?.profile.following;
+    let history = useNavigate()
 
+    useEffect(()=>{
+        console.log(user)
+        if(user === null){
+            history('/login');
+        }
+    },[])
 
     // let data = {
     //     users: [
@@ -77,23 +85,26 @@ export const Chat = () => {
             <ThemeProvider theme={darkTheme}>
                 <CssBaseline />
                 {/* make layout like whatsapp */}
-                <Grid container>
-                    <AlertBar open={open} msg="Follow more user to chat with them" type='info' />
+                {
+                    user &&
+                    <Grid container>
+                        <AlertBar open={open} msg="Follow more user to chat with them" type='info'/>
 
-                    <Grid item xs={2} sx={{ height: '91vh', overflow: 'auto' }} className='hey'>
+                        <Grid item xs={2} sx={{height: '91vh', overflow: 'auto'}} className='hey'>
 
-                        <LeftSideBar data={data} />
+                            <LeftSideBar data={data}/>
+
+                        </Grid>
+                        <Grid item xs={10}>
+
+
+                            <ChatScreen data={data}/>
+
+                        </Grid>
+
 
                     </Grid>
-                    <Grid item xs={10}>
-
-
-                        <ChatScreen data={data} />
-
-                    </Grid>
-
-
-                </Grid>
+                }
             </ThemeProvider>
         </>
     )
