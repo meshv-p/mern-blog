@@ -1,23 +1,23 @@
-import { Avatar, Badge, Box, ListItemButton } from '@mui/material'
-import React, { useEffect, useState } from 'react'
-import { UserAvatar } from './UserAvatar'
+import {Avatar, Badge, Box, ListItemButton} from '@mui/material'
+import React, {useEffect, useState} from 'react'
+import {UserAvatar} from './UserAvatar'
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import Divider from '@mui/material/Divider';
 import ListItemText from '@mui/material/ListItemText';
 import ListItemAvatar from '@mui/material/ListItemAvatar';
 import Typography from '@mui/material/Typography';
-import { useConversations } from '../Context/ConversatioinsProvider';
-import { useSocket } from '../Context/socketProider';
+import {useConversations} from '../Context/ConversatioinsProvider';
+import {useSocket} from '../Context/socketProider';
 import styled from '@emotion/styled';
-import { useFetch } from "../hooks/useFetch";
-import { timeAgo } from '../utils/timeAgo';
+import {useFetch} from "../hooks/useFetch";
+import {timeAgo} from '../utils/timeAgo';
 import {Spinner} from "./Spinner";
 
-export const LeftSideBar = ({ data: users }) => {
+export const LeftSideBar = ({data: users}) => {
     let user = JSON.parse(localStorage.getItem('user'))
-
-    let { data: list, error } = useFetch(`${process.env.REACT_APP_URL}/api/v1/chats/friendlist`, {
+    // const [isLoading, setIsLoading] = useState(true);
+    let {data: list, error, isLoading} = useFetch(`${process.env.REACT_APP_URL}/api/v1/chats/friendlist`, {
         method: 'POST',
         body: JSON.stringify({
             userId: user?.profile._id
@@ -26,7 +26,7 @@ export const LeftSideBar = ({ data: users }) => {
             'Content-Type': 'application/json',
         }
     })
-    let { selectedUser, setSelectedUser, onlineU, setOnlineU, unread, setUnread, selectedUserData } = useConversations()
+    let {selectedUser, setSelectedUser, onlineU, setOnlineU, unread, setUnread, selectedUserData} = useConversations()
     let socket = useSocket();
     let theme = JSON.parse(localStorage.getItem("Theme"));
 
@@ -54,7 +54,7 @@ export const LeftSideBar = ({ data: users }) => {
             socket?.off('offline')
         }
     }, [socket, onlineU])
-    const StyledBadge = styled(Badge)(({ theme }) => ({
+    const StyledBadge = styled(Badge)(({theme}) => ({
         '& .MuiBadge-badge': {
             backgroundColor: '#44b700',
             color: '#44b700',
@@ -98,95 +98,76 @@ export const LeftSideBar = ({ data: users }) => {
 
 
     return (
-        <Box >
-            <React.Suspense fallback={<Spinner />}>
+        <Box>
+            <React.Suspense fallback={<Spinner/>}>
 
 
-            <List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
-                {
-                    list &&
-                    list?.map((user, index) => {
-                        return (
-                            <React.Fragment key={index}>
-                                <ListItemButton selected={selectedUser === index} onClick={(e) => openConversion(index)}>
-                                    <ListItem alignItems="flex-start" key={index}>
-                                        <ListItemAvatar>
-                                            <StyledBadge
-                                                overlap="circular"
-                                                anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-                                                // variant={checkOnlineUser(onlineU, user._id) ? 'dot' : 'standard'}
-                                                variant={onlineU?.find(u => u.id === user._id) ? 'dot' : 'standard'}
-                                            >
-                                                <UserAvatar src={user.Profile_pic} name={user.username} />
+                <List sx={{width: '100%', maxWidth: 360, bgcolor: 'background.paper'}}>
+                    {
+                        isLoading ? <Spinner />:
+                        list &&
+                        list?.map((user, index) => {
+                            return (
+                                <React.Fragment key={index}>
+                                    <ListItemButton selected={selectedUser === index}
+                                                    onClick={(e) => openConversion(index)}>
+                                        <ListItem alignItems="flex-start" key={index}>
+                                            <ListItemAvatar>
+                                                <StyledBadge
+                                                    overlap="circular"
+                                                    anchorOrigin={{vertical: 'bottom', horizontal: 'right'}}
+                                                    // variant={checkOnlineUser(onlineU, user._id) ? 'dot' : 'standard'}
+                                                    variant={onlineU?.find(u => u.id === user._id) ? 'dot' : 'standard'}
+                                                >
+                                                    <UserAvatar src={user.Profile_pic} name={user.username}/>
 
-                                            </StyledBadge>
-                                            {/* <UserAvatar src={user?.user?.Profile_pic} name={user?.user?.username} /> */}
-                                        </ListItemAvatar>
-                                        <ListItemText
-                                            primary={user.username}
-                                            secondary={
-                                                <React.Fragment>
-                                                    <Typography
-                                                        component="span"
-                                                        variant="body2"
-                                                        color="textPrimary"
-                                                    >
-                                                        {/* get time  */}
-                                                        {timeAgo(user.createdAt) + ' ago'}
-                                                        {/* {(user.createdAt).slice(0, 10)} */}
+                                                </StyledBadge>
+                                                {/* <UserAvatar src={user?.user?.Profile_pic} name={user?.user?.username} /> */}
+                                            </ListItemAvatar>
+                                            <ListItemText
+                                                primary={user.username}
+                                                secondary={
+                                                    <React.Fragment>
+                                                        <Typography
+                                                            component="span"
+                                                            variant="body2"
+                                                            color="textPrimary"
+                                                        >
+                                                            {/* get time  */}
+                                                            {timeAgo(user.createdAt) + ' ago'}
+                                                            {/* {(user.createdAt).slice(0, 10)} */}
 
-                                                    </Typography>
-                                                </React.Fragment>
-                                            }
-                                        />
-                                    </ListItem>
-                                    {
-                                        (user.unread || unread.find(u => u === user._id)) &&
-                                        <div className='unseenmsg' style={{
-                                            borderRadius: '100%',
-                                            width: '30px',
-                                            height: '30px',
-                                            display: 'flex',
-                                            alignItems: 'center',
-                                            justifyContent: 'center',
-                                            background: !theme ? 'black' : '#00c0ff',
-                                            color: !theme ? '#00c0ff' : 'black'
-                                        }}>
-                                            <span className='count' >
+                                                        </Typography>
+                                                    </React.Fragment>
+                                                }
+                                            />
+                                        </ListItem>
+                                        {
+                                            (user.unread || unread.find(u => u === user._id)) &&
+                                            <div className='unseenmsg' style={{
+                                                borderRadius: '100%',
+                                                width: '30px',
+                                                height: '30px',
+                                                display: 'flex',
+                                                alignItems: 'center',
+                                                justifyContent: 'center',
+                                                background: !theme ? 'black' : '#00c0ff',
+                                                color: !theme ? '#00c0ff' : 'black'
+                                            }}>
+                                            <span className='count'>
                                                 {user.unread}
                                             </span>
-                                        </div>
-                                    }
-                                </ListItemButton>
-                                <Divider variant="inset" component="li" />
-                            </React.Fragment>
-                        )
-                    })
-                }
-                {/* // <ListItem alignItems="flex-start" selected>
-                //     <ListItemAvatar>
-                //         <UserAvatar src='image.png' name='Me' />
-                //     </ListItemAvatar>
-                //     <ListItemText
-                //         primary="User Name"
-                //         secondary={
-                //             <React.Fragment>
-                //                 <Typography
-                //                     sx={{ display: 'inline' }}
-                //                     component="span"
-                //                     variant="body2"
-                //                     color="text.primary"
-                //                 >
-                //                     Last msg
-                //                 </Typography>
-                //                 {" — I'll be in..."}
-                //             </React.Fragment>
-                //         }
-                //     />
-                // </ListItem>
-                // <Divider variant="inset" component="li" /> */}
-            </List>
+                                            </div>
+                                        }
+                                    </ListItemButton>
+                                    <Divider variant="inset" component="li"/>
+                                </React.Fragment>
+                            )
+                        })
+                    }
+
+                </List>
             </React.Suspense>
-        </Box >
+        </Box>
     )
 }
