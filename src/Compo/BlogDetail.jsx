@@ -100,7 +100,7 @@ export const BlogDetail = () => {
             }
         }).then(res => res.json()).then((data) => {
             setCommentByUser("");
-            data.newComment = { ...data.newComment, user:[{Profile_pic: loggedinUser?.profile?.Profile_pic,username:loggedinUser?.profile?.username}] }
+            data.newComment = { ...data.newComment, user: [{ Profile_pic: loggedinUser?.profile?.Profile_pic, username: loggedinUser?.profile?.username }] }
             // console.log(comment.unshift(data.newComment))
             setComment(comment.concat(data.newComment).reverse())
             // console.log(comment);
@@ -126,7 +126,7 @@ export const BlogDetail = () => {
                 'Content-Type': 'application/json',
                 'Authorization': (JSON.parse(localStorage.getItem('user'))?.authToken || JSON.parse(sessionStorage.getItem('user'))?.authToken)
             }
-        }).then(res => res.json()).then(data => {});
+        }).then(res => res.json()).then(data => { });
         // console.log(comment)
     }
 
@@ -157,7 +157,38 @@ export const BlogDetail = () => {
         return `hsl(${stringUniqueHash}, 34%, 25%)`;
     }
 
+    //function to convert hex format to a hsl color
+    function hexToHsl(hex) {
+        let result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+        let r = parseInt(result[1], 16);
+        let g = parseInt(result[2], 16);
+        let b = parseInt(result[3], 16);
 
+        r /= 255; g /= 255; b /= 255;
+
+        let max = Math.max(r, g, b), min = Math.min(r, g, b);
+        let h, s, l = (max + min) / 2;
+
+        if (max === min) {
+            h = s = 0; // achromatic
+        } else {
+            let d = max - min;
+            s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+            switch (max) {
+                case r:
+                    h = (g - b) / d + (g < b ? 6 : 0);
+                    break;
+                case g:
+                    h = (b - r) / d + 2;
+                    break;
+                case b:
+                    h = (r - g) / d + 4;
+                    break;
+            }
+            h /= 6;
+        }
+        return `hsl(${h * 360}, ${36}%, ${25}%)`;
+    }
 
     return (
         <div  >
@@ -229,7 +260,7 @@ export const BlogDetail = () => {
                                                 blog.tag.map(tag => (
                                                     // <React.Fragment key={tag}>
                                                     <Link to={`/t/${tag}`} key={tag}>
-                                                        <Typography component="span" sx={{ cursor: 'pointer', padding: .8, border: 1, borderColor: stringToColor(tag), borderRadius: 1, ":hover": { background: stringToRgba(tag) } }}>
+                                                        <Typography component="span" sx={{ cursor: 'pointer', padding: .8, border: 1, borderColor: stringToColor(tag), borderRadius: 1, ":hover": { background: hexToHsl(stringToColor(tag)) } }}>
                                                             <span  ># </span>
                                                             <span style={{ color: stringToColor(tag) }}>{tag} </span>
                                                         </Typography>
