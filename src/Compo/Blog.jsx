@@ -1,4 +1,4 @@
-import React, {useEffect, useState, useContext} from 'react'
+import React, { useEffect, useState, useContext } from 'react'
 import {
     AvatarGroup,
     Box,
@@ -14,20 +14,20 @@ import {
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import SendIcon from '@mui/icons-material/Send';
 import ChatBubbleIcon from '@mui/icons-material/ChatBubble';
-import {Link, useNavigate} from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import blogContext from '../Context/BlogContext';
-import {AlertBar} from './Alert';
-import {UserAvatar} from './UserAvatar';
-import {timeAgo} from "../utils/timeAgo";
+import { AlertBar } from './Alert';
+import { UserAvatar } from './UserAvatar';
+import { timeAgo } from "../utils/timeAgo";
 
 
-export const Blog = ({blog, theme, BlogType = 'title', index}) => {
+export const Blog = ({ blog, theme, BlogType = 'title', index }) => {
 
     const [userLiked, setUserLiked] = useState(false)
     const [totalLike, setTotalLike] = useState(0)
     const [open, setOpen] = useState(false)
     const context = useContext(blogContext)
-    let {url, loggedinUser} = context;
+    let { url, loggedinUser } = context;
 
     let history = useNavigate();
 
@@ -35,7 +35,7 @@ export const Blog = ({blog, theme, BlogType = 'title', index}) => {
     useEffect(() => {
 
         // console.log(typeof localStorage.getItem('user'), typeof blog?.like[0]);
-        let userId = JSON.parse(localStorage.getItem('user'))?.profile?.user;
+        let userId = JSON.parse(localStorage.getItem('user'))?.profile?._id;
         // console.log(blog.like?.includes(userId))
         setUserLiked(blog.like ? blog.like?.includes(userId) : false);
         setTotalLike(blog.totalLike ? blog.totalLike : 0)
@@ -148,9 +148,9 @@ export const Blog = ({blog, theme, BlogType = 'title', index}) => {
 
     return (
         <>
-            <Card elevation={3} sx={{my: 2, cursor: 'pointer', border: `1px solid ${theme ? '#d9d9d9' : '#424242'}`}}
-                  key={blog._id} raised={true}>
-                <AlertBar open={open} msg="Login to like.." type='error' remove={removeAlert}/>
+            <Card elevation={3} sx={{ my: 2, cursor: 'pointer', border: `1px solid ${theme ? '#d9d9d9' : '#424242'}` }}
+                key={blog._id} raised={true}>
+                <AlertBar open={open} msg="Login to like.." type='error' remove={removeAlert} />
                 {
                     index === 0 &&
                     <CardMedia
@@ -163,18 +163,18 @@ export const Blog = ({blog, theme, BlogType = 'title', index}) => {
                     />
                 }
                 <CardHeader
-                    sx={{":hover": {background: !theme ? '#424242' : "#d9d9d9"}}}
-                    onClick={e => openProfile(e)} data-key={blog?.user[0]?._id || blog?._id}
+                    sx={{ ":hover": { background: !theme ? '#424242' : "#d9d9d9" } }}
+                    onClick={e => openProfile(e)} data-key={blog.user?.[0]?._id || blog?._id}
                     avatar={
-                        <UserAvatar src={blog.user[0]?.Profile_pic || blog?.Profile_pic}
-                                    name={(blog.user[0]?.username || blog?.username) ?? 'User'}/>
+                        <UserAvatar src={blog.user?.[0]?.Profile_pic || blog?.Profile_pic}
+                            name={(blog.user?.[0]?.username || blog.username) ?? 'User'} />
                     }
-                    title={blog.user[0]?.username || blog?.username}
+                    title={blog.user?.[0]?.username || blog?.username}
                     // subheader="Today,a min ago"
                     // subheader={new Date(blog.createdAt).toLocaleString()}
                     subheader={timeAgo(blog?.createdAt) + ' ago'}
                 />
-                <CardContent sx={{cursor: 'pointer'}} data-key={blog._id}>
+                <CardContent sx={{ cursor: 'pointer' }} data-key={blog._id}>
                     <Link to={BlogType === 'user' ? `/user/${blog._id}` : `/blog/${blog._id}`}>
                         <Typography variant='body1' sx={{
                             ":hover": {
@@ -186,12 +186,12 @@ export const Blog = ({blog, theme, BlogType = 'title', index}) => {
                         {
                             BlogType === 'user' ?
                                 <>
-                                <Typography variant='body1'>{blog?.name}  {blog?.email}</Typography>
+                                    <Typography variant='body1'>{blog?.name}  {blog?.email}</Typography>
                                 </>
                                 :
-                                <Typography dangerouslySetInnerHTML={{__html: `${(blog?.desc)?.slice(0, 50)} ...`}}
-                                            variant='body2'
-                                            color="text.secondary">
+                                <Typography dangerouslySetInnerHTML={{ __html: `${(blog?.desc)?.slice(0, 50)} ...` }}
+                                    variant='body2'
+                                    color="text.secondary">
                                 </Typography>
                         }
                         <Typography variant='body2' color="text.secondary">
@@ -201,11 +201,11 @@ export const Blog = ({blog, theme, BlogType = 'title', index}) => {
                                         <Typography> Folllowers:{(blog.followers)?.length} ||
                                             Following:{(blog.following)?.length}</Typography>
 
-                                        <AvatarGroup total={(blog.followers)?.length} sx={{justifyContent: 'flex-end'}}>
+                                        <AvatarGroup total={(blog.followers)?.length} sx={{ justifyContent: 'flex-end' }}>
                                             {
                                                 blog.followers?.map((user, i) => (
 
-                                                    <UserAvatar src={user.Profile_pic} key={i} name={user.username}/>
+                                                    <UserAvatar src={user.Profile_pic} key={i} name={user.username} />
 
                                                 ))
                                             }
@@ -215,7 +215,7 @@ export const Blog = ({blog, theme, BlogType = 'title', index}) => {
                                 )
                             }
                         </Typography>
-                        <Stack direction="row" gap={2} sx={{my: 1}}>
+                        <Stack direction="row" gap={2} sx={{ my: 1 }}>
                             {
                                 blog?.tag &&
                                 blog?.tag?.map(tag => (
@@ -227,10 +227,10 @@ export const Blog = ({blog, theme, BlogType = 'title', index}) => {
                                                 border: 1,
                                                 borderColor: stringToColor(tag),
                                                 borderRadius: 1,
-                                                ":hover": {background: stringToRgba(tag)}
+                                                ":hover": { background: stringToRgba(tag) }
                                             }}>
                                                 <span># </span>
-                                                <span style={{color: stringToColor(tag)}}>{tag} </span>
+                                                <span style={{ color: stringToColor(tag) }}>{tag} </span>
                                             </Typography>
                                         </Link>
                                     </React.Fragment>
@@ -248,35 +248,37 @@ export const Blog = ({blog, theme, BlogType = 'title', index}) => {
                             <IconButton onClick={handleLike}>
                                 {
                                     userLiked ?
-                                        <FavoriteIcon sx={{color: '#42a5f5'}}/>
+                                        <FavoriteIcon sx={{ color: '#42a5f5' }} />
                                         :
-                                        <FavoriteIcon/>
+                                        <FavoriteIcon />
 
                                 }
                             </IconButton>
                             {/* <Typography>{blog.totalLike ? blog.totalLike : 0}  likes</Typography> */}
                             <Typography>{totalLike ? totalLike : 0} likes</Typography>
                             <IconButton onClick={goToBlogComment}>
-                                <ChatBubbleIcon/>
+                                <ChatBubbleIcon />
                             </IconButton>
-                            <Box sx={{flexGrow: 1}}/>
+                            <Box sx={{ flexGrow: 1 }} />
                             <IconButton onClick={e => {
                                 shareBlog(blog)
                             }}>
-                                <SendIcon/>
+                                <SendIcon />
                             </IconButton>
 
-                        </CardActions> : <Stack spacing={2} direction='row' sx={{p: 1}}>
+                        </CardActions> : <Stack spacing={2} direction='row' sx={{ p: 1 }}>
                             {
-                                (blog?.followers)?.find(({user}) => user === loggedinUser?.profile.user) ?
-                                    <Button variant='contained'>
-                                        UnFollow
-                                    </Button> :
-                                    <Button variant='text'>
-                                        Follow
-                                    </Button>
+                                blog._id !== loggedinUser?.profile?._id && (
+                                    (blog?.followers)?.find(({ user }) => user === loggedinUser?.profile.user) ?
+                                        <Button variant='contained'>
+                                            UnFollow
+                                        </Button> :
+                                        <Button variant='text'>
+                                            Follow
+                                        </Button>
+                                )
                             }
-                            <Button variant='outlined'>Message</Button>
+                            <Button onClick={() => history('/chat')} variant='outlined'>Message</Button>
                         </Stack>
                 }
 

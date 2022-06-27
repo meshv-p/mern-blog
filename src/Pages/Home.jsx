@@ -28,27 +28,17 @@ export const Home = () => {
     });
 
     useEffect(() => {
-        window.history.scrollRestoration = 'manual'
         setOpen(true)
         setIsLoading(true)
         fetchData()
-        // setOpen(false)
-        // console.log(navigator.onLine ? 'you are online' : 'you are offline')
-        // setUserIsOnline(navigator.online)
 
+        return () => {
+            console.clear()
+        }
     }, [])
 
-    window.addEventListener("online", () => {
-        // setUserIsOnline(navigator.onLine);
-        // fetchData()
-        // console.log("online", navigator.onLine);
-    });
 
-    // useEffect(() => {
-    //     setUserIsOnline(navigator.onLine)
-    //     // console.log(navigator.onLine, window.navigator.onLine)
 
-    // }, [setUserIsOnline])
 
 
 
@@ -96,6 +86,7 @@ export const Home = () => {
                                 next={fetchData}
                                 hasMore={allBlogs.length !== totalPage}
                                 loader={<Spinner />}
+                                // loader='loading...'
                                 pullDownToRefreshContent={
                                     <h3 style={{ textAlign: 'center' }}>&#8595; Pull down to refresh</h3>
                                 }
@@ -104,8 +95,8 @@ export const Home = () => {
                                 }
                             >
 
-                                {allBlogs.map((blog,index) => (
-                                    <Blog blog={blog} key={blog._id} theme={theme} index={index}/>
+                                {allBlogs.map((blog, index) => (
+                                    <Blog blog={blog} key={blog._id} theme={theme} index={index} />
                                 ))}
                             </InfiniteScroll>
                         }

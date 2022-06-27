@@ -13,7 +13,7 @@ import { UserAvatar } from './UserAvatar';
 import { useFetch } from '../hooks/useFetch';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import { Head } from './Head';
-import {timeAgo} from "../utils/timeAgo";
+import { timeAgo } from "../utils/timeAgo";
 
 export const BlogDetail = () => {
     const [comment, setComment] = useState([])
@@ -100,16 +100,16 @@ export const BlogDetail = () => {
             }
         }).then(res => res.json()).then((data) => {
             setCommentByUser("");
-            data.newComment = { ...data.newComment, Profile_pic: loggedinUser?.profile?.Profile_pic }
+            data.newComment = { ...data.newComment, user:[{Profile_pic: loggedinUser?.profile?.Profile_pic,username:loggedinUser?.profile?.username}] }
             // console.log(comment.unshift(data.newComment))
-            // setComment(comment.concat(data.newComment).reverse())
+            setComment(comment.concat(data.newComment).reverse())
             // console.log(comment);
             // console.log(page)
             // console.log('before');
             // setTimeout(() => {
             // console.log('rerender');
             // getComment()
-            history(`/blog/${blogId}`)
+            // history(`/blog/${blogId}`)
 
             // }, 1000);
         })
@@ -119,14 +119,14 @@ export const BlogDetail = () => {
             method: 'POST',
             body: JSON.stringify({
                 from: `${JSON.parse(localStorage.getItem('user')).profile._id}`,
-                to: `${blog.user[0].user}`,
+                to: `${blog.user.user}`,
                 text: `has commented on your post - ${commentByUser}.`
             }),
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': (JSON.parse(localStorage.getItem('user'))?.authToken || JSON.parse(sessionStorage.getItem('user'))?.authToken)
             }
-        }).then(res => res.json()).then(data => console.log(data));
+        }).then(res => res.json()).then(data => {});
         // console.log(comment)
     }
 
@@ -164,7 +164,7 @@ export const BlogDetail = () => {
             <ThemeProvider theme={darkTheme}>
 
                 <CssBaseline />
-                <Head title={`${blog?.title} by ${blog?.user[0].username} - Dev Blog`} />
+                <Head title={`${blog?.title} by ${blog?.user.username} - Dev Blog`} />
                 <Container sx={{ py: 2 }}>
                     {/* {
                         isLoading && <Spinner />
@@ -194,18 +194,18 @@ export const BlogDetail = () => {
                                 </Typography>
                                 <CardHeader
                                     avatar={
-                                        <UserAvatar src={blog.user[0]?.Profile_pic} name={blog.user[0]?.username ?? 'User'} />
+                                        <UserAvatar src={blog.user?.Profile_pic} name={blog.user?.username ?? 'User'} />
 
                                     }
                                     title={
-                                        <Link to={`/user/${blog.user[0]?._id}`}>
-                                            {blog?.user[0]?.username}
+                                        <Link to={`/user/${blog.user?._id}`}>
+                                            {blog?.user?.username}
                                         </Link>
                                     }
                                     // subheader={new Date(blog.createdAt).toLocaleString()}
                                     subheader={`${timeAgo(blog.createdAt)} ago`}
                                     action={
-                                        blog?.user[0]?._id === loggedinUser?.profile._id &&
+                                        blog?.user?._id === loggedinUser?.profile._id &&
 
                                         <IconButton aria-label="settings" onClick={handleDelete}>
                                             <DeleteOutlineIcon />
