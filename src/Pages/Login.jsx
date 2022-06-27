@@ -1,26 +1,26 @@
-import React, {useContext, useEffect, useState} from 'react'
-import {Avatar, Box, Button, Container, Grid, IconButton, Snackbar, TextField, Typography} from '@mui/material'
+import React, { useContext, useEffect, useState } from 'react'
+import { Avatar, Box, Button, Container, Grid, IconButton, Snackbar, TextField, Typography } from '@mui/material'
 import CssBaseline from '@mui/material/CssBaseline';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
-import {createTheme, ThemeProvider} from '@mui/material/styles';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
 import blogContext from '../Context/BlogContext';
-import {Link, useNavigate} from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import CloseIcon from '@mui/icons-material/Close';
 import MuiAlert from '@mui/material/Alert';
 import LoadingButton from '@mui/lab/LoadingButton';
-import {Head} from '../Compo/Head';
-import {GoogleLogin} from '@react-oauth/google';
+import { Head } from '../Compo/Head';
+import { GoogleLogin } from '@react-oauth/google';
 import jwtDecode from 'jwt-decode';
 
 
 export const Login = () => {
     let history = useNavigate()
     const context = useContext(blogContext)
-    let {theme, url, setLoggedinUser} = context;
+    let { theme, url, setLoggedinUser } = context;
 
-    const [loginDetails, setLoginDetails] = useState({username: "", password: "", remember: true})
+    const [loginDetails, setLoginDetails] = useState({ username: "", password: "", remember: true })
     const [loginError, setLoginError] = useState(null)
     const [open, setOpen] = React.useState(false);
     const [loading, setLoading] = useState(false)
@@ -36,7 +36,7 @@ export const Login = () => {
 
     const handleSubmit = async (e, token = null) => {
         setLoading(true)
-        let data = {token} || loginDetails
+        let data = { token } || loginDetails
         let res = await fetch(`${url}/api/v1/users/login/`, {
             method: "POST",
             body: JSON.stringify(data),
@@ -44,7 +44,7 @@ export const Login = () => {
                 'Content-Type': 'application/json',
             }
         }).catch(err => {
-            setLoginError({type: 'error', msg: err.message})
+            setLoginError({ type: 'error', msg: err.message })
             setOpen(true)
             setLoading(false)
         });
@@ -52,7 +52,7 @@ export const Login = () => {
         if (res.status === 200) {
             setLoading(false)
             setLoggedinUser(status)
-            setLoginError({type: "success", msg: "Logged in success."})
+            setLoginError({ type: "success", msg: "Logged in success." })
 
             loginDetails.remember && localStorage.setItem('user', JSON.stringify(status))
             !loginDetails.remember && sessionStorage.setItem('user', JSON.stringify(status))
@@ -61,7 +61,7 @@ export const Login = () => {
         } else {
             setLoading(false)
 
-            setLoginError({type: "error", msg: status.msg})
+            setLoginError({ type: "error", msg: status.msg })
             setOpen(true)
             // await console.log(loginError);
         }
@@ -87,8 +87,8 @@ export const Login = () => {
         <>
             <ThemeProvider theme={darkTheme}>
                 <Container component="main" maxWidth="xs">
-                    <CssBaseline/>
-                    <Head title='Login to Dev blog'/>
+                    <CssBaseline />
+                    <Head title='Login to Dev blog' />
                     <Box
                         sx={{
                             marginTop: 8,
@@ -97,13 +97,13 @@ export const Login = () => {
                             alignItems: 'center',
                         }}
                     >
-                        <Avatar sx={{m: 1, bgcolor: 'secondary.main'}}>
-                            <LockOutlinedIcon/>
+                        <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
+                            <LockOutlinedIcon />
                         </Avatar>
                         <Typography component="h1" variant="h5">
                             Sign in
                         </Typography>
-                        <Box component="form" noValidate sx={{mt: 1}}>
+                        <Box component="form" noValidate sx={{ mt: 1 }}>
                             <TextField
                                 margin="normal"
                                 required
@@ -114,7 +114,7 @@ export const Login = () => {
                                 autoComplete="name"
                                 autoFocus
                                 value={loginDetails.username}
-                                onChange={(e) => setLoginDetails({...loginDetails, [e.target.name]: e.target.value})}
+                                onChange={(e) => setLoginDetails({ ...loginDetails, [e.target.name]: e.target.value })}
                             />
                             <TextField
                                 margin="normal"
@@ -126,13 +126,13 @@ export const Login = () => {
                                 id="password"
                                 autoComplete="current-password"
                                 value={loginDetails.password}
-                                onChange={(e) => setLoginDetails({...loginDetails, [e.target.name]: e.target.value})}
+                                onChange={(e) => setLoginDetails({ ...loginDetails, [e.target.name]: e.target.value })}
                             />
                             <FormControlLabel
                                 name='remember'
                                 checked={loginDetails.remember}
-                                onChange={e => setLoginDetails({...loginDetails, [e.target.name]: e.target.checked})}
-                                control={<Checkbox value="remember" color="primary"/>}
+                                onChange={e => setLoginDetails({ ...loginDetails, [e.target.name]: e.target.checked })}
+                                control={<Checkbox value="remember" color="primary" />}
                                 label="Remember me"
                             />
                             <LoadingButton
@@ -141,8 +141,8 @@ export const Login = () => {
                                 loadingPosition="end"
                                 variant="contained"
                                 fullWidth
-                                sx={{mt: 3, mb: 2}}
-                                endIcon={<LockOutlinedIcon/>}
+                                sx={{ mt: 3, mb: 2 }}
+                                endIcon={<LockOutlinedIcon />}
                             >
                                 sign in
                             </LoadingButton>
@@ -172,8 +172,8 @@ export const Login = () => {
                         </Box>
                     </Box>
                     <Snackbar open={open} autoHideDuration={1000} onClose={handleClose}
-                              anchorOrigin={{vertical: 'top', horizontal: 'center'}}>
-                        <Alert onClose={handleClose} severity={loginError?.type} sx={{width: '100%'}}>
+                        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}>
+                        <Alert onClose={handleClose} severity={loginError?.type} sx={{ width: '100%' }}>
                             {loginError?.msg}
                         </Alert>
                     </Snackbar>
