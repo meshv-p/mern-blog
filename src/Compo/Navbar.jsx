@@ -5,13 +5,16 @@ import {
     Badge,
     Button,
     Divider,
+    Drawer,
     IconButton,
     List,
     ListItem,
     ListItemAvatar,
+    ListItemIcon,
     ListItemText,
     Menu,
     MenuItem,
+    SwipeableDrawer,
     Toolbar,
     Typography
 } from '@mui/material'
@@ -26,7 +29,9 @@ import { UserAvatar } from './UserAvatar';
 import ChatBubble from '@mui/icons-material/ChatBubble';
 import { SearchBar } from './SearchBar';
 import DoneIcon from '@mui/icons-material/Done';
-
+import MenuIcon from '@mui/icons-material/Menu';
+import HomeRoundedIcon from '@mui/icons-material/HomeRounded';
+import AddCircleIcon from '@mui/icons-material/AddCircle';
 
 export const Navbar = () => {
     const context = useContext(blogContext);
@@ -40,7 +45,7 @@ export const Navbar = () => {
             'Authorization': `${JSON.parse(localStorage.getItem("user"))?.authToken}`
         }
     });
-
+    const [isDrawerOpen, setIsDrawerOpen] = useState(false)
 
     let history = useNavigate()
 
@@ -74,20 +79,88 @@ export const Navbar = () => {
                 // onLoaderFinished={() => setProgress(0)}
                 />
                 <Toolbar>
+                    <IconButton
+                        color="inherit"
+                        aria-label="open drawer"
+                        onClick={() => setIsDrawerOpen(true)}
+                        edge="start"
+                        sx={{ display: { xs: 'flex', md: 'none' } }}
+                    >
+                        <MenuIcon />
+                    </IconButton>
+                    <SwipeableDrawer
+                        onOpen={() => setIsDrawerOpen(true)}
+                        open={isDrawerOpen}
+                        onClose={() => setIsDrawerOpen(false)}
+                    >
+                        <Box p={2}>
+                            <Typography variant="h6" noWrap>
+                                Dev Blog
+                            </Typography>
+                        </Box>
+                        <Divider />
+                        {/* List with icons */}
+                        <List>
+                            <ListItem button key="Home" component={Link} to="/" onClick={() => setIsDrawerOpen(false)}>
+                                <ListItemIcon>
+                                    <HomeRoundedIcon />
+                                </ListItemIcon>
+                                <ListItemText primary="Home" />
+                            </ListItem>
+
+                            {/* Chat */}
+                            <ListItem button key="Create" component={Link} to="/chat" onClick={() => setIsDrawerOpen(false)}>
+                                <ListItemIcon>
+                                    <ChatBubble />
+                                </ListItemIcon>
+                                <ListItemText primary="Chat" />
+                            </ListItem>
+                            {/* create a blog */}
+                            <ListItem button key="Create" component={Link} to="/create" onClick={() => setIsDrawerOpen(false)}>
+                                <ListItemIcon>
+                                    <AddCircleIcon />
+                                </ListItemIcon>
+                                <ListItemText primary="Create" />
+                            </ListItem>
+                            {/* toggle dark theme */}
+                            <ListItem button key="Toggle" onClick={() => toggleTheme()} >
+                                <ListItemIcon>
+                                    <Brightness4Icon />
+                                </ListItemIcon>
+                                <ListItemText primary="Dark Theme" />
+                            </ListItem>
+                        </List>
+                        <Divider />
+                        {/* Profile */}
+                        <ListItem button key="Profile" component={Link} to={`/user/${loggedinUser?.profile?._id}`} onClick={() => setIsDrawerOpen(false)}>
+                            <ListItemIcon>
+                                <UserAvatar user={loggedinUser?.profile?.Profile_pic} name={loggedinUser?.profile?.username} />
+                            </ListItemIcon>
+                            <ListItemText primary={loggedinUser?.profile?.username} />
+                        </ListItem>
+                        <List>
+                            <ListItem button key="Logout" component={Link} to="/login" onClick={() => {
+                                sessionStorage.removeItem('user');
+                                localStorage.removeItem('user');
+                                setCurrentUser(null);
+                                setAnchorElUser(null)
+                            }}>
+                                <ListItemText primary="Logout" />
+                            </ListItem>
+                        </List>
+
+
+
+                    </SwipeableDrawer>
+
+
                     <Link to="/" style={{ textDecoration: 'none', color: 'inherit' }}>
                         {/*<img src={LOGO} alt="Dev-Blog" style={{width:'auto',height:'auto'}}/>*/}
-                        <Typography>Dev-Blog</Typography>
+
+                        <Typography sx={{ display: { xs: 'none', md: 'flex' } }}>Dev Blog</Typography>
                     </Link>
                     <SearchBar />
-                    {/* <Search >
-                            <SearchIconWrapper>
-                                <SearchIcon />
-                            </SearchIconWrapper>
-                            <StyledInputBase
-                                placeholder="Search…"
-                                inputProps={{ 'aria-label': 'search' }}
-                            />
-                        </Search> */}
+
                     <Box sx={{ flexGrow: 1 }} />
 
                     <Box>
@@ -114,7 +187,7 @@ export const Navbar = () => {
 
                         </IconButton>
                         <IconButton
-                            sx={{ display: { xs: 'none', md: 'inline-flex' } }}
+                            sx={{ display: { xs: 'inline-flex', md: 'inline-flex' } }}
                             onClick={e => setNotiAnchorEl(e.currentTarget)}
                             onClose={() => setNotiAnchorEl(null)}
                             size="large"
@@ -269,6 +342,6 @@ export const Navbar = () => {
                     </Box>
                 </Toolbar>
             </AppBar>
-        </div>
+        </div >
     )
 }
