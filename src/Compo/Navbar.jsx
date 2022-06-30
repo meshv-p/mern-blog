@@ -187,7 +187,7 @@ export const Navbar = () => {
 
                     <Box sx={{ flexGrow: 1 }} />
 
-                    <Box>
+                    <Box sx={{ display: 'flex' }}>
                         <IconButton
                             sx={{ display: { xs: 'none', md: 'inline-flex' } }}
                             onClick={() => history('/chat')}
