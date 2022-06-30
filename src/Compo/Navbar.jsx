@@ -220,6 +220,11 @@ export const Navbar = () => {
                                                 <Typography>Profile</Typography>
                                             </Link>
                                         </MenuItem>
+                                        <MenuItem onClick={() => setAnchorElUser(null)}>
+                                            <Link to='/chat'>
+                                                <Typography>Chat</Typography>
+                                            </Link>
+                                        </MenuItem>
                                         <MenuItem>
                                             <Link to='/create'>
                                                 <Typography>Create blog</Typography>
