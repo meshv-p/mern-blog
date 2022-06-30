@@ -2,30 +2,26 @@ import React, { useContext, useEffect } from 'react'
 import BottomNavigation from '@mui/material/BottomNavigation';
 import BottomNavigationAction from '@mui/material/BottomNavigationAction';
 import FolderIcon from '@mui/icons-material/Folder';
-import RestoreIcon from '@mui/icons-material/Restore';
-import FavoriteIcon from '@mui/icons-material/Favorite';
-import LocationOnIcon from '@mui/icons-material/LocationOn';
-import { Avatar, Paper } from '@mui/material';
+import {  Paper } from '@mui/material';
 import HomeIcon from '@mui/icons-material/Home';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import blogContext from '../Context/BlogContext';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { UserAvatar } from './UserAvatar';
 
 export const BottomNavbar = () => {
 
     const context = useContext(blogContext);
-    let { loggedinUser, theme } = context;
+    let { loggedinUser } = context;
     const [value, setValue] = React.useState('home');
     let history = useNavigate()
     let path = useLocation()
 
     useEffect(() => {
-        if (path.pathname == '/') {
+        if (path.pathname === '/') {
             setValue('home')
         }
-        else if (path.pathname == '/create') {
+        else if (path.pathname === '/create') {
             setValue('create')
         }
         else if (path.pathname.includes('user')) {
@@ -34,14 +30,7 @@ export const BottomNavbar = () => {
 
     }, [])
 
-    const darkTheme = createTheme({
-        palette: {
-            mode: theme ? 'light' : 'dark',
-            primary: {
-                main: '#1976d2',
-            },
-        },
-    });
+
 
 
     const handleChange = (event, newValue) => {
@@ -52,7 +41,6 @@ export const BottomNavbar = () => {
 
     return (
         <>
-            <ThemeProvider theme={darkTheme}>
 
                 <Paper sx={{ position: 'fixed', bottom: 0, left: 0, right: 0 }} elevation={3}>
 
@@ -80,7 +68,6 @@ export const BottomNavbar = () => {
                         <BottomNavigationAction label="Folder" value="folder" icon={<FolderIcon />} />
                     </BottomNavigation>
                 </Paper>
-            </ThemeProvider>
         </>
     )
 }

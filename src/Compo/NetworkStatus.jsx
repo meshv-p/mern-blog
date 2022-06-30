@@ -5,7 +5,7 @@ import { Card, CardContent, Container, CssBaseline, Typography } from '@mui/mate
 
 export const NetworkStatus = () => {
     const context = useContext(blogContext)
-    let { theme, userIsOnline } = context;
+    let { theme, } = context;
     const darkTheme = createTheme({
         palette: {
             mode: theme ? 'light' : 'dark',

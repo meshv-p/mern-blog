@@ -2,44 +2,28 @@ import React, { useContext, useState } from "react";
 import {
   Avatar,
   Box,
-  Button,
   Container,
-  Grid,
-  IconButton,
   Paper,
   Snackbar,
   TextField,
   Typography,
 } from "@mui/material";
 import CssBaseline from "@mui/material/CssBaseline";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import Checkbox from "@mui/material/Checkbox";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
-import { createTheme, ThemeProvider } from "@mui/material/styles";
 import blogContext from "../Context/BlogContext";
-import { Link, useNavigate, useParams } from "react-router-dom";
-import CloseIcon from "@mui/icons-material/Close";
+import {  useParams } from "react-router-dom";
 import MuiAlert from "@mui/material/Alert";
 import LoadingButton from "@mui/lab/LoadingButton";
 import { Head } from "../Compo/Head";
 export const ResetPassword = () => {
-  let history = useNavigate();
   let { token } = useParams()
   const context = useContext(blogContext);
-  let { theme, url } = context;
+  let {  url } = context;
   const [resetPass, setResetPass] = useState("");
   const [loginError, setLoginError] = useState(null);
   const [open, setOpen] = React.useState(false);
   const [loading, setLoading] = useState(false);
 
-  const darkTheme = createTheme({
-    palette: {
-      mode: theme ? "light" : "dark",
-      primary: {
-        main: "#1976d2",
-      },
-    },
-  });
   const handleClose = (event, reason) => {
     if (reason === "clickaway") {
       return;
@@ -87,8 +71,7 @@ export const ResetPassword = () => {
 
 
   return (
-    <div>
-      <ThemeProvider theme={darkTheme}>
+    <>
         <Container component="main" maxWidth="xs">
           <CssBaseline />
           <Head title="Set a New Password to Dev blog" />
@@ -159,7 +142,6 @@ export const ResetPassword = () => {
             </Alert>
           </Snackbar>
         </Container>
-      </ThemeProvider>
-    </div>
+    </>
   );
 };

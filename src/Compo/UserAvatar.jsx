@@ -1,45 +1,24 @@
-import { Avatar } from '@mui/material';
-import React from 'react'
+import { Avatar } from "@mui/material";
+import React from "react";
+import { stringToColor } from "../utils/commonFunctioins";
 
-export const UserAvatar = ({ src: url, name = 'User' }) => {
-
-    function stringToColor(string) {
-        let hash = 0;
-        let i;
-
-        /* eslint-disable no-bitwise */
-        for (i = 0; i < string.length; i += 1) {
-            hash = string.charCodeAt(i) + ((hash << 5) - hash);
-        }
-
-        let color = '#';
-
-        for (i = 0; i < 3; i += 1) {
-            const value = (hash >> (i * 8)) & 0xff;
-            color += `00${value.toString(16)}`.slice(-2);
-        }
-        // console.log(color);
-        /* eslint-enable no-bitwise */
-        return color;
-    }
-
-
-
+export const UserAvatar = ({ src: url, name = "User" }) => {
     function stringAvatar(name) {
-
-
         return {
             sx: {
                 bgcolor: stringToColor(name),
-
-
             },
-            children: name.charAt(0).toUpperCase() || 'U',
+            children: name.charAt(0).toUpperCase() || "U",
         };
     }
 
     return (
-        <Avatar loading='lazy' src={url} alt="Username" {...stringAvatar(name)} title={name} />
-
-    )
-}
+        <Avatar
+            loading="lazy"
+            src={url}
+            alt="Username"
+            {...stringAvatar(name)}
+            title={name}
+        />
+    );
+};

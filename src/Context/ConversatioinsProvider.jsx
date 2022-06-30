@@ -11,7 +11,7 @@ export function useConversations() {
 export const ConversatioinsProvider = ({ children }) => {
     let user = JSON.parse(localStorage.getItem('user')) || []
     const [selectedUser, setSelectedUser] = useState(null)
-    const [messages, setMessages] =useState([])
+    const [messages, setMessages] = useState([])
     const [selectedUserData, setSelectedUserData] = useState({})
     const [onlineU, setOnlineU] = useState([])
     //for unread messages
@@ -42,11 +42,11 @@ export const ConversatioinsProvider = ({ children }) => {
 
 
     // useEffect(() => {
-    //     // console.log(selectedUser)
+    //     console.log(selectedUser)
     //     setSelectedUserData(user?.profile?.following[selectedUser])
-    //     console.log(db)
-    //
-    // }, [])
+    //     console.log(selectedUserData)
+
+    // }, [selectedUser])
 
 
     useEffect(() => {

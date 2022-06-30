@@ -2,24 +2,17 @@ import React, { useContext, useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import blogContext from '../Context/BlogContext'
 import { Blog } from './Blog'
-import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { Card, CardContent, CardHeader, Container, CssBaseline, Skeleton, Typography } from '@mui/material';
 import { Head } from './Head';
+import { stringToColor } from '../utils/commonFunctioins';
 
 export const TagWiseBlog = () => {
     const [searchData, setSearchData] = useState()
     let { tag } = useParams()
     const context = useContext(blogContext);
-    let { theme, url } = context;
+    let { url } = context;
 
-    const darkTheme = createTheme({
-        palette: {
-            mode: theme ? 'light' : 'dark',
-            primary: {
-                main: '#1976d2',
-            },
-        },
-    });
+
     useEffect(() => {
         // console.log(tag)
 
@@ -30,28 +23,10 @@ export const TagWiseBlog = () => {
 
         });
     }, [])
-    function stringToColor(string) {
-        let hash = 0;
-        let i;
 
-        /* eslint-disable no-bitwise */
-        for (i = 0; i < string.length; i += 1) {
-            hash = string.charCodeAt(i) + ((hash << 5) - hash);
-        }
-
-        let color = '#';
-
-        for (i = 0; i < 3; i += 1) {
-            const value = (hash >> (i * 8)) & 0xff;
-            color += `00${value.toString(16)}`.slice(-2);
-        }
-        // console.log(color);
-        /* eslint-enable no-bitwise */
-        return color;
-    }
 
     return (
-        <ThemeProvider theme={darkTheme}>
+        <>
             <Container maxWidth='lg' sx={{ p: 1 }}>
                 <Head title={`#${tag} - Dev Blog`} />
                 <Card sx={{ minWidth: 275 }}>
@@ -122,6 +97,6 @@ export const TagWiseBlog = () => {
                     ))
                 }
             </Container>
-        </ThemeProvider >
+        </ >
     )
 }

@@ -1,11 +1,9 @@
-import React, {useContext, useEffect, useRef, useState} from 'react'
-import {ThemeProvider, createTheme} from '@mui/material/styles';
+import React, {useContext, useRef, useState} from 'react'
 import blogContext from '../Context/BlogContext';
 import {
     Button,
     Card,
     Container,
-    CssBaseline,
     Stack,
     TextField,
     Typography,
@@ -23,7 +21,7 @@ import {Head} from '../Compo/Head';
 
 export const CreateBlog = () => {
     const context = useContext(blogContext);
-    let {theme, url, loggedinUser} = context;
+    let { url, loggedinUser} = context;
     const [open, setOpen] = React.useState(false);
     const [blogError, setBlogError] = useState(null)
     const [blog, setBlog] = useState({
@@ -31,39 +29,11 @@ export const CreateBlog = () => {
         desc: "",
         tag: []
     })
-    let alert = useRef(document.querySelector('.tox-notification'));
 
-    useEffect(() => {
-        // console.log(alert, 'a');
-        // if (alert) {
-
-        // }
-        // tinymce.init({
-        //     selector: 'textarea#descText',  // change this value according to your HTML
-        //     plugins: 'a_tinymce_plugin',
-        //     a_plugin_option: true,
-        //     a_configuration_option: 400,
-        //     inline: true
-        // });
-        // console.log(tinymce)
-
-    }, [alert])
 
     const editorRef = useRef(null);
-    const log = () => {
-        if (editorRef.current) {
-            console.log(editorRef.current.getContent());
-        }
-    };
 
-    const darkTheme = createTheme({
-        palette: {
-            mode: theme ? 'light' : 'dark',
-            primary: {
-                main: '#1976d2',
-            },
-        },
-    });
+
 
     let history = useNavigate()
 
@@ -123,8 +93,6 @@ export const CreateBlog = () => {
 
     return (
         <>
-            <ThemeProvider theme={darkTheme}>
-                <CssBaseline/>
                 <Container>
                     <Head title='Make New Blog - Dev Blog'/>
 
@@ -297,7 +265,6 @@ export const CreateBlog = () => {
                         </Alert>
                     </Snackbar>
                 </Container>
-            </ThemeProvider>
         </>
     )
 }

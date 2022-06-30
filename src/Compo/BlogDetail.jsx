@@ -1,7 +1,6 @@
-import { Button, Card, CardActions, CardContent, CardHeader, CardMedia, Container, CssBaseline, Divider, IconButton, Paper, Stack, TextField, Typography } from '@mui/material'
+import { Button, Card, CardActions, CardContent, CardHeader, CardMedia, Container, Divider, IconButton, Paper, Stack, TextField, Typography } from '@mui/material'
 import { Box } from '@mui/system'
 import React, { useCallback, useContext, useEffect, useState } from 'react'
-import { ThemeProvider, createTheme } from '@mui/material/styles';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import { Link, useNavigate, useParams } from 'react-router-dom'
@@ -14,6 +13,7 @@ import { useFetch } from '../hooks/useFetch';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import { Head } from './Head';
 import { timeAgo } from "../utils/timeAgo";
+import { hexToHsl, stringToColor } from '../utils/commonFunctioins';
 
 export const BlogDetail = () => {
     const [comment, setComment] = useState([])
@@ -24,20 +24,11 @@ export const BlogDetail = () => {
 
     let { blogId } = useParams()
     const context = useContext(blogContext)
-    let { theme, url, loggedinUser, setProgress } = context;
-    let { data: blog, isLoading, error } = useFetch(`${url}/api/v1/blog/${blogId}`)
+    let { url, loggedinUser, setProgress } = context;
+    let { data: blog, } = useFetch(`${url}/api/v1/blog/${blogId}`)
 
     let history = useNavigate()
 
-
-    const darkTheme = createTheme({
-        palette: {
-            mode: theme ? 'light' : 'dark',
-            primary: {
-                main: '#1976d2',
-            },
-        },
-    });
     // eslint-disable-next-line react-hooks/exhaustive-deps
     const getComment = useCallback((pageNo) => {
         // console.log(page);
@@ -103,15 +94,7 @@ export const BlogDetail = () => {
             data.newComment = { ...data.newComment, user: [{ Profile_pic: loggedinUser?.profile?.Profile_pic, username: loggedinUser?.profile?.username }] }
             // console.log(comment.unshift(data.newComment))
             setComment(comment.concat(data.newComment).reverse())
-            // console.log(comment);
-            // console.log(page)
-            // console.log('before');
-            // setTimeout(() => {
-            // console.log('rerender');
-            // getComment()
-            // history(`/blog/${blogId}`)
 
-            // }, 1000);
         })
 
 
@@ -130,248 +113,186 @@ export const BlogDetail = () => {
         // console.log(comment)
     }
 
-    function stringToColor(string) {
-        let hash = 0;
-        let i;
-
-        /* eslint-disable no-bitwise */
-        for (i = 0; i < string.length; i += 1) {
-            hash = string.charCodeAt(i) + ((hash << 5) - hash);
-        }
-
-        let color = '#';
-
-        for (i = 0; i < 3; i += 1) {
-            const value = (hash >> (i * 8)) & 0xff;
-            color += `00${value.toString(16)}`.slice(-2);
-        }
-        // console.log(color);
-        /* eslint-enable no-bitwise */
-        return color;
-    }
-
-    function stringToRgba(string) {
-        let stringUniqueHash = [...string].reduce((acc, char) => {
-            return char.charCodeAt(0) + ((acc << 5) - acc);
-        }, 0);
-        return `hsl(${stringUniqueHash}, 34%, 25%)`;
-    }
-
-    //function to convert hex format to a hsl color
-    function hexToHsl(hex) {
-        let result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-        let r = parseInt(result[1], 16);
-        let g = parseInt(result[2], 16);
-        let b = parseInt(result[3], 16);
-
-        r /= 255; g /= 255; b /= 255;
-
-        let max = Math.max(r, g, b), min = Math.min(r, g, b);
-        let h, s, l = (max + min) / 2;
-
-        if (max === min) {
-            h = s = 0; // achromatic
-        } else {
-            let d = max - min;
-            s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
-            switch (max) {
-                case r:
-                    h = (g - b) / d + (g < b ? 6 : 0);
-                    break;
-                case g:
-                    h = (b - r) / d + 2;
-                    break;
-                case b:
-                    h = (r - g) / d + 4;
-                    break;
-            }
-            h /= 6;
-        }
-        return `hsl(${h * 360}, ${36}%, ${25}%)`;
-    }
 
     return (
         <div  >
-            <ThemeProvider theme={darkTheme}>
 
-                <CssBaseline />
-                <Head title={`${blog?.title} by ${blog?.user.username} - Dev Blog`} />
-                <Container sx={{ py: 2 }}>
-                    {/* {
+            <Head title={`${blog?.title} by ${blog?.user.username} - Dev Blog`} />
+            <Container sx={{ py: 2 }}>
+                {/* {
                         isLoading && <Spinner />
                     } */}
 
-                    <React.Suspense fallback={<Spinner />}>
-                        {
-                            blog &&
-                            // <Card sx={{ background: '#bbdefb' || '#e3f2fd' }}>
+                <React.Suspense fallback={<Spinner />}>
+                    {
+                        blog &&
+                        // <Card sx={{ background: '#bbdefb' || '#e3f2fd' }}>
 
-                            <Card >
-                                <Typography sx={{ m: 1 }}>
-                                    <Button variant="outlined" onClick={() => {
-                                        if (history(-1)) {
+                        <Card >
+                            <Typography sx={{ m: 1 }}>
+                                <Button variant="outlined" onClick={() => {
+                                    if (history(-1)) {
 
-                                            history(-1)
+                                        history(-1)
+                                    }
+                                    history('/')
+                                }
+
+
+                                }
+
+                                    color="inherit" startIcon={<ArrowBackIosNewIcon />}>
+                                    Go back
+                                </Button>
+                            </Typography>
+                            <CardHeader
+                                avatar={
+                                    <UserAvatar src={blog.user?.Profile_pic} name={blog.user?.username ?? 'User'} />
+
+                                }
+                                title={
+                                    <Link to={`/user/${blog.user?._id}`}>
+                                        {blog?.user?.username}
+                                    </Link>
+                                }
+                                // subheader={new Date(blog.createdAt).toLocaleString()}
+                                subheader={`${timeAgo(blog.createdAt)} ago`}
+                                action={
+                                    blog?.user?._id === loggedinUser?.profile._id &&
+
+                                    <IconButton aria-label="settings" onClick={handleDelete}>
+                                        <DeleteOutlineIcon />
+                                    </IconButton>
+                                }
+                            />
+                            <CardMedia
+                                component="img"
+                                alt="green iguana"
+                                height="440"
+                                image={`https://source.unsplash.com/random/?${blog?.tag[0]},${blog?.tag[1]},web`}
+                                loading='lazy'
+                                decoding='async'
+                            />
+                            <CardContent >
+                                <Typography variant='h4'>
+                                    {blog.title}
+                                    {/* <Typography>#tag</Typography> */}
+                                    <Stack direction="row" gap={2} sx={{ my: 1 }}>
+                                        {
+                                            blog.tag.map(tag => (
+                                                // <React.Fragment key={tag}>
+                                                <Link to={`/t/${tag}`} key={tag}>
+                                                    <Typography component="span" sx={{ cursor: 'pointer', padding: .8, border: 1, borderColor: stringToColor(tag), borderRadius: 1, ":hover": { background: hexToHsl(stringToColor(tag)) } }}>
+                                                        <span  ># </span>
+                                                        <span style={{ color: stringToColor(tag) }}>{tag} </span>
+                                                    </Typography>
+                                                </Link>
+                                                // </React.Fragment>
+                                            ))
                                         }
-                                        history('/')
-                                    }
-
-
-                                    }
-
-                                        color="inherit" startIcon={<ArrowBackIosNewIcon />}>
-                                        Go back
-                                    </Button>
+                                    </Stack>
+                                    {/* {blog.title} */}
                                 </Typography>
-                                <CardHeader
-                                    avatar={
-                                        <UserAvatar src={blog.user?.Profile_pic} name={blog.user?.username ?? 'User'} />
-
-                                    }
-                                    title={
-                                        <Link to={`/user/${blog.user?._id}`}>
-                                            {blog?.user?.username}
-                                        </Link>
-                                    }
-                                    // subheader={new Date(blog.createdAt).toLocaleString()}
-                                    subheader={`${timeAgo(blog.createdAt)} ago`}
-                                    action={
-                                        blog?.user?._id === loggedinUser?.profile._id &&
-
-                                        <IconButton aria-label="settings" onClick={handleDelete}>
-                                            <DeleteOutlineIcon />
-                                        </IconButton>
-                                    }
-                                />
-                                <CardMedia
-                                    component="img"
-                                    alt="green iguana"
-                                    height="440"
-                                    image={`https://source.unsplash.com/random/?${blog?.tag[0]},${blog?.tag[1]},web`}
-                                    loading='lazy'
-                                    decoding='async'
-                                />
-                                <CardContent >
-                                    <Typography variant='h4'>
-                                        {blog.title}
-                                        {/* <Typography>#tag</Typography> */}
-                                        <Stack direction="row" gap={2} sx={{ my: 1 }}>
-                                            {
-                                                blog.tag.map(tag => (
-                                                    // <React.Fragment key={tag}>
-                                                    <Link to={`/t/${tag}`} key={tag}>
-                                                        <Typography component="span" sx={{ cursor: 'pointer', padding: .8, border: 1, borderColor: stringToColor(tag), borderRadius: 1, ":hover": { background: hexToHsl(stringToColor(tag)) } }}>
-                                                            <span  ># </span>
-                                                            <span style={{ color: stringToColor(tag) }}>{tag} </span>
-                                                        </Typography>
-                                                    </Link>
-                                                    // </React.Fragment>
-                                                ))
-                                            }
-                                        </Stack>
-                                        {/* {blog.title} */}
+                                <span>
+                                    <Typography dangerouslySetInnerHTML={{ __html: blog.desc }} variant='body2' sx={{ my: 2 }} color="text.secondary">
                                     </Typography>
-                                    <span>
-                                        <Typography dangerouslySetInnerHTML={{ __html: blog.desc }} variant='body2' sx={{ my: 2 }} color="text.secondary">
-                                        </Typography>
-                                    </span>
+                                </span>
 
-                                    <Divider sx={{ mt: 2 }} />
+                                <Divider sx={{ mt: 2 }} />
 
-                                    <Box sx={{ my: 2 }}>
-                                        <Typography variant='body1' id="Comments">Comments:</Typography>
-                                    </Box>
-                                    {
-                                        loggedinUser ?
-                                            <form onSubmit={handleSubmit}>
+                                <Box sx={{ my: 2 }}>
+                                    <Typography variant='body1' id="Comments">Comments:</Typography>
+                                </Box>
+                                {
+                                    loggedinUser ?
+                                        <form onSubmit={handleSubmit}>
 
-                                                <TextField
-                                                    id="outlined-multiline-static"
-                                                    label="Add a comment"
-                                                    multiline
-                                                    rows={3}
-                                                    fullWidth
-                                                    required={true}
-                                                    value={commentByUser}
-                                                    onChange={e => setCommentByUser(e.target.value)}
-                                                />
-                                                <Stack spacing={2} sx={{ mt: 2 }} direction="row">
-                                                    <Button variant="contained" type="submit" onClick={handleSubmit}>Submit</Button>
-                                                    <Button variant="text">Cancel</Button>
-                                                </Stack>
-                                            </form>
-                                            :
-                                            <Typography>Login to comment</Typography>
-                                    }
+                                            <TextField
+                                                id="outlined-multiline-static"
+                                                label="Add a comment"
+                                                multiline
+                                                rows={3}
+                                                fullWidth
+                                                required={true}
+                                                value={commentByUser}
+                                                onChange={e => setCommentByUser(e.target.value)}
+                                            />
+                                            <Stack spacing={2} sx={{ mt: 2 }} direction="row">
+                                                <Button variant="contained" type="submit" onClick={handleSubmit}>Submit</Button>
+                                                <Button variant="text">Cancel</Button>
+                                            </Stack>
+                                        </form>
+                                        :
+                                        <Typography>Login to comment</Typography>
+                                }
 
 
 
-                                    {/* comment part */}
-                                    {
-                                        comment.length !== 0 ?
+                                {/* comment part */}
+                                {
+                                    comment.length !== 0 ?
 
-                                            <InfiniteScroll
-                                                dataLength={comment?.length} //This is important field to render the next data
-                                                next={getComment}
-                                                hasMore={(comment?.length) !== totalPage}
-                                                // {console.log(comment,totalPage)}
-                                                loader={<Spinner />}
-                                                pullDownToRefreshContent={
-                                                    <h3 style={{ textAlign: 'center' }}>&#8595; Pull down to refresh</h3>
-                                                }
-                                                releaseToRefreshContent={
-                                                    <h3 style={{ textAlign: 'center' }}>&#8593; Release to refresh</h3>
-                                                }
-                                            >
+                                        <InfiniteScroll
+                                            dataLength={comment?.length} //This is important field to render the next data
+                                            next={getComment}
+                                            hasMore={(comment?.length) !== totalPage}
+                                            // {console.log(comment,totalPage)}
+                                            loader={<Spinner />}
+                                            pullDownToRefreshContent={
+                                                <h3 style={{ textAlign: 'center' }}>&#8595; Pull down to refresh</h3>
+                                            }
+                                            releaseToRefreshContent={
+                                                <h3 style={{ textAlign: 'center' }}>&#8593; Release to refresh</h3>
+                                            }
+                                        >
 
-                                                {comment?.map(c => (
-                                                    <Paper variant="outlined" sx={{ m: 2 }} key={c._id}>
-                                                        <Card>
-                                                            <CardHeader
-                                                                avatar={
-                                                                    <UserAvatar src={c.user[0]?.Profile_pic} name={c.user[0]?.username ?? 'User'} />
-                                                                }
-                                                                title={<Link to={`/user/${c.user[0]?._id}`}>
-                                                                    {c?.user[0]?.username}
-                                                                </Link>}
-                                                                // subheader={c.createdAt ? new Date(c?.createdAt)?.toLocaleString() : new Date().toLocaleString()}
-                                                                subheader={c.createdAt ? `${timeAgo(c?.createdAt)} ago` : `${timeAgo(new Date().toLocaleString())} ago`}
-                                                                action={
-                                                                    <IconButton aria-label="settings">
-                                                                        <MoreVertIcon />
-                                                                    </IconButton>
-                                                                }
-                                                            />
-                                                            <CardContent>
-                                                                <Typography>{c.title}</Typography>
-                                                            </CardContent>
-                                                            <CardActions>
-                                                                <Button variant="outlined" color='success' startIcon={<FavoriteIcon />}>
-                                                                    9 Like
-                                                                </Button>
+                                            {comment?.map(c => (
+                                                <Paper variant="outlined" sx={{ m: 2 }} key={c._id}>
+                                                    <Card>
+                                                        <CardHeader
+                                                            avatar={
+                                                                <UserAvatar src={c.user[0]?.Profile_pic} name={c.user[0]?.username ?? 'User'} />
+                                                            }
+                                                            title={<Link to={`/user/${c.user[0]?._id}`}>
+                                                                {c?.user[0]?.username}
+                                                            </Link>}
+                                                            // subheader={c.createdAt ? new Date(c?.createdAt)?.toLocaleString() : new Date().toLocaleString()}
+                                                            subheader={c.createdAt ? `${timeAgo(c?.createdAt)} ago` : `${timeAgo(new Date().toLocaleString())} ago`}
+                                                            action={
+                                                                <IconButton aria-label="settings">
+                                                                    <MoreVertIcon />
+                                                                </IconButton>
+                                                            }
+                                                        />
+                                                        <CardContent>
+                                                            <Typography>{c.title}</Typography>
+                                                        </CardContent>
+                                                        <CardActions>
+                                                            <Button variant="outlined" color='success' startIcon={<FavoriteIcon />}>
+                                                                9 Like
+                                                            </Button>
 
-                                                            </CardActions>
-                                                        </Card>
-                                                    </Paper>
-                                                ))}
+                                                        </CardActions>
+                                                    </Card>
+                                                </Paper>
+                                            ))}
 
-                                            </InfiniteScroll>
-                                            :
-                                            <Typography sx={{ m: 2 }} color="GrayText">No comments yet.Be first commenter on this post...</Typography>
+                                        </InfiniteScroll>
+                                        :
+                                        <Typography sx={{ m: 2 }} color="GrayText">No comments yet.Be first commenter on this post...</Typography>
 
-                                    }
-
-
-                                </CardContent>
+                                }
 
 
+                            </CardContent>
 
-                            </Card>
-                        }
-                    </React.Suspense>
 
-                </Container>
-            </ThemeProvider>
+
+                        </Card>
+                    }
+                </React.Suspense>
+
+            </Container>
 
         </div >
     )
