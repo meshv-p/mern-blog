@@ -35,7 +35,7 @@ import AddCircleIcon from '@mui/icons-material/AddCircle';
 
 export const Navbar = () => {
     const context = useContext(blogContext);
-    let { toggleTheme, loggedinUser, progress, url } = context;
+    let { toggleTheme, loggedinUser, progress, url, theme } = context;
     const [anchorElUser, setAnchorElUser] = React.useState(null);
     const [currentUser, setCurrentUser] = useState(JSON.parse(localStorage.getItem('user'))?.profile)
     const [notifications, setNotiAnchorEl] = React.useState(null);
@@ -100,8 +100,12 @@ export const Navbar = () => {
                         </Box>
                         <Divider />
                         {/* List with icons */}
-                        <List>
-                            <ListItem button key="Home" component={Link} to="/" onClick={() => setIsDrawerOpen(false)}>
+                        <List >
+                            <ListItem button key="Home" sx={{
+                                borderRadius: '8px', ":hover": {
+                                    backgroundColor: 'rgb(79 92 174 / 60%)  '
+                                }
+                            }} component={Link} to="/" onClick={() => setIsDrawerOpen(false)}>
                                 <ListItemIcon>
                                     <HomeRoundedIcon />
                                 </ListItemIcon>
@@ -109,37 +113,57 @@ export const Navbar = () => {
                             </ListItem>
 
                             {/* Chat */}
-                            <ListItem button key="Create" component={Link} to="/chat" onClick={() => setIsDrawerOpen(false)}>
+                            <ListItem button key="Create" sx={{
+                                borderRadius: '8px', ":hover": {
+                                    backgroundColor: 'rgb(79 92 174 / 60%)  '
+                                }
+                            }} component={Link} to="/chat" onClick={() => setIsDrawerOpen(false)}>
                                 <ListItemIcon>
                                     <ChatBubble />
                                 </ListItemIcon>
                                 <ListItemText primary="Chat" />
                             </ListItem>
                             {/* create a blog */}
-                            <ListItem button key="Create" component={Link} to="/create" onClick={() => setIsDrawerOpen(false)}>
+                            <ListItem button key="Create" sx={{
+                                borderRadius: '8px', ":hover": {
+                                    backgroundColor: 'rgb(79 92 174 / 60%)  '
+                                }
+                            }} component={Link} to="/create" onClick={() => setIsDrawerOpen(false)}>
                                 <ListItemIcon>
                                     <AddCircleIcon />
                                 </ListItemIcon>
                                 <ListItemText primary="Create" />
                             </ListItem>
                             {/* toggle dark theme */}
-                            <ListItem button key="Toggle" onClick={() => toggleTheme()} >
+                            <ListItem button key="Toggle" sx={{
+                                borderRadius: '8px', ":hover": {
+                                    backgroundColor: 'rgb(79 92 174 / 60%)  '
+                                }
+                            }} onClick={() => toggleTheme()} >
                                 <ListItemIcon>
                                     <Brightness4Icon />
                                 </ListItemIcon>
-                                <ListItemText primary="Dark Theme" />
+                                <ListItemText primary={`${!theme ? 'Light' : 'Dark'} Theme`} />
                             </ListItem>
                         </List>
                         <Divider />
                         {/* Profile */}
-                        <ListItem button key="Profile" component={Link} to={`/user/${loggedinUser?.profile?._id}`} onClick={() => setIsDrawerOpen(false)}>
+                        <ListItem button key="Profile" sx={{
+                            borderRadius: '8px', ":hover": {
+                                backgroundColor: 'rgb(79 92 174 / 60%)  '
+                            }
+                        }} component={Link} to={`/user/${loggedinUser?.profile?._id}`} onClick={() => setIsDrawerOpen(false)}>
                             <ListItemIcon>
                                 <UserAvatar user={loggedinUser?.profile?.Profile_pic} name={loggedinUser?.profile?.username} />
                             </ListItemIcon>
                             <ListItemText primary={loggedinUser?.profile?.username} />
                         </ListItem>
                         <List>
-                            <ListItem button key="Logout" component={Link} to="/login" onClick={() => {
+                            <ListItem button key="Logout" sx={{
+                                borderRadius: '8px', ":hover": {
+                                    backgroundColor: 'rgb(79 92 174 / 60%)  '
+                                }
+                            }} component={Link} to="/login" onClick={() => {
                                 sessionStorage.removeItem('user');
                                 localStorage.removeItem('user');
                                 setCurrentUser(null);
