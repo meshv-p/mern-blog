@@ -72,7 +72,7 @@ export const Blog = ({ blog, theme, BlogType = 'title', index }) => {
             method: 'POST',
             body: JSON.stringify({
                 "from": `${JSON.parse(localStorage.getItem('user')).profile._id}`,
-                "to": `${blog.user[0].user}`,
+                "to": `${blog.user.user}`,
                 "text": `has ${userLiked ? 'unliked' : 'liked'} your blog ${blog.title}.`
             }),
             headers: {
@@ -137,12 +137,12 @@ export const Blog = ({ blog, theme, BlogType = 'title', index }) => {
                 }
                 <CardHeader
                     sx={{ ":hover": { background: !theme ? '#424242' : "#d9d9d9" } }}
-                    onClick={e => openProfile(e)} data-key={blog.user?.[0]?._id || blog?._id}
+                    onClick={e => openProfile(e)} data-key={blog.user?._id || blog?._id}
                     avatar={
-                        <UserAvatar src={blog.user?.[0]?.Profile_pic || blog?.Profile_pic}
-                            name={(blog.user?.[0]?.username || blog.username) ?? 'User'} />
+                        <UserAvatar src={blog.user?.Profile_pic || blog?.Profile_pic}
+                            name={(blog.user?.username || blog.username) ?? 'User'} />
                     }
-                    title={blog.user?.[0]?.username || blog?.username}
+                    title={blog.user?.username || blog?.username}
                     // subheader="Today,a min ago"
                     // subheader={new Date(blog.createdAt).toLocaleString()}
                     subheader={timeAgo(blog?.createdAt) + ' ago'}

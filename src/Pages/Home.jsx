@@ -7,7 +7,8 @@ import InfiniteScroll from 'react-infinite-scroll-component';
 import { AlertBar } from '../Compo/Alert';
 import { NetworkStatus } from '../Compo/NetworkStatus';
 import { Head } from '../Compo/Head';
-export const Home = () => {
+import { addBlog, getDataFromIndexDb, startDb } from '../utils/indexDb';
+export const Home = ({ res }) => {
     const [allBlogs, setAllBlogs] = useState([]);
 
     const [isLoading, setIsLoading] = useState(false)
@@ -19,28 +20,59 @@ export const Home = () => {
 
 
     useEffect(() => {
+        startHome()
+        // return () => {
+        //     console.clear()
+        // }
+        console.log(res);
+    }, [])
+
+    async function startHome() {
+        await startDb().then(() => {
+            // console.log('db started')
+        }).catch((err) => {
+            console.log(err)
+        })
+
         setOpen(true)
         setIsLoading(true)
         fetchData()
 
-        return () => {
-            console.clear()
-        }
-    }, [])
+    }
 
 
 
 
-
-
-    const fetchData = () => {
+    const fetchData = async () => {
         setProgress(10)
+        //check if data with page no is exist in indexdb
+        // let data =
+        //     // console.log('db', db)
+        //     await getDataFromIndexDb(pageNo).then((d) => {
+        //         // console.log(d.blog)
+        //         return d;
+        //     }).catch((err) => {
+        //         console.log(err)
+        //         // fetchDataFromServer()
+        //     })
+
+        // if (data) {
+        //     setAllBlogs(allBlogs => [...allBlogs, ...data.blog])
+        //     setIsLoading(false)
+        //     setProgress(100)
+        //     setOpen(false)
+        //     setTotalPage(data.length)
+        //     setPageNo(pageNo + 1)
+        //     return
+        // }
+        //if not exist in indexdb then fetch data from api
         fetch(`${url}/api/v1/blogs/?page=${pageNo}`).then(res => res.json()).then(data => {
             // fetch(`${url}/api/v1/blogs`).then(res => res.json()).then(data => {
             setAllBlogs(allBlogs?.concat(data.allBlogs))
             setTotalPage(data.length)
             setIsLoading(false);
             setOpen(false)
+            addBlog(pageNo, data.allBlogs)
         })
         setProgress(100)
         setPageNo(pageNo + 1)
@@ -89,4 +121,21 @@ export const Home = () => {
             </Container>
         </div>
     )
+}
+
+//  default Home
+
+export function getServerProps() {
+    fetch(`http://localhost:5000/api/v1/blogs/?page=${1}`).then(res => res.json()).then(data => {
+        // fetch(`${url}/api/v1/blogs`).then(res => res.json()).then(data => {
+        // setAllBlogs(allBlogs?.concat(data.allBlogs))
+        // setTotalPage(data.length)
+        // setIsLoading(false);
+        // setOpen(false)
+        // addBlog(pageNo, data.allBlogs)
+        let res = data.allBogs
+        return {
+            props: res
+        }
+    })
 }

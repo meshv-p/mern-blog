@@ -75,6 +75,15 @@ export const BlogDetail = () => {
         })
     }
 
+    function handleEdit() {
+        // console.log(blog._id)
+        history(`/blog/edit/${blog._id}`, {
+            state: {
+                blog
+            }
+        })
+    }
+
 
 
     const handleSubmit = (e) => {
@@ -159,10 +168,14 @@ export const BlogDetail = () => {
                                 subheader={`${timeAgo(blog.createdAt)} ago`}
                                 action={
                                     blog?.user?._id === loggedinUser?.profile._id &&
-
-                                    <IconButton aria-label="settings" onClick={handleDelete}>
-                                        <DeleteOutlineIcon />
-                                    </IconButton>
+                                    <>
+                                        <IconButton aria-label="settings" onClick={handleEdit}>
+                                            <DeleteOutlineIcon />
+                                        </IconButton>
+                                        <IconButton aria-label="settings" onClick={handleDelete}>
+                                            <DeleteOutlineIcon />
+                                        </IconButton>
+                                    </>
                                 }
                             />
                             <CardMedia

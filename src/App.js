@@ -45,6 +45,7 @@ function App() {
                   <Route path="/user/:userId" element={<Profie />} />
                   <Route path="/signup" element={<Signup />} />
                   <Route path="/blog/:blogId" element={<BlogDetail />} />
+                  <Route path="/blog/edit/:blogId" element={<CreateBlog />} />
                   <Route path="/t/:tag" element={<TagWiseBlog />} />
                   <Route path="/create/" element={<CreateBlog />} />
                   <Route path="/chat/" element={<Chat />} />
@@ -56,7 +57,7 @@ function App() {
                     element={<ResetPassword />}
                   />
                 </Routes>
-                 {/*<BottomNavbar />*/}
+                {/*<BottomNavbar />*/}
               </div>
             </BrowserRouter>
           </ThemeProvider>
