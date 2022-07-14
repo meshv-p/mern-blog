@@ -9,13 +9,16 @@ import {
     Typography,
     Snackbar,
     Chip,
-    Autocomplete
+    Autocomplete,
+
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import MuiAlert from '@mui/material/Alert';
 import { Editor } from '@tinymce/tinymce-react';
 import { Head } from '../Compo/Head';
+import CloudUploadIcon from '@mui/icons-material/CloudUpload';
+import styled from '@emotion/styled';
 
 // uncontrolled input
 
@@ -28,7 +31,8 @@ export const CreateBlog = () => {
     const [blog, setBlog] = useState({
         title: blogHistory?.title ?? "",
         desc: blogHistory?.desc ?? "",
-        tag: blogHistory?.tag ?? []
+        tag: blogHistory?.tag ?? [],
+        coverImg: blogHistory?.coverImg ?? null,
     })
     const [tagSuggestions, setTagSuggestions] = useState([])
 
@@ -77,7 +81,7 @@ export const CreateBlog = () => {
     }
 
     const handleSubmit = async () => {
-        if (blogHistory._id !== null || (blogHistory._id !== undefined)) {
+        if (blogHistory !== undefined) {
             return blogUpdate()
         }
         await console.log('before', blog);
@@ -148,9 +152,33 @@ export const CreateBlog = () => {
 
     }
 
+    const Input = styled('input')({
+        display: 'none',
+    });
+    // Upload image to cloudinary
+    const uploadImage = async (e) => {
+        let file = e.target.files[0];
+        let fd = new FormData()
+        fd.append('upload_preset', 'yio8fvkd');
+        fd.append('file', file);
+        console.log(fd.get('file'))
+        fetch(`https://api.cloudinary.com/v1_1/dqveulwdc/upload`, {
+            method: "POST",
+            body: fd,
+        })
+            .then((res) => res.json())
+            .then((data) => {
+                console.log(data);
+                setBlog({ ...blog, coverImg: data.secure_url })
+            }
+            )
+    }
+
+
+
     return (
         <>
-            <Container>
+            <Container sx={{ px: 0 }}>
                 <Head title='Make New Blog - Dev Blog' />
 
                 <Card sx={{ m: 1, p: 1 }}>
@@ -165,6 +193,17 @@ export const CreateBlog = () => {
 
                     <Stack gap={3}>
 
+                        {/* input file type for coverImg */}
+                        <Input type="file" id="outlined-button-file" style={{ display: 'none' }} onChange={(e) => {
+                            uploadImage(e)
+                        }} />
+                        <label htmlFor="outlined-button-file">
+                            <Button variant="outlined" color="primary" component="span" startIcon={<CloudUploadIcon />}>
+                                Upload Cover Image
+                            </Button>
+                        </label>
+                        {blog.coverImg && <img src={blog.coverImg} alt="coverImg" style={{ width: '10%', height: '10%' }} />}
+
                         <TextField value={blog.title} id="title" label="Title"
                             onChange={e => setBlog({ ...blog, [e.target.name]: e.target.value })} name='title'
                             variant="outlined" />
@@ -175,7 +214,6 @@ export const CreateBlog = () => {
 
                             <Editor
                                 onChange={e => {
-                                    console.log(editorRef.current.getContent())
                                     setBlog({ ...blog, desc: editorRef.current.getContent() })
                                 }}
 

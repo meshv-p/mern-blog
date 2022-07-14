@@ -178,14 +178,14 @@ export const BlogDetail = () => {
                                     </>
                                 }
                             />
-                            <CardMedia
+                            {blog?.coverImg && <CardMedia
                                 component="img"
                                 alt="green iguana"
                                 height="440"
-                                image={`https://source.unsplash.com/random/?${blog?.tag[0]},${blog?.tag[1]},web`}
+                                image={`${blog?.coverImg ?? `https://source.unsplash.com/random/?${blog?.tag[0]},${blog?.tag[1]},web`}  `}
                                 loading='lazy'
                                 decoding='async'
-                            />
+                            />}
                             <CardContent >
                                 <Typography variant='h4'>
                                     {blog.title}
@@ -195,7 +195,7 @@ export const BlogDetail = () => {
                                             blog.tag.map(tag => (
                                                 // <React.Fragment key={tag}>
                                                 <Link to={`/t/${tag}`} key={tag}>
-                                                    <Typography component="span" sx={{ cursor: 'pointer', padding: .8, border: 1, borderColor: stringToColor(tag), borderRadius: 1, ":hover": { background: hexToHsl(stringToColor(tag)) } }}>
+                                                    <Typography component="span" sx={{ cursor: 'pointer', padding: .8, border: 1, borderColor: stringToColor(tag), borderRadius: 1, ":hover": { background: hexToHsl(stringToColor(tag)) }, }}>
                                                         <span  ># </span>
                                                         <span style={{ color: stringToColor(tag) }}>{tag} </span>
                                                     </Typography>
